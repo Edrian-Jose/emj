@@ -1,12 +1,12 @@
+import type { ChannelTypeString } from '@sapphire/discord.js-utilities';
 import type { Snowflake } from 'discord.js';
-import type { ChannelTypes } from 'discord.js/typings/enums';
 import { Schema, model, Document } from 'mongoose';
 import GuildModel from './Guild';
 
 interface Channel {
 	guildId: Snowflake;
 	channelId: Snowflake;
-	type: ChannelTypes;
+	type: ChannelTypeString;
 	name?: string;
 	emoji?: string;
 	webhookId?: Snowflake;
@@ -25,10 +25,8 @@ const ChannelSchema = new Schema<ChannelDocument>({
 	guildId: String,
 	channelId: String,
 	type: {
-		type: Number,
-		// TODO: Change this implementation to dynamically getting the length of enum ChannelTypes
-		enum: [...Array(14).keys()],
-		default: 0,
+		type: String,
+		default: 'GUILD_TEXT',
 		required: true
 	},
 	name: String,

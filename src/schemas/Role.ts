@@ -19,7 +19,8 @@ export interface RoleDocument extends RoleBaseDocument {
 const RoleSchema = new Schema<RoleDocument>({
 	guildId: String,
 	roleId: String,
-	name: String
+	name: String,
+	members: [String]
 });
 
 const RoleModel = model<RoleDocument>('Role', RoleSchema);

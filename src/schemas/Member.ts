@@ -5,6 +5,7 @@ import type { RoleDocument } from './Role';
 interface Member {
 	guildId: Snowflake;
 	userId: Snowflake;
+	tag: string;
 	nickname?: string;
 }
 
@@ -14,12 +15,13 @@ interface MemberBaseDocument extends Member, Document {
 
 export interface MemberDocument extends MemberBaseDocument {
 	//store ref typings here
-	roles: RoleDocument['_id'][];
+	roles?: RoleDocument['_id'][];
 }
 
 const MemberSchema = new Schema<MemberDocument>({
 	guildId: String,
 	userId: String,
+	tag: String,
 	nickname: String,
 	roles: [
 		{
