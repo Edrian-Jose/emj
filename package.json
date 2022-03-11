@@ -24,6 +24,7 @@
     "bull": "^4.7.0",
     "discord.js": "^13.6.0",
     "dotenv-cra": "^3.0.2",
+    "mongoose": "^6.2.5",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

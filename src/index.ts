@@ -1,6 +1,6 @@
+import './lib/setup';
 import { SapphireClient } from '@sapphire/framework';
 import clientOptions from './lib/clientOptions';
-import './lib/setup';
 
 const client = new SapphireClient(clientOptions);
 
