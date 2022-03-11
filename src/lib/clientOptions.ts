@@ -1,6 +1,6 @@
 import { ScheduledTaskRedisStrategy } from '@sapphire/plugin-scheduled-tasks/register-redis';
 import { LogLevel } from '@sapphire/framework';
-import { config } from './config';
+import { config } from './config-parser';
 import type { ClientOptions } from 'discord.js';
 
 const clientOptions: ClientOptions = {
