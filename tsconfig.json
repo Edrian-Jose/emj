@@ -3,7 +3,10 @@
 	"compilerOptions": {
 		"rootDir": "src",
 		"outDir": "dist",
-		"tsBuildInfoFile": "dist/.tsbuildinfo"
+		"tsBuildInfoFile": "dist/.tsbuildinfo",
+		"jsx": "react",
+		"jsxFactory": "EmbedJsx.make",
+		"noImplicitAny": false
 	},
 	"include": ["src"]
 }
