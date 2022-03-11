@@ -10,12 +10,15 @@ import { config } from 'dotenv-cra';
 import { join } from 'path';
 import { inspect } from 'util';
 import { srcDir } from './constants';
+config({ path: join(srcDir, '.env') });
+
+import database from './database';
 
 // Read env var
-config({ path: join(srcDir, '.env') });
 
 // Set default inspection depth
 inspect.defaultOptions.depth = 1;
 
 // Enable colorette
 colorette.createColors({ useColor: true });
+database.connect();
