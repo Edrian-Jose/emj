@@ -8,19 +8,24 @@ const syncRole = async (
 	roleResolvable: RoleResolvable
 ): Promise<[(RoleDocument & { _id: any }) | null, Role | null, Guild]> => {
 	const [role, guild] = await parseRole(guildResolvable, roleResolvable);
-	//TODO: do not create the role for bots
 	if (role) {
+		const members = Array.from(role.members.values());
 		let _role = await RoleModel.findOne({ guildId: guild.id, roleId: role.id }).exec();
 		if (!_role) {
-			_role = await RoleModel.create({
-				guildId: guild.id,
-				roleId: role.id
-			});
+			if (!(members[0] && members[0].user.bot)) {
+				_role = await RoleModel.create({
+					guildId: guild.id,
+					roleId: role.id
+				});
+			}
 		}
-		_role.name = role.name;
-		_role.members = Array.from(role.members.keys());
-		_role = await _role.save();
-		return [_role, role, guild];
+
+		if (_role) {
+			_role.members = Array.from(role.members.keys());
+			_role.name = role.name;
+			_role = await _role.save();
+			return [_role, role, guild];
+		}
 	}
 	return [null, role, guild];
 };

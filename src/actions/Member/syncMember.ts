@@ -10,7 +10,7 @@ const syncMember = async (
 ): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
 
-	if (member) {
+	if (member && !member.user.bot) {
 		let _member = await MemberModel.findOne({ guildId: guild.id, userId: member.user.id }).exec();
 		if (!_member) {
 			_member = await MemberModel.create({
