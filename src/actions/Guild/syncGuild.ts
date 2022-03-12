@@ -1,4 +1,5 @@
-import type { Guild, GuildMember, NonThreadGuildBasedChannel, Role, Snowflake } from 'discord.js';
+import { syncChannelThreads } from './../Thread/syncThread';
+import type { Guild, GuildMember, GuildTextBasedChannel, NonThreadGuildBasedChannel, Role, Snowflake, ThreadChannel } from 'discord.js';
 import GuildModel, { GuildDocument } from '../../schemas/Guild';
 import { syncChannels } from '../Channel/syncChannel';
 import { syncMembers } from '../Member/syncMember';
@@ -7,6 +8,7 @@ import parseGuild from './parseGuild';
 import type { ChannelDocument } from '../../schemas/Channel';
 import type { RoleDocument } from '../../schemas/Role';
 import type { MemberDocument } from '../../schemas/Member';
+import type { ThreadDocument } from '../../schemas/Thread';
 
 const syncGuild = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
 	const guild = await parseGuild(guildResolvable);
@@ -29,16 +31,17 @@ const syncGuild = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDoc
 export type GuildDocuments = [
 	Array<ChannelDocument & { _id: any }> | null,
 	Array<RoleDocument & { _id: any }> | null,
-	Array<MemberDocument & { _id: any }> | null
+	Array<MemberDocument & { _id: any }> | null,
+	Array<ThreadDocument & { _id: any }> | null
 ];
 
-export type GuildEntities = [NonThreadGuildBasedChannel[] | null, Role[] | null, GuildMember[] | null];
+export type GuildEntities = [NonThreadGuildBasedChannel[] | null, Role[] | null, GuildMember[] | null, ThreadChannel[] | null];
 
 export const syncGuildEntities = async (
 	guildResolvable: Snowflake | Guild
 ): Promise<[(GuildDocument & { _id: any }) | null, GuildDocuments, Guild, GuildEntities]> => {
-	const documents: GuildDocuments = [null, null, null];
-	const entities: GuildEntities = [null, null, null];
+	const documents: GuildDocuments = [null, null, null, null];
+	const entities: GuildEntities = [null, null, null, null];
 	const [_guild, guild] = await syncGuild(guildResolvable);
 	if (guild) {
 		const [_channels, channels] = await syncChannels(guild, guild.channels.cache.values());
@@ -52,6 +55,16 @@ export const syncGuildEntities = async (
 			const [_members, members] = await syncMembers(guild, fetchedMembers);
 			documents[2] = _members;
 			entities[2] = members;
+		}
+
+		if (channels) {
+			channels.forEach(async (channel) => {
+				if (['GUILD_NEWS', 'GUILD_TEXT'].includes(channel.type)) {
+					const [_threads, threads] = await syncChannelThreads(guild, channel as Exclude<GuildTextBasedChannel, ThreadChannel>);
+					documents[3] = _threads;
+					entities[3] = threads;
+				}
+			});
 		}
 	}
 	return [_guild, documents, guild, entities];

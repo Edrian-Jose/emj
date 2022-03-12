@@ -3,7 +3,7 @@ import parseGuild from '../Guild/parseGuild';
 
 const parseChannel = async (
 	guildResolvable: Snowflake | Guild,
-	channelResolvable: NonThreadGuildBasedChannel
+	channelResolvable: NonThreadGuildBasedChannel | string
 ): Promise<[NonThreadGuildBasedChannel | null, Guild]> => {
 	const guild = await parseGuild(guildResolvable);
 	let channel: NonThreadGuildBasedChannel | null;
