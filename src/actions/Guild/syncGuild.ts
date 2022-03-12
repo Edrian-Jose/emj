@@ -1,5 +1,6 @@
+import { syncEmojis } from './../Emoji/syncEmoji';
 import { syncChannelThreads } from './../Thread/syncThread';
-import type { Guild, GuildMember, GuildTextBasedChannel, NonThreadGuildBasedChannel, Role, Snowflake, ThreadChannel } from 'discord.js';
+import type { Guild, GuildEmoji, GuildMember, GuildTextBasedChannel, NonThreadGuildBasedChannel, Role, Snowflake, ThreadChannel } from 'discord.js';
 import GuildModel, { GuildDocument } from '../../schemas/Guild';
 import { syncChannels } from '../Channel/syncChannel';
 import { syncMembers } from '../Member/syncMember';
@@ -9,6 +10,7 @@ import type { ChannelDocument } from '../../schemas/Channel';
 import type { RoleDocument } from '../../schemas/Role';
 import type { MemberDocument } from '../../schemas/Member';
 import type { ThreadDocument } from '../../schemas/Thread';
+import type { EmojiDocument } from '../../schemas/Emoji';
 
 const syncGuild = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
 	const guild = await parseGuild(guildResolvable);
@@ -32,24 +34,28 @@ export type GuildDocuments = [
 	Array<ChannelDocument & { _id: any }> | null,
 	Array<RoleDocument & { _id: any }> | null,
 	Array<MemberDocument & { _id: any }> | null,
-	Array<ThreadDocument & { _id: any }> | null
+	Array<ThreadDocument & { _id: any }> | null,
+	Array<EmojiDocument & { _id: any }> | null
 ];
 
-export type GuildEntities = [NonThreadGuildBasedChannel[] | null, Role[] | null, GuildMember[] | null, ThreadChannel[] | null];
+export type GuildEntities = [NonThreadGuildBasedChannel[] | null, Role[] | null, GuildMember[] | null, ThreadChannel[] | null, GuildEmoji[] | null];
 
 export const syncGuildEntities = async (
 	guildResolvable: Snowflake | Guild
 ): Promise<[(GuildDocument & { _id: any }) | null, GuildDocuments, Guild, GuildEntities]> => {
-	const documents: GuildDocuments = [null, null, null, null];
-	const entities: GuildEntities = [null, null, null, null];
+	const documents: GuildDocuments = [null, null, null, null, null];
+	const entities: GuildEntities = [null, null, null, null, null];
 	const [_guild, guild] = await syncGuild(guildResolvable);
 	if (guild) {
 		const [_channels, channels] = await syncChannels(guild, guild.channels.cache.values());
 		const [_roles, roles] = await syncRoles(guild, guild.roles.cache.values());
+		const [_emojis, emojis] = await syncEmojis(guild, guild.emojis.cache.values());
 		documents[0] = _channels;
 		documents[1] = _roles;
+		documents[4] = _emojis;
 		entities[0] = channels;
 		entities[1] = roles;
+		entities[4] = emojis;
 		if (roles) {
 			const fetchedMembers = (await guild.members.list({ limit: 1000 })).values();
 			const [_members, members] = await syncMembers(guild, fetchedMembers);
