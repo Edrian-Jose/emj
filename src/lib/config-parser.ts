@@ -1,4 +1,9 @@
 export const config = {
+	BOT: {
+		GUILD: process.env.GUILD,
+		CLIENT_ID: process.env.CLIENT_ID ?? '',
+		TOKEN: process.env.DISCORD_TOKEN ?? ''
+	},
 	REDIS: {
 		HOST: process.env.REDIS_HOST,
 		PASS: process.env.REDIS_PASS,
