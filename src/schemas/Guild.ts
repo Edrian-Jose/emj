@@ -11,6 +11,8 @@ interface Guild {
 	};
 	channels: {
 		admission: Snowflake;
+		inquiries: Snowflake;
+		applications: Snowflake;
 	};
 }
 
@@ -39,7 +41,9 @@ const GuildSchema = new Schema<GuildDocument>({
 		}
 	},
 	channels: {
-		admission: String
+		admission: String,
+		inquiries: String,
+		applications: String
 	}
 });
 
