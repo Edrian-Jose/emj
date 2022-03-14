@@ -9,6 +9,9 @@ interface Guild {
 		channel: string;
 		nickname: string;
 	};
+	channels: {
+		admission: Snowflake;
+	};
 }
 
 interface GuildBaseDocument extends Guild, Document {
@@ -34,6 +37,9 @@ const GuildSchema = new Schema<GuildDocument>({
 			default: '・',
 			required: true
 		}
+	},
+	channels: {
+		admission: String
 	}
 });
 
