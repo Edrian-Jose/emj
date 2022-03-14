@@ -4,20 +4,35 @@ import RoleModel from '../../schemas/Role';
 import parseGuild from '../Guild/parseGuild';
 import parseMember from './parseMember';
 
-const syncMember = async (
+
+export const getMemberDocument = async (
 	guildResolvable: Snowflake | Guild,
 	memberResolvable: GuildMemberResolvable
 ): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+	let _member: (MemberDocument & { _id: any }) | null = null;
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
 
 	if (member && !member.user.bot) {
-		let _member = await MemberModel.findOne({ guildId: guild.id, userId: member.user.id }).exec();
+		_member = await MemberModel.findOne({ guildId: guild.id, userId: member.user.id }).exec();
 		if (!_member) {
 			_member = await MemberModel.create({
 				guildId: guild.id,
 				userId: member.user.id
 			});
+			_member = await _member.save();
 		}
+	}
+
+	return [_member, member];
+};
+
+const syncMember = async (
+	guildResolvable: Snowflake | Guild,
+	memberResolvable: GuildMemberResolvable
+): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+	const [_member, member] = await getMemberDocument(guildResolvable, memberResolvable);
+
+	if (_member && member && !member.user.bot) {
 		if (member.nickname) {
 			_member.nickname = member.nickname;
 		}
@@ -26,9 +41,8 @@ const syncMember = async (
 		const _roleIds = await RoleModel.find({ $or: [{ roleId: { $in: roles } }, { members: { $all: [member.id] } }] }, '_id').exec();
 		_member.roles = _roleIds;
 		await _member.save();
-		return [_member, member];
 	}
-	return [null, member];
+	return [_member, member];
 };
 
 export const syncMembers = async (

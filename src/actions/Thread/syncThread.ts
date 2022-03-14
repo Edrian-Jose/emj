@@ -3,14 +3,15 @@ import parseThread from './parseThread';
 import ThreadModel, { ThreadDocument } from '../../schemas/Thread';
 import parseChannel from '../Channel/parseChannel';
 
-const syncThread = async (
+export const getThreadDocument = async (
 	guildResolvable: Snowflake | Guild,
 	channelResolvable: Snowflake | Exclude<GuildTextBasedChannel, ThreadChannel>,
 	threadResolvable: ThreadChannelResolvable
 ): Promise<[(ThreadDocument & { _id: any }) | null, ThreadChannel | null, Exclude<GuildTextBasedChannel, ThreadChannel> | null, Guild | null]> => {
+	let _thread: (ThreadDocument & { _id: any }) | null = null;
 	const [thread, channel, guild] = await parseThread(guildResolvable, channelResolvable, threadResolvable);
 	if (thread && channel) {
-		let _thread = await ThreadModel.findOne({ parentId: channel.id, threadId: thread.id }).exec();
+		_thread = await ThreadModel.findOne({ parentId: channel.id, threadId: thread.id }).exec();
 		if (!_thread) {
 			_thread = await ThreadModel.create({
 				parentId: channel.id,
@@ -19,10 +20,17 @@ const syncThread = async (
 		}
 
 		_thread = await _thread.save();
-		return [_thread, thread, channel, guild];
 	}
+	return [_thread, thread, channel, guild];
+};
 
-	return [null, thread, channel, guild];
+const syncThread = async (
+	guildResolvable: Snowflake | Guild,
+	channelResolvable: Snowflake | Exclude<GuildTextBasedChannel, ThreadChannel>,
+	threadResolvable: ThreadChannelResolvable
+): Promise<[(ThreadDocument & { _id: any }) | null, ThreadChannel | null, Exclude<GuildTextBasedChannel, ThreadChannel> | null, Guild | null]> => {
+	let [_thread, thread, channel, guild] = await getThreadDocument(guildResolvable, channelResolvable, threadResolvable);
+	return [_thread, thread, channel, guild];
 };
 
 export const syncChannelThreads = async (

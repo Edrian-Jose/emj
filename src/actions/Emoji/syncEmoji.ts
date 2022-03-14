@@ -4,20 +4,34 @@ import EmojiModel from '../../schemas/Emoji';
 import parseGuild from '../Guild/parseGuild';
 import parseEmoji from './parseEmoji';
 
-const syncEmoji = async (
+export const getEmojiDocument = async (
 	guildResolvable: Snowflake | Guild,
 	emojiResolvable: EmojiResolvable
 ): Promise<[(EmojiDocument & { _id: any }) | null, GuildEmoji | null, Guild]> => {
 	const [emoji, guild] = await parseEmoji(guildResolvable, emojiResolvable);
+
 	if (emoji) {
-		const roles = Array.from(emoji.roles.cache.keys());
 		let _emoji = await EmojiModel.findOne({ guildId: guild.id, emojiId: emoji.id }).exec();
 		if (!_emoji) {
 			_emoji = await EmojiModel.create({
 				guildId: guild.id,
 				emojiId: emoji.id
 			});
+			_emoji = await _emoji.save();
 		}
+		return [_emoji, emoji, guild];
+	}
+
+	return [null, null, guild];
+};
+
+const syncEmoji = async (
+	guildResolvable: Snowflake | Guild,
+	emojiResolvable: EmojiResolvable
+): Promise<[(EmojiDocument & { _id: any }) | null, GuildEmoji | null, Guild]> => {
+	let [_emoji, emoji, guild] = await getEmojiDocument(guildResolvable, emojiResolvable);
+	if (emoji && _emoji) {
+		const roles = Array.from(emoji.roles.cache.keys());
 
 		if (emoji.name) {
 			_emoji.name = emoji.name;
@@ -26,9 +40,8 @@ const syncEmoji = async (
 		_emoji.url = emoji.url;
 		_emoji.roles = roles;
 		await _emoji.save();
-		return [_emoji, emoji, guild];
 	}
-	return [null, emoji, guild];
+	return [_emoji, emoji, guild];
 };
 
 export const syncEmojis = async (

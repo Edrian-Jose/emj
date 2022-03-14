@@ -12,22 +12,32 @@ import type { MemberDocument } from '../../schemas/Member';
 import type { ThreadDocument } from '../../schemas/Thread';
 import type { EmojiDocument } from '../../schemas/Emoji';
 
-const syncGuild = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
+export const getGuildDocument = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
+	let _guild: (GuildDocument & { _id: any }) | null = null;
 	const guild = await parseGuild(guildResolvable);
 	if (guild) {
-		let _guild = await GuildModel.findOne({ guildId: guild.id }).exec();
+		_guild = await GuildModel.findOne({ guildId: guild.id }).exec();
 		if (!_guild) {
 			_guild = await GuildModel.create({
 				guildId: guild.id
 			});
+			_guild = await _guild.save();
 		}
+	}
+
+	return [_guild, guild];
+};
+
+const syncGuild = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
+	let [_guild, guild] = await getGuildDocument(guildResolvable);
+	if (guild && _guild) {
 		_guild.name = guild.name;
 		_guild.iconURL = guild.iconURL() as string;
 		_guild = await _guild.save();
 		return [_guild, guild];
 	}
 
-	return [null, guild];
+	return [_guild, guild];
 };
 
 export type GuildDocuments = [
