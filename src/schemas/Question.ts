@@ -2,15 +2,26 @@ import { Schema, model, Document } from 'mongoose';
 
 export type QuestionType = 'NUMBER' | 'DATE' | 'DATETIME' | 'TEXT' | 'SELECT' | 'BOOLEAN' | 'OPTION';
 
-interface Question {
+interface _Question {
+	creatorId: string;
 	type: QuestionType;
 	value: string;
 	placeholder?: string;
 	required?: boolean;
-	default: string;
+	default?: string;
+	options: [
+		{
+			label: string;
+			identifier: string;
+		}
+	];
 }
 
-interface QuestionBaseDocument extends Question, Document {
+export interface Question extends _Question {
+	//
+}
+
+interface QuestionBaseDocument extends _Question, Document {
 	//add instance methods here
 }
 
@@ -19,6 +30,7 @@ export interface QuestionDocument extends QuestionBaseDocument {
 }
 
 const QuestionSchema = new Schema<QuestionDocument>({
+	creatorId: String,
 	type: {
 		type: String,
 		enum: ['NUMBER', 'DATE', 'DATETIME', 'TEXT', 'SELECT', 'BOOLEAN', 'OPTION'],
@@ -28,9 +40,15 @@ const QuestionSchema = new Schema<QuestionDocument>({
 	value: String,
 	placeholder: String,
 	required: Boolean,
-	default: String
+	default: String,
+	options: [
+		{
+			label: String,
+			identifier: String
+		}
+	]
 });
 
-const QuestionModel = model<QuestionDocument>('Form', QuestionSchema);
+const QuestionModel = model<QuestionDocument>('Question', QuestionSchema);
 
 export default QuestionModel;

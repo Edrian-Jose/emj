@@ -781,6 +781,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"discord-modals@npm:^1.2.9":
+  version: 1.2.9
+  resolution: "discord-modals@npm:1.2.9"
+  peerDependencies:
+    discord.js: "*"
+  checksum: 4be39bc57c116337466e9ca4fc4e1859a074b952d9e3ca277e1ee99bd6c40e97ac42edc2a60767b75838629cf7bc6c72dc879be310bee72229642faa761f3dd1
+  languageName: node
+  linkType: hard
+
 "discord.js@npm:^13.6.0":
   version: 13.6.0
   resolution: "discord.js@npm:13.6.0"
@@ -857,6 +866,7 @@ __metadata:
     "@types/ws": ^8.2.2
     bull: ^4.7.0
     discord-api-types: ^0.29.0
+    discord-modals: ^1.2.9
     discord.js: ^13.6.0
     dotenv-cra: ^3.0.2
     mongoose: ^6.2.5

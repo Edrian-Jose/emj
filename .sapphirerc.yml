@@ -5,6 +5,7 @@ locations:
   commands: commands
   listeners: listeners
   preconditions: preconditions
+  components: components
 customFileTemplates:
   enabled: true
   location: "src/templates"

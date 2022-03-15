@@ -1,0 +1,14 @@
+{
+  "category": "components"
+}
+---
+import { EmbedJsx } from '@sapphire/embed-jsx';
+
+export default function {{name}}() {
+	return (
+		<embed color="RED">
+			<title>{{name}}</title>
+			<description>Hello!</description>
+		</embed>
+	);
+}

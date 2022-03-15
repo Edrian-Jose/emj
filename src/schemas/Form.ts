@@ -1,4 +1,4 @@
-import type { QuestionDocument } from './Question';
+import type { QuestionDocument, Question } from './Question';
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
@@ -6,7 +6,8 @@ export type FormType = 'STEP' | 'SINGLE';
 export type FormDestinationType = 'USER_DM' | 'ROLE_DM' | 'GUILD_CHANNEL';
 export type FormResultDestinationType = 'DM_AUTHOR' | 'GUILD_CHANNEL';
 
-interface Form {
+interface _Form {
+	creatorId: Snowflake;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -30,7 +31,11 @@ interface Form {
 	verification: boolean;
 }
 
-interface FormBaseDocument extends Form, Document {
+export interface Form extends _Form {
+	questions: [Question];
+}
+
+interface FormBaseDocument extends _Form, Document {
 	//add instance methods here
 }
 
@@ -40,6 +45,7 @@ export interface FormDocument extends FormBaseDocument {
 }
 
 const FormSchema = new Schema<FormDocument>({
+	creatorId: String,
 	author: {
 		userId: String,
 		name: String,

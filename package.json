@@ -25,6 +25,7 @@
 		"@sapphire/utilities": "^3.2.1",
 		"bull": "^4.7.0",
 		"discord-api-types": "^0.29.0",
+		"discord-modals": "^1.2.9",
 		"discord.js": "^13.6.0",
 		"dotenv-cra": "^3.0.2",
 		"mongoose": "^6.2.5",
