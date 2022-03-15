@@ -30,6 +30,13 @@ export const execute = async (interaction: CommandInteraction) => {
 					ephemeral: true
 				});
 				break;
+			case 'forms':
+				var _guild = await registerUtilityChannel(interaction, 'forms');
+				await interaction.reply({
+					content: _guild ? `Forms channel set to ${channelMention(_guild.channels.forms)}` : `Forms channel failed to setup`,
+					ephemeral: true
+				});
+				break;
 			default:
 				// TODO: Perform general setup here.
 				await interaction.reply({

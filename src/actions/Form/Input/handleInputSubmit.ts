@@ -13,6 +13,7 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 
 	if (question) {
 		const prompt = new Prompt(formId, question);
+		//TODO: perform type checking here
 		const embed = message.embeds[0];
 		if (input) {
 			if (embed.fields[0] && embed.fields[0].name === 'Recorded Input') {

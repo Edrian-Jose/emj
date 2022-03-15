@@ -16,12 +16,12 @@ interface _Form {
 	title: string;
 	type: FormType;
 	description?: string;
-	requiredRoles: [Snowflake];
-	rewardRoles: [Snowflake];
+	requiredRoles: Snowflake[];
+	rewardRoles: Snowflake[];
 	destination: [
 		{
 			type: FormDestinationType;
-			ids: [Snowflake];
+			ids: Snowflake[];
 		}
 	];
 	resultDestination: {
@@ -32,7 +32,7 @@ interface _Form {
 }
 
 export interface Form extends _Form {
-	questions: [Question];
+	questions: [Question] | QuestionDocument['_id'][];
 }
 
 interface FormBaseDocument extends _Form, Document {
