@@ -15,13 +15,13 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 		const prompt = new Prompt(formId, question);
 		const embed = message.embeds[0];
 		if (input) {
-			if (embed.fields[0] && embed.fields[0].name === 'Input Value') {
+			if (embed.fields[0] && embed.fields[0].name === 'Recorded Input') {
 				embed.fields[0].value = input;
 			} else {
 				embed.addField('Input Value', input);
 			}
 		} else {
-			if (embed.fields[0] && embed.fields[0].name === 'Input Value') {
+			if (embed.fields[0] && embed.fields[0].name === 'Recorded Input') {
 				embed.fields.splice(0, 1);
 			}
 		}
