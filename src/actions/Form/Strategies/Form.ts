@@ -59,8 +59,8 @@ class Form implements IForm {
 		this.questions = document.questions;
 	}
 
-	public createEmbed() {
-		return form(this);
+	public createEmbed(dm = false) {
+		return form(this, dm);
 	}
 
 	public createComponents(type: 'LIST' | 'OWNER' | 'INSTANCE' = 'INSTANCE') {

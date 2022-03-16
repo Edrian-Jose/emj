@@ -3,13 +3,15 @@ import { EmbedJsx } from '@sapphire/embed-jsx';
 import type Form from '../../actions/Form/Strategies/Form';
 import { DefaultAvatar } from '../../lib/constants';
 
-export default function form(form: Form) {
+export default function form(form: Form, dm = false) {
 	const description = form.description ? <description>{`${form.description}`}</description> : null;
 	const questionNames = form.questions.map((question) => question.value);
-	const requiredRoles = form.requiredRoles.length ? (
-		<field name="Required Roles">{form.requiredRoles.map((role) => roleMention(role)).join(', ')}</field>
-	) : null;
-	const reward = form.rewardRoles.length ? <field name="Reward Roles">{form.rewardRoles.map((role) => roleMention(role)).join(', ')}</field> : null;
+	const requiredRoles =
+		form.requiredRoles.length && !dm ? (
+			<field name="Required Roles">{form.requiredRoles.map((role) => roleMention(role)).join(', ')}</field>
+		) : null;
+	const reward =
+		form.rewardRoles.length && !dm ? <field name="Reward Roles">{form.rewardRoles.map((role) => roleMention(role)).join(', ')}</field> : null;
 	const emoji = form.verification ? '🔸' : '🔹';
 	return (
 		<embed color="RED">

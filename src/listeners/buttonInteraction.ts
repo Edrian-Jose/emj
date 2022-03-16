@@ -7,7 +7,7 @@ import type { Interaction } from 'discord.js';
 	event: 'interactionCreate'
 })
 export class UserEvent extends Listener {
-	public run(interaction: Interaction) {
+	public async run(interaction: Interaction) {
 		if (!interaction.isButton()) return;
 
 		executeButton(interaction);

@@ -3,6 +3,8 @@ import type { APIMessage } from 'discord.js/node_modules/discord-api-types';
 import { webhooks } from '../../../lib/constants';
 import parseChannel from '../../Channel/parseChannel';
 import getChannelWebhook from '../../Channel/Webhook/getChannelWebhook';
+import parseMember from '../../Member/parseMember';
+import temporaryMessage from '../../Message/temporaryMessage';
 import Form from '../Strategies/Form';
 import type { FormDocument } from './../../../schemas/Form';
 const formActivate = async (_form: FormDocument, interaction: ButtonInteraction) => {
@@ -32,15 +34,27 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 				}
 			}
 		}
+		if (destination.type === 'USER_DM') {
+			const form = new Form(_form);
+			for (const id of destination.ids) {
+				const [member] = await parseMember(guild, id);
+				const message = await member.send({
+					embeds: [form.createEmbed(true)],
+					components: form.createComponents('INSTANCE')
+				});
+				messages.push(message);
+			}
+		}
 	}
-
-	if (messages.length) {
-		await interaction.reply({ content: `Your Form has been sent to ${messages.length} channel(s)`, ephemeral: true });
-	} else {
-		await interaction.reply({
-			content: `Form cannot activate. There might be a problem in our side or you just forgot to put the destination channels to your created form`,
-			ephemeral: true
-		});
+	if (interaction.channel) {
+		if (messages.length) {
+			temporaryMessage(interaction.channel, `Your Form has been sent to ${messages.length} channel(s)`);
+		} else {
+			temporaryMessage(
+				interaction.channel,
+				`Form cannot activate. There might be a problem in our side or you just forgot to put the destination channels to your created form`
+			);
+		}
 	}
 };
 
