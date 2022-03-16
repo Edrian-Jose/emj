@@ -24,6 +24,7 @@
 		"@sapphire/type": "^2.1.2",
 		"@sapphire/utilities": "^3.2.1",
 		"bull": "^4.7.0",
+		"clipboardy": "^3.0.0",
 		"discord-api-types": "^0.29.0",
 		"discord-modals": "^1.2.9",
 		"discord.js": "^13.6.0",

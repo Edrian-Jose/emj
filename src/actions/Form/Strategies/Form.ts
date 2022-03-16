@@ -7,6 +7,7 @@ import form from '../../../components/embeds/form';
 class Form implements IForm {
 	_id: string;
 	creatorId: Snowflake;
+	guildId: Snowflake;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -27,12 +28,21 @@ class Form implements IForm {
 		type: FormResultDestinationType;
 		id: Snowflake;
 	};
+	instances: [
+		{
+			type: FormDestinationType;
+			channelId: Snowflake;
+			messageId: Snowflake;
+		}
+	];
 	verification: boolean;
+
 	questions: QuestionDocument[];
 
 	public constructor(document: FormDocument) {
 		this._id = document._id;
 		this.creatorId = document.creatorId;
+		this.guildId = document.guildId;
 		this.author = document.author;
 		this.title = document.title;
 		this.type = document.type;
@@ -41,6 +51,7 @@ class Form implements IForm {
 		this.rewardRoles = document.rewardRoles;
 		this.destination = document.destination;
 		this.resultDestination = document.resultDestination;
+		this.instances = document.instances;
 		this.verification = document.verification;
 		this.questions = document.questions;
 	}
@@ -51,6 +62,7 @@ class Form implements IForm {
 
 	public createComponents(type: 'LIST' | 'OWNER' | 'INSTANCE' = 'INSTANCE') {
 		const actionRow = new MessageActionRow();
+		const activateButton = new MessageButton().setLabel('Activate').setCustomId(`___form-activate-${this._id}`).setStyle('PRIMARY');
 		const createEntryButton = new MessageButton().setLabel('Create Entry').setCustomId(`___form-create-${this._id}`).setStyle('PRIMARY');
 		const deleteButton = new MessageButton().setLabel('Delete').setCustomId(`___form-delete-${this._id}`).setStyle('DANGER');
 		const filloutButton = new MessageButton().setLabel('Fill out').setCustomId(`___form-start-${this._id}`).setStyle('PRIMARY');
@@ -59,6 +71,7 @@ class Form implements IForm {
 				actionRow.addComponents(createEntryButton);
 				break;
 			case 'OWNER':
+				actionRow.addComponents(activateButton);
 				actionRow.addComponents(deleteButton);
 				break;
 			default:

@@ -1,4 +1,5 @@
 {
+	
 	"extends": "@sapphire/ts-config",
 	"compilerOptions": {
 		"rootDir": "src",

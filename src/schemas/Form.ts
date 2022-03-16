@@ -8,6 +8,7 @@ export type FormResultDestinationType = 'DM_AUTHOR' | 'GUILD_CHANNEL';
 
 interface _Form {
 	creatorId: Snowflake;
+	guildId: Snowflake;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -28,6 +29,13 @@ interface _Form {
 		type: FormResultDestinationType;
 		id: Snowflake;
 	};
+	instances: [
+		{
+			type: FormDestinationType;
+			channelId: Snowflake;
+			messageId: Snowflake;
+		}
+	];
 	verification: boolean;
 }
 
@@ -46,6 +54,7 @@ export interface FormDocument extends FormBaseDocument {
 
 const FormSchema = new Schema<FormDocument>({
 	creatorId: String,
+	guildId: String,
 	author: {
 		userId: String,
 		name: String,
@@ -79,7 +88,19 @@ const FormSchema = new Schema<FormDocument>({
 		},
 		id: String
 	},
+
 	verification: Boolean,
+	instances: [
+		{
+			type: {
+				type: String,
+				enum: ['USER_DM', 'ROLE_DM', 'GUILD_CHANNEL'],
+				required: true
+			},
+			channelId: String,
+			messageId: String
+		}
+	],
 	questions: [
 		{
 			type: Schema.Types.ObjectId,

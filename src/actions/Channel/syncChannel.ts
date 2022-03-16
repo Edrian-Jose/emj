@@ -9,7 +9,7 @@ import { container } from '@sapphire/framework';
 
 export const getChannelDocument = async (
 	guildResolvable: Snowflake | Guild,
-	channelResolvable: NonThreadGuildBasedChannel
+	channelResolvable: Snowflake | NonThreadGuildBasedChannel
 ): Promise<[(ChannelDocument & { _id: any }) | null, NonThreadGuildBasedChannel | null, Guild]> => {
 	let _channel: (ChannelDocument & { _id: any }) | null = null;
 	const [channel, guild] = await parseChannel(guildResolvable, channelResolvable);
