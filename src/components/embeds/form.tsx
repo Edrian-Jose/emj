@@ -18,6 +18,7 @@ export default function form(form: Form) {
 			<field name="What are asked?">{questionNames.join(', ')}</field>
 			{requiredRoles}
 			{reward}
+			<field name="Creator ID">{`${form.creatorId}`}</field>
 			<footer iconURL={DefaultAvatar}>{`...${String(form._id).substring(12, 23)}`}</footer>
 			<timestamp>{Date.now()}</timestamp>
 		</embed>

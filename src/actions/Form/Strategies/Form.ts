@@ -4,6 +4,9 @@ import { MessageActionRow, MessageButton, Snowflake } from 'discord.js';
 import type { Form as IForm, FormType, FormDestinationType, FormResultDestinationType } from '../../../schemas/Form';
 import form from '../../../components/embeds/form';
 
+
+export type FormSubActions = 'activate' | 'create' | 'delete' | 'start';
+
 class Form implements IForm {
 	_id: string;
 	creatorId: Snowflake;
