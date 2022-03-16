@@ -10,3 +10,16 @@ export const avatar = {
 	admissionSecretary:
 		'https://cdn.discordapp.com/attachments/949328501490745414/953485377354727435/secretary-woman-business-working-avatar-glasses-512.png'
 };
+
+export const webhooks = {
+	random: [
+		{
+			name: 'Adam',
+			avatar: 'https://cdn.discordapp.com/attachments/950426634484342875/953525405934055444/man2.png'
+		},
+		{
+			name: 'Mary',
+			avatar: 'https://cdn.discordapp.com/attachments/950426634484342875/953525440822251520/girl6.png'
+		}
+	]
+};
