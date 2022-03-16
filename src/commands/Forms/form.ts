@@ -4,9 +4,11 @@ import { fetch, FetchResultTypes } from '@sapphire/fetch';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
 import parseChannel from '../../actions/Channel/parseChannel';
+import getChannelWebhook from '../../actions/Channel/Webhook/getChannelWebhook';
 import registerForm from '../../actions/Form/registerForm';
 import Form from '../../actions/Form/Strategies/Form';
 import temporaryReply from '../../actions/Message/temporaryReply';
+import { avatar } from '../../lib/constants';
 import type { Form as IForm } from '../../schemas/Form';
 import GuildModel from '../../schemas/Guild';
 
@@ -18,6 +20,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		const { attachments, member, guild } = message;
 		const location = attachments.first()?.url as string;
 		const formFile: IForm = await fetch<Form>(location, FetchResultTypes.JSON);
+		await message.channel.sendTyping();
 		if (member) {
 			let _form = await registerForm(formFile, member.user);
 			_form = await _form.populate('questions');
@@ -27,8 +30,15 @@ export class UserCommand extends SubCommandPluginCommand {
 				const _guild = await GuildModel.findOne({ guildId: guild.id });
 				if (_guild) {
 					const [channel] = await parseChannel(guild, _guild.channels.forms);
+
 					if (channel?.isText()) {
-						await channel.send({ embeds: [form.createEmbed()], components: form.createComponents('LIST') });
+						const webhook = await getChannelWebhook(channel, true);
+						await webhook?.send({
+							username: 'Admission Secretary',
+							avatarURL: avatar.admissionSecretary,
+							embeds: [form.createEmbed()],
+							components: form.createComponents('LIST')
+						});
 					}
 				}
 			}

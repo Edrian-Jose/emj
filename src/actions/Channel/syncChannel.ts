@@ -38,7 +38,7 @@ const syncChannel = async (
 			const webhooks = await (channel as BaseGuildTextChannel).fetchWebhooks();
 			webhooks.each((webhook) => {
 				if (webhook.owner?.bot && webhook.owner.id === container.client.user?.id) {
-					_channel!.webhookId = webhook.owner.id;
+					_channel!.webhookId = webhook.id;
 				}
 			});
 		}
