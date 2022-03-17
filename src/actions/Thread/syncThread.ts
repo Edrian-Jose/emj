@@ -40,7 +40,7 @@ const syncThread = async (
 	} else if (_thread && thread) {
 		_thread.membersId = Array.from(thread.members.cache.keys());
 	}
-	_thread = await _thread?.save();
+	_thread = (await _thread?.save()) ?? null;
 	return [_thread, thread, channel, guild];
 };
 
