@@ -1,11 +1,11 @@
-import { syncGuildEntities } from './../actions/Guild/syncGuild';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
-import type { Guild } from 'discord.js';
+import type { Role } from 'discord.js';
+import syncRole from '../actions/Role/syncRole';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
-	public async run(guild: Guild) {
-		await syncGuildEntities(guild);
+	public async run(role: Role) {
+		await syncRole(role.guild, role);
 	}
 }
