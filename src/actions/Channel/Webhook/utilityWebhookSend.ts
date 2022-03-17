@@ -21,6 +21,10 @@ const utilityWebhookSend = async (
 		if (channel?.isText()) {
 			let [thread] = await getPersonalThread(member, guild, channel, threadName);
 			if (thread) {
+				thread.setArchived(false);
+				if (!(await thread.members.fetch(member))) {
+					thread.members.add(member);
+				}
 				thread = await thread.setName(threadName);
 				options.threadId = thread.id;
 			}

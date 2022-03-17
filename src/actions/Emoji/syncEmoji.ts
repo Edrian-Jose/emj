@@ -9,9 +9,9 @@ export const getEmojiDocument = async (
 	emojiResolvable: EmojiResolvable
 ): Promise<[(EmojiDocument & { _id: any }) | null, GuildEmoji | null, Guild]> => {
 	const [emoji, guild] = await parseEmoji(guildResolvable, emojiResolvable);
-
+	const id = typeof emojiResolvable === 'string' ? emojiResolvable : emojiResolvable.id;
+	let _emoji = await EmojiModel.findOne({ guildId: guild.id, emojiId: id }).exec();
 	if (emoji) {
-		let _emoji = await EmojiModel.findOne({ guildId: guild.id, emojiId: emoji.id }).exec();
 		if (!_emoji) {
 			_emoji = await EmojiModel.create({
 				guildId: guild.id,
@@ -20,6 +20,8 @@ export const getEmojiDocument = async (
 			_emoji = await _emoji.save();
 		}
 		return [_emoji, emoji, guild];
+	} else if (_emoji) {
+		_emoji = await _emoji.delete();
 	}
 
 	return [null, null, guild];
@@ -46,19 +48,24 @@ const syncEmoji = async (
 
 export const syncEmojis = async (
 	guildResolvable: Snowflake | Guild,
-	emojis: IterableIterator<GuildEmoji>
+	emojis?: IterableIterator<GuildEmoji>
 ): Promise<[Array<EmojiDocument & { _id: any }>, GuildEmoji[]]> => {
 	const _emojis: Array<EmojiDocument & { _id: any }> = [];
 	const parsedEmojis: GuildEmoji[] = [];
 	const guild = await parseGuild(guildResolvable);
-	for (const emoji of emojis) {
-		const [_emoji, parsedEmoji] = await syncEmoji(guild, emoji);
-		if (_emoji) {
-			_emojis.push(_emoji);
+	if (guild && emojis) {
+		for (const emoji of emojis) {
+			const [_emoji, parsedEmoji] = await syncEmoji(guild, emoji);
+			if (_emoji) {
+				_emojis.push(_emoji);
+			}
+			if (parsedEmoji) {
+				parsedEmojis.push(parsedEmoji);
+			}
 		}
-		if (parsedEmoji) {
-			parsedEmojis.push(parsedEmoji);
-		}
+	} else {
+		const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+		await EmojiModel.deleteMany({ guildId: id }).exec();
 	}
 	return [_emojis, parsedEmojis];
 };

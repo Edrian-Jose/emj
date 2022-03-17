@@ -23,7 +23,7 @@ export interface FormEntryDocument extends FormEntryBaseDocument {
 	answers: [
 		{
 			question: QuestionDocument['_id'];
-			answer: string;
+			answer?: string;
 		}
 	];
 }

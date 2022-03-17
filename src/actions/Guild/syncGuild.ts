@@ -15,14 +15,17 @@ import type { EmojiDocument } from '../../schemas/Emoji';
 export const getGuildDocument = async (guildResolvable: Snowflake | Guild): Promise<[(GuildDocument & { _id: any }) | null, Guild]> => {
 	let _guild: (GuildDocument & { _id: any }) | null = null;
 	const guild = await parseGuild(guildResolvable);
+	const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+	_guild = await GuildModel.findOne({ guildId: id }).exec();
 	if (guild) {
-		_guild = await GuildModel.findOne({ guildId: guild.id }).exec();
 		if (!_guild) {
 			_guild = await GuildModel.create({
 				guildId: guild.id
 			});
 			_guild = await _guild.save();
 		}
+	} else if (_guild) {
+		_guild = await _guild.delete();
 	}
 
 	return [_guild, guild];
@@ -82,6 +85,7 @@ export const syncGuildEntities = async (
 				}
 			});
 		}
+	} else {
 	}
 	return [_guild, documents, guild, entities];
 };

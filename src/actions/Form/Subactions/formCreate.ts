@@ -3,10 +3,17 @@ import { ButtonInteraction, GuildMember, Message } from 'discord.js';
 import type { FormDocument } from '../../../schemas/Form';
 import FormEntryModel from '../../../schemas/FormEntry';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
+import formCancel from '../../FormEntry/Subactions/formCancel';
 const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
 	const { channel, user, guild, member } = interaction;
 	if (user && channel) {
-		let _formEntry = await FormEntryModel.create({
+		let _formEntry = await FormEntryModel.findOne({ ownerId: user.id, form: _form._id });
+
+		if (_formEntry) {
+			await formCancel(_formEntry, interaction);
+		}
+
+		_formEntry = await FormEntryModel.create({
 			ownerId: user.id,
 			form: _form._id,
 			location: {
@@ -14,6 +21,7 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				channelId: channel.id
 			}
 		});
+
 		if (guild && member instanceof GuildMember) {
 			const navigatorMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2' })) as Message;
 			const questionMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2' })) as Message;

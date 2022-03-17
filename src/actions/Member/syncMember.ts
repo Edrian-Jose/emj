@@ -11,9 +11,9 @@ export const getMemberDocument = async (
 ): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
 	let _member: (MemberDocument & { _id: any }) | null = null;
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
-
+	const id = typeof memberResolvable === 'string' ? memberResolvable : memberResolvable.id;
+	_member = await MemberModel.findOne({ guildId: guild.id, userId: id }).exec();
 	if (member && !member.user.bot) {
-		_member = await MemberModel.findOne({ guildId: guild.id, userId: member.user.id }).exec();
 		if (!_member) {
 			_member = await MemberModel.create({
 				guildId: guild.id,
@@ -22,7 +22,6 @@ export const getMemberDocument = async (
 			_member = await _member.save();
 		}
 	}
-
 	return [_member, member];
 };
 
@@ -47,18 +46,20 @@ const syncMember = async (
 
 export const syncMembers = async (
 	guildResolvable: Snowflake | Guild,
-	members: IterableIterator<GuildMember>
+	members?: IterableIterator<GuildMember>
 ): Promise<[Array<MemberDocument & { _id: any }>, GuildMember[]]> => {
 	const _members: Array<MemberDocument & { _id: any }> = [];
 	const parsedMembers: GuildMember[] = [];
 	const guild = await parseGuild(guildResolvable);
-	for (const member of members) {
-		const [_member, parsedMember] = await syncMember(guild, member);
-		if (_member) {
-			_members.push(_member);
-		}
-		if (parsedMember) {
-			parsedMembers.push(parsedMember);
+	if (guild && members) {
+		for (const member of members) {
+			const [_member, parsedMember] = await syncMember(guild, member);
+			if (_member) {
+				_members.push(_member);
+			}
+			if (parsedMember) {
+				parsedMembers.push(parsedMember);
+			}
 		}
 	}
 	return [_members, parsedMembers];

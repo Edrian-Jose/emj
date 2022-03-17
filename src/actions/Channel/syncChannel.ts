@@ -13,9 +13,9 @@ export const getChannelDocument = async (
 ): Promise<[(ChannelDocument & { _id: any }) | null, NonThreadGuildBasedChannel | null, Guild]> => {
 	let _channel: (ChannelDocument & { _id: any }) | null = null;
 	const [channel, guild] = await parseChannel(guildResolvable, channelResolvable);
-
+	const id = typeof channelResolvable === 'string' ? channelResolvable : channelResolvable.id;
+	_channel = await ChannelModel.findOne({ channelId: id, guildId: guild.id }).exec();
 	if (channel) {
-		_channel = await ChannelModel.findOne({ channelId: channel.id, guildId: guild.id }).exec();
 		if (!_channel) {
 			_channel = await ChannelModel.create({
 				guildId: guild.id,
@@ -23,7 +23,10 @@ export const getChannelDocument = async (
 			});
 			_channel = await _channel.save();
 		}
+	} else if (_channel) {
+		_channel = await _channel.delete();
 	}
+
 	return [_channel, channel, guild];
 };
 
@@ -52,22 +55,28 @@ const syncChannel = async (
 
 export const syncChannels = async (
 	guildResolvable: Snowflake | Guild,
-	channels: IterableIterator<GuildBasedChannel>
+	channels?: IterableIterator<GuildBasedChannel>
 ): Promise<[Array<ChannelDocument & { _id: any }>, NonThreadGuildBasedChannel[]]> => {
 	const _channels: Array<ChannelDocument & { _id: any }> = [];
 	const parsedChannels: NonThreadGuildBasedChannel[] = [];
 	const guild = await parseGuild(guildResolvable);
-	for (const channel of channels) {
-		if (!isThread(channel.type)) {
-			const [_channel, parsedChannel] = await syncChannel(guild, channel as NonThreadGuildBasedChannel);
-			if (_channel) {
-				_channels.push(_channel);
-			}
-			if (parsedChannel) {
-				parsedChannels.push(parsedChannel);
+	if (guild && channels) {
+		for (const channel of channels) {
+			if (!isThread(channel.type)) {
+				const [_channel, parsedChannel] = await syncChannel(guild, channel as NonThreadGuildBasedChannel);
+				if (_channel) {
+					_channels.push(_channel);
+				}
+				if (parsedChannel) {
+					parsedChannels.push(parsedChannel);
+				}
 			}
 		}
+	} else {
+		const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+		await ChannelModel.deleteMany({ guildId: id }).exec();
 	}
+
 	return [_channels, parsedChannels];
 };
 
