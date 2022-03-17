@@ -70,4 +70,15 @@ export const syncEmojis = async (
 	return [_emojis, parsedEmojis];
 };
 
+
+export const cleanEmojis = async (guildResolvable: Snowflake | Guild) => {
+	const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+	const _emojis = await EmojiModel.find({ guildId: id }).exec();
+	_emojis.forEach(async (_emoji) => {
+		const [emoji] = await parseEmoji(guildResolvable, _emoji.emojiId);
+		if (!emoji) {
+			await _emoji.delete();
+		}
+	});
+};
 export default syncEmoji;

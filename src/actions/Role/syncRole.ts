@@ -75,4 +75,18 @@ export const syncRoles = async (
 	return [_roles, parsedRoles];
 };
 
+
+
+export const cleanRoles = async (guildResolvable: Snowflake | Guild) => {
+	const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+	const _roles = await RoleModel.find({ guildId: id }).exec();
+	_roles.forEach(async (_role) => {
+		const [role] = await parseRole(guildResolvable, _role.roleId);
+		if (!role) {
+			await _role.delete();
+		}
+	});
+};
+
+
 export default syncRole;

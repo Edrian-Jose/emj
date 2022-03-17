@@ -1,4 +1,6 @@
-import { syncEmojis } from './../Emoji/syncEmoji';
+import { cleanRoles } from './../Role/syncRole';
+import { cleanChannels } from './../Channel/syncChannel';
+import { cleanEmojis, syncEmojis } from './../Emoji/syncEmoji';
 import { syncChannelThreads } from './../Thread/syncThread';
 import type { Guild, GuildEmoji, GuildMember, GuildTextBasedChannel, NonThreadGuildBasedChannel, Role, Snowflake, ThreadChannel } from 'discord.js';
 import GuildModel, { GuildDocument } from '../../schemas/Guild';
@@ -85,9 +87,14 @@ export const syncGuildEntities = async (
 				}
 			});
 		}
-	} else {
 	}
 	return [_guild, documents, guild, entities];
 };
 
+export const cleanGuildEntities = async (guild: Snowflake | Guild) => {
+	//
+	await cleanChannels(guild);
+	await cleanRoles(guild);
+	await cleanEmojis(guild);
+};
 export default syncGuild;

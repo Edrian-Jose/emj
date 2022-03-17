@@ -6,6 +6,7 @@ import isThread from '../Thread/isThread';
 import parseChannel from './parseChannel';
 import type { BaseGuildTextChannel } from 'discord.js';
 import { container } from '@sapphire/framework';
+import { cleanThreads } from '../Thread/syncThread';
 
 export const getChannelDocument = async (
 	guildResolvable: Snowflake | Guild,
@@ -78,6 +79,18 @@ export const syncChannels = async (
 	}
 
 	return [_channels, parsedChannels];
+};
+
+export const cleanChannels = async (guildResolvable: Snowflake | Guild) => {
+	const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+	const _channels = await ChannelModel.find({ guildId: id }).exec();
+	_channels.forEach(async (_channel) => {
+		const [channel] = await parseChannel(guildResolvable, _channel.channelId);
+		if (!channel) {
+			await _channel.delete();
+		}
+		await cleanThreads(guildResolvable, _channel.channelId);
+	});
 };
 
 export default syncChannel;

@@ -68,4 +68,19 @@ export const syncChannelThreads = async (
 	return [_threads, parsedThreads];
 };
 
+
+
+export const cleanThreads = async (
+	guildResolvable: Snowflake | Guild,
+	channelResolvable: Snowflake | Exclude<GuildTextBasedChannel, ThreadChannel>
+) => {
+	const id = typeof channelResolvable === 'string' ? channelResolvable : channelResolvable.id;
+	const _threads = await ThreadModel.find({ parentId: id }).exec();
+	_threads.forEach(async (_thread) => {
+		const [thread] = await parseThread(guildResolvable, channelResolvable, _thread.emojiId);
+		if (!thread) {
+			await _thread.delete();
+		}
+	});
+};
 export default syncThread;

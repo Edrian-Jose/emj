@@ -2,8 +2,8 @@ import type { Guild, GuildMember, GuildMemberResolvable, Snowflake } from 'disco
 import MemberModel, { MemberDocument } from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 import parseGuild from '../Guild/parseGuild';
+import { getGuildDocument } from '../Guild/syncGuild';
 import parseMember from './parseMember';
-
 
 export const getMemberDocument = async (
 	guildResolvable: Snowflake | Guild,
@@ -63,6 +63,15 @@ export const syncMembers = async (
 		}
 	}
 	return [_members, parsedMembers];
+};
+
+export const cleanMembers = async (guildResolvable: Snowflake | Guild) => {
+	const id = typeof guildResolvable === 'string' ? guildResolvable : guildResolvable.id;
+	const _guild = await getGuildDocument(guildResolvable);
+
+	if (!_guild) {
+		await MemberModel.deleteMany({ guildId: id });
+	}
 };
 
 export default syncMember;
