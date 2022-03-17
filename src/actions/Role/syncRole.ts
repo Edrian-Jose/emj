@@ -27,7 +27,7 @@ export const getRoleDocument = async (
 	} else if (_role) {
 		const members = await MemberModel.find({ roles: { $all: [_role?._id] }, guildId: guild.id });
 		members.forEach(async (member) => {
-			const roles = member.roles?.filter((roleID) => roleID !== _role._id);
+			const roles = member.roles?.filter((roleID) => roleID !== _role?._id);
 			member.roles = roles;
 			await member.save();
 		});
