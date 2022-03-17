@@ -8,7 +8,6 @@ export type FormResultDestinationType = 'DM_AUTHOR' | 'GUILD_CHANNEL';
 
 interface _Form {
 	creatorId: Snowflake;
-	guildId: Snowflake;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -37,6 +36,7 @@ interface _Form {
 		}
 	];
 	verification: boolean;
+	command?: string;
 }
 
 export interface Form extends _Form {
@@ -54,7 +54,6 @@ export interface FormDocument extends FormBaseDocument {
 
 const FormSchema = new Schema<FormDocument>({
 	creatorId: String,
-	guildId: String,
 	author: {
 		userId: String,
 		name: String,
@@ -90,6 +89,7 @@ const FormSchema = new Schema<FormDocument>({
 	},
 
 	verification: Boolean,
+	command: String,
 	instances: [
 		{
 			type: {

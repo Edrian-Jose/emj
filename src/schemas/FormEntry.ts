@@ -3,7 +3,14 @@ import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
 interface FormEntry {
+	location: {
+		type: 'DM' | 'GUILD_TEXT';
+		guildId?: Snowflake;
+		channelId: Snowflake;
+	};
 	ownerId: Snowflake;
+	navigatorId: Snowflake;
+	questionId: Snowflake;
 }
 
 interface FormEntryBaseDocument extends FormEntry, Document {
@@ -22,6 +29,13 @@ export interface FormEntryDocument extends FormEntryBaseDocument {
 }
 
 const FormEntrySchema = new Schema<FormEntryDocument>({
+	location: {
+		type: {
+			type: String
+		},
+		guildId: String,
+		channelId: String
+	},
 	ownerId: String,
 	answers: [
 		{

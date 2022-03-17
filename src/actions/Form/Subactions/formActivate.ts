@@ -19,8 +19,8 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 	const userIds: string[] = [];
 
 	for (const destination of _form.destination) {
+		const form = new Form(_form);
 		if (destination.type === 'GUILD_CHANNEL') {
-			const form = new Form(_form);
 			for (const id of destination.ids) {
 				const [channel] = await parseChannel(guild, id);
 				if (channel?.isText()) {
@@ -47,8 +47,8 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 		}
 		if (destination.type === 'ROLE_DM') {
 			for (const id of destination.ids) {
-				const _role = await RoleModel.findOne({ roleId: id });
-				const members = await MemberModel.find({ roles: { $all: [_role?._id] } });
+				const _role = await RoleModel.findOne({ roleId: id, guildId: guild.id });
+				const members = await MemberModel.find({ roles: { $all: [_role?._id] }, guildId: guild.id });
 				members.forEach((member) => {
 					if (!userIds.includes(member.userId)) {
 						userIds.push(member.userId);
@@ -58,7 +58,6 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 		}
 
 		if (userIds.length) {
-			const form = new Form(_form);
 			for (const id of userIds) {
 				const [member] = await parseMember(guild, id);
 				const message = await member.send({

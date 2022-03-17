@@ -9,6 +9,7 @@ interface _Question {
 	placeholder?: string;
 	required?: boolean;
 	default?: string;
+	command?: string;
 	options: [
 		{
 			label: string;
@@ -40,6 +41,7 @@ const QuestionSchema = new Schema<QuestionDocument>({
 	value: String,
 	placeholder: String,
 	required: Boolean,
+	command: String,
 	default: String,
 	options: [
 		{

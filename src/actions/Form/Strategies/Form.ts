@@ -5,12 +5,11 @@ import type { Form as IForm, FormType, FormDestinationType, FormResultDestinatio
 import form from '../../../components/embeds/form';
 
 
-export type FormSubActions = 'activate' | 'create' | 'delete' | 'start';
+export type FormSubActions = 'activate' | 'create' | 'delete' | 'start' | 'cancel';
 
 class Form implements IForm {
 	_id: string;
 	creatorId: Snowflake;
-	guildId: Snowflake;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -45,7 +44,6 @@ class Form implements IForm {
 	public constructor(document: FormDocument) {
 		this._id = document._id;
 		this.creatorId = document.creatorId;
-		this.guildId = document.guildId;
 		this.author = document.author;
 		this.title = document.title;
 		this.type = document.type;
