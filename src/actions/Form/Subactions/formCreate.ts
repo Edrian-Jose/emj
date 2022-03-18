@@ -21,28 +21,32 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				channelId: channel.id
 			}
 		});
-
-		if (guild && member instanceof GuildMember) {
-			const navigatorMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2' })) as Message;
-			const questionMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2' })) as Message;
-			_formEntry.location.guildId = guild.id;
-			if (navigatorMessage) {
+		if (_form.type === 'STEP') {
+			if (guild && member instanceof GuildMember) {
+				const navigatorMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2' })) as Message;
+				_formEntry.location.guildId = guild.id;
+				if (navigatorMessage) {
+					_formEntry.navigatorId = navigatorMessage.id;
+					await interaction.followUp({
+						content: `Form already sent to your admission thread, ${channelMention(navigatorMessage.channelId)}`,
+						ephemeral: true
+					});
+					const questionMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2.1' })) as Message;
+					if (questionMessage) {
+						_formEntry.questionId = questionMessage.id;
+					}
+				}
+			} else {
+				const navigatorMessage = await user.send({ content: 'navigator' });
+				const questionMessage = await user.send({ content: 'question' });
 				_formEntry.navigatorId = navigatorMessage.id;
-				await interaction.followUp({
-					content: `Form already sent to your admission thread, ${channelMention(navigatorMessage.channelId)}`,
-					ephemeral: true
-				});
-			}
-			if (questionMessage) {
 				_formEntry.questionId = questionMessage.id;
+				await interaction.followUp({ content: `Form already sent`, ephemeral: true });
 			}
 		} else {
-			const navigatorMessage = await user.send({ content: 'navigator' });
-			const questionMessage = await user.send({ content: 'question' });
-			_formEntry.navigatorId = navigatorMessage.id;
-			_formEntry.questionId = questionMessage.id;
-			await interaction.followUp({ content: `Form already sent`, ephemeral: true });
+			await interaction.followUp({ content: `SINGLE FORMS NOT IMPLEMENTED YET`, ephemeral: true });
 		}
+		
 		await _formEntry.save();
 	} else {
 		await interaction.followUp({ content: `Internal problem. Try again or contact the support.`, ephemeral: true });

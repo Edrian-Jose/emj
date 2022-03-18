@@ -12,9 +12,10 @@ const parseThread = async (
 	if (typeof threadResolvable === 'string') {
 		if (channel) {
 			if (channel instanceof TextChannel || channel instanceof NewsChannel) {
-				const channels = await guild.channels.fetch();
-				if (channels.has(threadResolvable)) {
-					thread = channels[threadResolvable];
+				try {
+					thread = await channel.threads.fetch(threadResolvable);
+				} catch (error) {
+					console.log(`${threadResolvable} can't found`);
 				}
 			}
 		} else {

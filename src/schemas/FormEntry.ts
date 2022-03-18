@@ -36,6 +36,8 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 		guildId: String,
 		channelId: String
 	},
+	navigatorId: String,
+	questionId: String,
 	ownerId: String,
 	answers: [
 		{
