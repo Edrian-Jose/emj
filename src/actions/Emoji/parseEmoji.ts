@@ -6,15 +6,13 @@ const parseEmoji = async (guildResolvable: Snowflake | Guild, emojiResolvable: E
 	let emoji: GuildEmoji | null = null;
 
 	if (typeof emojiResolvable === 'string') {
-		const emojis = await guild.emojis.fetch();
-		if (emojis.has(emojiResolvable)) {
-			emoji = emojis[emojiResolvable];
-		}
+		try {
+			emoji = await guild.emojis.fetch(emojiResolvable);
+		} catch (error) {}
 	} else if (emojiResolvable instanceof ReactionEmoji) {
-		const emojis = await guild.emojis.fetch();
-		if (emojis.has((emojiResolvable as ReactionEmoji).id as string)) {
-			emoji = emojis[(emojiResolvable as ReactionEmoji).id as string];
-		}
+		try {
+			emoji = await guild.emojis.fetch((emojiResolvable as ReactionEmoji).id as string);
+		} catch (error) {}
 	} else {
 		emoji = emojiResolvable;
 	}
