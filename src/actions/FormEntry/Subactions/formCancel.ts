@@ -13,7 +13,7 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 			await thread?.messages.delete(_form.questionId);
 		}
 	} else {
-		const channel = user.dmChannel;
+		const channel = await user.createDM();
 		if (channel) {
 			await channel.messages.delete(_form.navigatorId);
 			await channel.messages.delete(_form.questionId);

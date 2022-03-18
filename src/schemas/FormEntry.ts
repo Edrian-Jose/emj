@@ -1,8 +1,9 @@
 import type { QuestionDocument } from './Question';
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
+import type { FormDocument } from './Form';
 
-interface FormEntry {
+interface _FormEntry {
 	location: {
 		type: 'DM' | 'GUILD_TEXT';
 		guildId?: Snowflake;
@@ -11,18 +12,26 @@ interface FormEntry {
 	ownerId: Snowflake;
 	navigatorId: Snowflake;
 	questionId: Snowflake;
+	index: number;
+}
+export interface FormEntry extends _FormEntry {
+	form: FormDocument | FormEntryDocument['_id'];
+	answers: {
+		question: QuestionDocument | QuestionDocument['_id'];
+		answer?: string;
+	}[];
 }
 
-interface FormEntryBaseDocument extends FormEntry, Document {
+interface FormEntryBaseDocument extends _FormEntry, Document {
 	//add instance methods here
 }
 
 export interface FormEntryDocument extends FormEntryBaseDocument {
 	//store ref typings here
-	form: FormEntryDocument['_id'];
+	form: FormDocument | FormEntryDocument['_id'];
 	answers: [
 		{
-			question: QuestionDocument['_id'];
+			question: QuestionDocument | QuestionDocument['_id'];
 			answer?: string;
 		}
 	];
@@ -39,6 +48,11 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 	navigatorId: String,
 	questionId: String,
 	ownerId: String,
+	index: {
+		type: Number,
+		required: true,
+		default: 0
+	},
 	answers: [
 		{
 			question: {

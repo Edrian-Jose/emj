@@ -1,4 +1,4 @@
-import type { QuestionDocument, Question } from './Question';
+import type { QuestionDocument } from './Question';
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
@@ -40,7 +40,7 @@ interface _Form {
 }
 
 export interface Form extends _Form {
-	questions: [Question] | QuestionDocument['_id'][];
+	questions: [QuestionDocument] | QuestionDocument['_id'][];
 }
 
 interface FormBaseDocument extends _Form, Document {
