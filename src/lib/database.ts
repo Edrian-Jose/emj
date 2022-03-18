@@ -11,7 +11,7 @@ export default {
 	},
 	async connect() {
 		await mongoose.connect(this.uri, this.dbOptions).then(() => {
-			container.client.logger.info('Connected to the database');
+			container.client.logger.info(`Connected to ${mongoose.connection.host}`);
 		});
 		return mongoose;
 	}

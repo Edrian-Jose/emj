@@ -3,12 +3,18 @@ import parseGuild from '../Guild/parseGuild';
 
 const parseEmoji = async (guildResolvable: Snowflake | Guild, emojiResolvable: EmojiResolvable): Promise<[GuildEmoji | null, Guild]> => {
 	const guild = await parseGuild(guildResolvable);
-	let emoji: GuildEmoji | null;
+	let emoji: GuildEmoji | null = null;
 
 	if (typeof emojiResolvable === 'string') {
-		emoji = await guild.emojis.fetch(emojiResolvable);
+		const emojis = await guild.emojis.fetch();
+		if (emojis.has(emojiResolvable)) {
+			emoji = emojis[emojiResolvable];
+		}
 	} else if (emojiResolvable instanceof ReactionEmoji) {
-		emoji = await guild.emojis.fetch((emojiResolvable as ReactionEmoji).id as string);
+		const emojis = await guild.emojis.fetch();
+		if (emojis.has((emojiResolvable as ReactionEmoji).id as string)) {
+			emoji = emojis[(emojiResolvable as ReactionEmoji).id as string];
+		}
 	} else {
 		emoji = emojiResolvable;
 	}

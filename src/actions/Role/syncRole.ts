@@ -13,10 +13,8 @@ export const getRoleDocument = async (
 	const id = typeof roleResolvable === 'string' ? roleResolvable : roleResolvable.id;
 	_role = await RoleModel.findOne({ guildId: guild.id, roleId: id }).exec();
 	if (role) {
-		const members = Array.from(role.members.values());
-
 		if (!_role) {
-			if (!(members[0] && members[0].user.bot)) {
+			if (!role.members.first()?.user.bot) {
 				_role = await RoleModel.create({
 					guildId: guild.id,
 					roleId: role.id
@@ -42,11 +40,9 @@ const syncRole = async (
 ): Promise<[(RoleDocument & { _id: any }) | null, Role | null, Guild]> => {
 	let [_role, role, guild] = await getRoleDocument(guildResolvable, roleResolvable);
 	if (role && _role) {
-		if (_role) {
-			_role.members = Array.from(role.members.keys());
-			_role.name = role.name;
-			_role = await _role.save();
-		}
+		_role.members = Array.from(role.members.keys());
+		_role.name = role.name;
+		_role = await _role.save();
 	}
 	return [_role, role, guild];
 };

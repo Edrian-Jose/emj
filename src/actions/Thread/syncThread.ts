@@ -77,7 +77,7 @@ export const cleanThreads = async (
 	const id = typeof channelResolvable === 'string' ? channelResolvable : channelResolvable.id;
 	const _threads = await ThreadModel.find({ parentId: id }).exec();
 	_threads.forEach(async (_thread) => {
-		const [thread] = await parseThread(guildResolvable, channelResolvable, _thread.emojiId);
+		const [thread] = await parseThread(guildResolvable, id, _thread.threadId);
 		if (!thread) {
 			await _thread.delete();
 		}

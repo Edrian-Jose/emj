@@ -1,4 +1,4 @@
-import { syncGuildEntities, cleanGuildEntities } from './../actions/Guild/syncGuild';
+import { cleanGuildEntities, syncGuildEntities } from './../actions/Guild/syncGuild';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
 import type { Guild } from 'discord.js';

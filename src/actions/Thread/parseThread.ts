@@ -1,4 +1,4 @@
-import type { Guild, GuildTextBasedChannel, Snowflake, ThreadChannel, ThreadChannelResolvable } from 'discord.js';
+import { Guild, GuildTextBasedChannel, NewsChannel, Snowflake, TextChannel, ThreadChannel, ThreadChannelResolvable } from 'discord.js';
 import parseChannel from '../Channel/parseChannel';
 
 const parseThread = async (
@@ -11,7 +11,12 @@ const parseThread = async (
 
 	if (typeof threadResolvable === 'string') {
 		if (channel) {
-			thread = await (channel as Exclude<GuildTextBasedChannel, ThreadChannel>).threads.fetch(threadResolvable);
+			if (channel instanceof TextChannel || channel instanceof NewsChannel) {
+				const channels = await guild.channels.fetch();
+				if (channels.has(threadResolvable)) {
+					thread = channels[threadResolvable];
+				}
+			}
 		} else {
 			thread = null;
 		}

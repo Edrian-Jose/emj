@@ -14,7 +14,8 @@ export const config = {
 		APP_ID: process.env.DISCORD_APP_ID ?? '',
 		SECRET: process.env.DISCORD_CLIENT_SECRET ?? ''
 	},
+
 	MONGO_DB: {
-		URI: process.env.MONGO_URI ?? ''
+		URI: process.env.NODE_ENV === 'development' ? 'mongodb://127.0.0.1:27017/emjay-bot' : process.env.MONGO_URI ?? ''
 	}
 };

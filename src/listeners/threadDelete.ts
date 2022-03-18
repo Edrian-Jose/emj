@@ -7,7 +7,7 @@ import syncThread from '../actions/Thread/syncThread';
 export class UserEvent extends Listener {
 	public async run(thread: ThreadChannel) {
 		if (thread.parent) {
-			await syncThread(thread.guild, thread.parent, thread);
+			await syncThread(thread.guild, thread.parent, thread.id);
 		}
 	}
 }

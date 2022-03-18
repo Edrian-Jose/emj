@@ -7,6 +7,7 @@ import parseChannel from './parseChannel';
 import type { BaseGuildTextChannel } from 'discord.js';
 import { container } from '@sapphire/framework';
 import { cleanThreads } from '../Thread/syncThread';
+// import { cleanThreads } from '../Thread/syncThread';
 
 export const getChannelDocument = async (
 	guildResolvable: Snowflake | Guild,
@@ -33,7 +34,7 @@ export const getChannelDocument = async (
 
 const syncChannel = async (
 	guildResolvable: Snowflake | Guild,
-	channelResolvable: NonThreadGuildBasedChannel
+	channelResolvable: NonThreadGuildBasedChannel | Snowflake
 ): Promise<[(ChannelDocument & { _id: any }) | null, NonThreadGuildBasedChannel | null, Guild]> => {
 	let [_channel, channel, guild] = await getChannelDocument(guildResolvable, channelResolvable);
 
@@ -89,6 +90,7 @@ export const cleanChannels = async (guildResolvable: Snowflake | Guild) => {
 		if (!channel) {
 			await _channel.delete();
 		}
+		
 		await cleanThreads(guildResolvable, _channel.channelId);
 	});
 };

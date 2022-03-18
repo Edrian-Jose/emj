@@ -6,6 +6,8 @@ import syncRole from '../actions/Role/syncRole';
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
 	public async run(role: Role) {
-		await syncRole(role.guild, role);
+		if (!role.members.first()?.user.bot) {
+			await syncRole(role.guild, role);
+		}
 	}
 }

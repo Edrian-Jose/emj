@@ -6,6 +6,6 @@ import syncEmoji from '../actions/Emoji/syncEmoji';
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
 	public async run(emoji: GuildEmoji) {
-		await syncEmoji(emoji.guild, emoji);
+		await syncEmoji(emoji.guild, emoji.id);
 	}
 }
