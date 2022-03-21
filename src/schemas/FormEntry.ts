@@ -12,6 +12,10 @@ interface _FormEntry {
 	ownerId: Snowflake;
 	navigatorId: Snowflake;
 	index: number;
+	commands?: {
+		onSubmit?: string;
+		onCancel?: string;
+	};
 }
 export interface FormEntry extends _FormEntry {
 	form: FormDocument | FormDocument['_id'];
@@ -56,6 +60,10 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 	},
 	navigatorId: String,
 	ownerId: String,
+	commands: {
+		onSubmit: String,
+		onCancel: String
+	},
 	index: {
 		type: Number,
 		required: true,
