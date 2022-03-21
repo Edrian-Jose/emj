@@ -13,8 +13,16 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 	const input: string = interaction.getTextInputValue(`input`);
 	const question = await QuestionModel.findById(questionId);
 	const _formEntry = await FormEntryModel.getAll(formId);
-	const entry = new FormEntry(_formEntry);
 	await interaction.deferReply({ ephemeral: true });
+
+	if (!_formEntry || !_formEntry.form) {
+		await message.delete();
+		return await interaction.followUp({
+			content: ` You can't use the form. Looks like the form is deleted`,
+			ephemeral: true
+		});
+	}
+	const entry = new FormEntry(_formEntry);
 
 	if (question && _formEntry) {
 		//TODO: perform type checking here
