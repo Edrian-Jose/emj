@@ -19,8 +19,8 @@ class Prompt {
 		this.placeholder = question.placeholder;
 	}
 
-	public createEmbed(footerText?: string) {
-		return prompt(this, footerText);
+	public createEmbed(footerText?: string, value?: string) {
+		return prompt(this, footerText, value);
 	}
 
 	public createComponents(withValue = false) {

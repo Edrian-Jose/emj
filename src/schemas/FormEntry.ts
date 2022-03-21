@@ -1,6 +1,6 @@
 import type { QuestionDocument } from './Question';
 import type { Snowflake } from 'discord.js';
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 import type { FormDocument } from './Form';
 
 interface _FormEntry {
@@ -28,10 +28,20 @@ interface FormEntryBaseDocument extends _FormEntry, Document {
 
 export interface FormEntryDocument extends FormEntryBaseDocument {
 	//store ref typings here
-	form: FormDocument | FormDocument['_id'];
+	form: FormDocument['_id'];
 	answers: [
 		{
-			question: QuestionDocument | QuestionDocument['_id'];
+			question: QuestionDocument['_id'];
+			answer?: string;
+		}
+	];
+}
+export interface FormEntryPopulatedDocument extends FormEntryDocument {
+	//store ref typings here
+	form: FormDocument;
+	answers: [
+		{
+			question: QuestionDocument;
 			answer?: string;
 		}
 	];
@@ -68,6 +78,29 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 	}
 });
 
-const FormEntryModel = model<FormEntryDocument>('FormEntry', FormEntrySchema);
+export interface FormEntryModel extends Model<FormEntryDocument> {
+	getAll(id: string): Promise<FormEntryPopulatedDocument>;
+}
 
-export default FormEntryModel;
+FormEntrySchema.statics.getAll = async function (this: Model<FormEntryDocument>, id: string) {
+	return this.findById(id)
+		.populate([
+			{
+				path: 'answers',
+				populate: {
+					path: 'question',
+					model: 'Question'
+				}
+			},
+			{
+				path: 'form',
+				populate: {
+					path: 'questions',
+					model: 'Question'
+				}
+			}
+		])
+		.exec();
+};
+
+export default model<FormEntryDocument, FormEntryModel>('FormEntry', FormEntrySchema);
