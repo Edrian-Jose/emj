@@ -1,5 +1,5 @@
 const { Modal, TextInputComponent } = require('discord-modals');
-import { MessageActionRow, MessageButton } from 'discord.js';
+import { MessageButton } from 'discord.js';
 import prompt from '../../../components/embeds/prompt';
 import type { QuestionDocument, QuestionType } from './../../../schemas/Question';
 class Prompt {
@@ -23,14 +23,16 @@ class Prompt {
 		return prompt(this, footerText, value);
 	}
 
-	public createComponents(withValue = false) {
-		const actionRow = new MessageActionRow().addComponents(
+	public createQuestionComponents(withValue = false) {
+		const actions: MessageButton[] = [];
+		actions.push(
 			new MessageButton()
 				.setLabel(withValue ? 'Change Input' : 'Set Input')
 				.setCustomId(`___input-${this._id}-${this.formId}`)
 				.setStyle('SECONDARY')
 		);
-		return [actionRow];
+
+		return actions;
 	}
 
 	public createInputModal() {

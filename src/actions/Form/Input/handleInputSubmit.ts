@@ -1,10 +1,11 @@
 import type { QuestionDocument } from './../../../schemas/Question';
 import { ButtonInteraction, GuildMember, Message, WebhookEditMessageOptions } from 'discord.js';
 import QuestionModel from '../../../schemas/Question';
-import Prompt from '../Strategies/Prompt';
 import type { FormEntryDocument } from '../../../schemas/FormEntry';
 import webhookEdit from '../../Channel/Webhook/webhookEdit';
 import FormEntryModel from '../../../schemas/FormEntry';
+import updateNavigator from '../../FormEntry/Navigator/updateNavigator';
+import FormEntry from '../../FormEntry/FormEntry';
 
 const handleInputSubmit = async (interaction: ButtonInteraction | any, questionId: QuestionDocument['_id'], formId: FormEntryDocument['_id']) => {
 	const message = interaction.message as Message;
@@ -12,10 +13,10 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 	const input: string = interaction.getTextInputValue(`input`);
 	const question = await QuestionModel.findById(questionId);
 	const _formEntry = await FormEntryModel.getAll(formId);
+	const entry = new FormEntry(_formEntry);
 	await interaction.deferReply({ ephemeral: true });
 
 	if (question && _formEntry) {
-		const prompt = new Prompt(formId, question);
 		//TODO: perform type checking here
 		const embed = message.embeds[0];
 		if (input) {
@@ -45,16 +46,16 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 		}
 		if (guild && member instanceof GuildMember) {
 			let c = channel.isThread() ? channel.parent : channel;
-			const options = { embeds: [embed], components: prompt.createComponents(Boolean(input)) } as WebhookEditMessageOptions;
+			const options = { embeds: [embed], components: entry.createComponents() } as WebhookEditMessageOptions;
 			if (channel.isThread()) {
 				options.threadId = channel.id;
 			}
 			await webhookEdit(c, message, options);
 		} else {
-			message.edit({ embeds: [embed], components: prompt.createComponents(Boolean(input)) });
+			message.edit({ embeds: [embed], components: entry.createComponents() });
 		}
 		await _formEntry.save();
-
+		await updateNavigator(interaction, formId);
 		return await interaction.followUp({
 			content: input ? `Input recorded` : 'Input cleared',
 			ephemeral: true

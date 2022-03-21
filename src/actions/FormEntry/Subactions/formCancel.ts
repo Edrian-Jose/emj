@@ -14,9 +14,6 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 				if (_form.navigatorId) {
 					await thread?.messages.delete(_form.navigatorId);
 				}
-				if (_form.questionId) {
-					await thread?.messages.delete(_form.questionId);
-				}
 			}
 			
 			
@@ -27,7 +24,6 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 		const channel = await user.createDM();
 		if (channel) {
 			await channel.messages.delete(_form.navigatorId);
-			await channel.messages.delete(_form.questionId);
 		}
 	}
 

@@ -46,9 +46,9 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 		if (_form.type === 'STEP') {
 			if (guild && member instanceof GuildMember) {
 				const navigatorMessage = (await utilityWebhookSend(guild, member, 'admission', {
-					embeds: [entry.createNavigatorEmbed()],
-					components: entry.createNavigatorComponents(),
-					username: 'Form Navigator'
+					embeds: [entry.createQuestionEmbed()],
+					components: entry.createComponents(),
+					username: `${entry.form.title}`
 				})) as Message;
 				_formEntry.location.guildId = guild.id;
 				if (navigatorMessage) {
@@ -57,20 +57,10 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 						content: `Form already sent to your admission thread, ${channelMention(navigatorMessage.channelId)}`,
 						ephemeral: true
 					});
-					const questionMessage = (await utilityWebhookSend(guild, member, 'admission', {
-						embeds: [entry.questions[0].createEmbed(`1 of ${entry.form.questions.length}`)],
-						components: entry.questions[0].createComponents(),
-						username: 'Form Question'
-					})) as Message;
-					if (questionMessage) {
-						_formEntry.questionId = questionMessage.id;
-					}
 				}
 			} else {
-				const navigatorMessage = await user.send({ embeds: [entry.createNavigatorEmbed()], components: entry.createNavigatorComponents() });
-				const questionMessage = await user.send({ content: 'question' });
+				const navigatorMessage = await user.send({ embeds: [entry.questions[0].createEmbed()], components: entry.createComponents() });
 				_formEntry.navigatorId = navigatorMessage.id;
-				_formEntry.questionId = questionMessage.id;
 				await interaction.followUp({ content: `Form already sent`, ephemeral: true });
 			}
 		} else {

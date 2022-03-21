@@ -11,7 +11,6 @@ interface _FormEntry {
 	};
 	ownerId: Snowflake;
 	navigatorId: Snowflake;
-	questionId: Snowflake;
 	index: number;
 }
 export interface FormEntry extends _FormEntry {
@@ -56,7 +55,6 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 		channelId: String
 	},
 	navigatorId: String,
-	questionId: String,
 	ownerId: String,
 	index: {
 		type: Number,

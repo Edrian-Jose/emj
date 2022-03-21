@@ -11,6 +11,7 @@ export default function prompt(prompt: Prompt, footerText?: string, value?: stri
 			{placeholder}
 			{valueField}
 			<footer>{`${required} | ${footerText ?? prompt._id}`}</footer>
+			<timestamp>{Date.now()}</timestamp>
 		</embed>
 	);
 }
