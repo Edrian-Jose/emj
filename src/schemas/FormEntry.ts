@@ -15,7 +15,7 @@ interface _FormEntry {
 	index: number;
 }
 export interface FormEntry extends _FormEntry {
-	form: FormDocument | FormEntryDocument['_id'];
+	form: FormDocument | FormDocument['_id'];
 	answers: {
 		question: QuestionDocument | QuestionDocument['_id'];
 		answer?: string;
@@ -28,7 +28,7 @@ interface FormEntryBaseDocument extends _FormEntry, Document {
 
 export interface FormEntryDocument extends FormEntryBaseDocument {
 	//store ref typings here
-	form: FormDocument | FormEntryDocument['_id'];
+	form: FormDocument | FormDocument['_id'];
 	answers: [
 		{
 			question: QuestionDocument | QuestionDocument['_id'];

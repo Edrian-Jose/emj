@@ -19,8 +19,8 @@ class Prompt {
 		this.placeholder = question.placeholder;
 	}
 
-	public createEmbed() {
-		return prompt(this);
+	public createEmbed(footerText?: string) {
+		return prompt(this, footerText);
 	}
 
 	public createComponents(withValue = false) {
@@ -30,13 +30,6 @@ class Prompt {
 				.setCustomId(`___input-${this._id}-${this.formId}`)
 				.setStyle('SECONDARY')
 		);
-		if (withValue) {
-			actionRow.addComponents(new MessageButton().setLabel('Next').setCustomId(`___form-next-${this.formId}`).setStyle('PRIMARY'));
-		} else if (!this.required) {
-			actionRow.addComponents(new MessageButton().setLabel('Skip').setCustomId(`___form-skip-${this.formId}`).setStyle('SECONDARY'));
-		}
-
-		actionRow.addComponents(new MessageButton().setLabel('Cancel').setCustomId(`___form-cancel-${this.formId}`).setStyle('DANGER'));
 		return [actionRow];
 	}
 

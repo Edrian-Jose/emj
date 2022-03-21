@@ -25,7 +25,22 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 			index: 0
 		});
 
-		_formEntry = await _formEntry.populate(['form', 'answers']);
+		_formEntry = await _formEntry.populate([
+			{
+				path: 'answers',
+				populate: {
+					path: 'questions',
+					model: 'Question'
+				}
+			},
+			{
+				path: 'form',
+				populate: {
+					path: 'questions',
+					model: 'Question'
+				}
+			}
+		]);
 
 		const entry = new FormEntry(_formEntry);
 		if (_form.type === 'STEP') {
@@ -42,7 +57,11 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 						content: `Form already sent to your admission thread, ${channelMention(navigatorMessage.channelId)}`,
 						ephemeral: true
 					});
-					const questionMessage = (await utilityWebhookSend(guild, member, 'admission', { content: 'navigator2.1' })) as Message;
+					const questionMessage = (await utilityWebhookSend(guild, member, 'admission', {
+						embeds: [entry.questions[0].createEmbed(`1 of ${entry.form.questions.length}`)],
+						components: entry.questions[0].createComponents(),
+						username: 'Form Question'
+					})) as Message;
 					if (questionMessage) {
 						_formEntry.questionId = questionMessage.id;
 					}

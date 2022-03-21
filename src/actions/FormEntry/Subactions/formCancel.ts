@@ -8,9 +8,20 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 	if (guild && member) {
 		const [_guild] = await getGuildDocument(guild);
 		if (_guild?.channels.admission) {
-			const [thread] = await getPersonalThread(member as GuildMember, guild, _guild.channels.admission);
-			await thread?.messages.delete(_form.navigatorId);
-			await thread?.messages.delete(_form.questionId);
+			let [thread] = await getPersonalThread(member as GuildMember, guild, _guild.channels.admission);
+			if (thread) {
+				thread = await thread.setArchived(false);
+				if (_form.navigatorId) {
+					await thread?.messages.delete(_form.navigatorId);
+				}
+				if (_form.questionId) {
+					await thread?.messages.delete(_form.questionId);
+				}
+			}
+			
+			
+			
+			
 		}
 	} else {
 		const channel = await user.createDM();

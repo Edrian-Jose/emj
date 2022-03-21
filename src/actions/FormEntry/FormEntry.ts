@@ -1,5 +1,6 @@
 import { MessageActionRow, MessageButton } from 'discord.js';
 import navigator from '../../components/embeds/navigator';
+import type { FormDocument } from '../../schemas/Form';
 import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/FormEntry';
 import Form from '../Form/Strategies/Form';
 import Prompt from '../Form/Strategies/Prompt';
@@ -12,6 +13,7 @@ class FormEntry implements IFormEntry {
 	ownerId: string;
 	navigatorId: string;
 	questionId: string;
+	questions: Prompt[];
 	answers: { question: Prompt; answer?: string | undefined }[];
 
 	public constructor(entry: FormEntryDocument) {
@@ -22,6 +24,7 @@ class FormEntry implements IFormEntry {
 		this.ownerId = entry.ownerId;
 		this.navigatorId = entry.navigatorId;
 		this.questionId = entry.questionId;
+		this.questions = (entry.form as FormDocument).questions.map((question) => new Prompt(entry._id, question));
 		this.answers = entry.answers.map((answer) => {
 			return {
 				question: new Prompt(entry._id, answer.question),
