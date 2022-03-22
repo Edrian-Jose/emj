@@ -8,9 +8,7 @@ import FormEntry from './FormEntry';
 import entrySkip from './Subactions/entrySkip';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
-	await interaction.deferReply({
-		ephemeral: true
-	});
+	await interaction.deferUpdate();
 	const _entry = await FormEntryModel.getAll(entryId);
 	const entry = new FormEntry(_entry);
 	if (_entry) {
