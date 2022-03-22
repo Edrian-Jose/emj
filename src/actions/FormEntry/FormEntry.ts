@@ -16,7 +16,7 @@ class FormEntry implements IFormEntry {
 	navigatorId: string;
 	questions: Prompt[];
 
-	answers: { question: Prompt; answer?: string | undefined }[];
+	answers: { question: any; answer?: { label: string; value: string }[] }[];
 
 	public constructor(entry: FormEntryDocument) {
 		this._document = entry;
@@ -43,7 +43,7 @@ class FormEntry implements IFormEntry {
 		return this.questions[this.index];
 	}
 	public createQuestionEmbed() {
-		let value = this.answers[this.index] ? this.answers[this.index].answer : undefined;
+		let value = this.answers[this.index] ? this.answers[this.index].answer?.map(answer => answer.label).join(', ') : undefined;
 		return this.questions[this.index].createEmbed(`${this.index + 1} of ${this.questions.length}`, value);
 	}
 
@@ -69,10 +69,22 @@ class FormEntry implements IFormEntry {
 	}
 
 	public createComponents() {
+		const currentType = this.getPrompt().type;
 		const actionRow = new MessageActionRow();
+		const actionRow2 = new MessageActionRow();
 		const hasValue = this.answers[this.index] && this.answers[this.index].answer ? true : false;
-		actionRow.addComponents(...this.questions[this.index].createQuestionComponents(hasValue), ...this.createNavigatorButtons());
-		return [actionRow];
+
+		switch (currentType) {
+			case 'SELECT':
+				const selectComponents = this.questions[this.index].createQuestionComponents(hasValue);
+				actionRow.addComponents(...selectComponents.splice(0, 1));
+				actionRow2.addComponents(...selectComponents, ...this.createNavigatorButtons());
+				return [actionRow, actionRow2];
+
+			default:
+				actionRow.addComponents(...this.questions[this.index].createQuestionComponents(hasValue), ...this.createNavigatorButtons());
+				return [actionRow];
+		}
 	}
 }
 

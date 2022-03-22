@@ -1,23 +1,32 @@
 const { Modal, TextInputComponent } = require('discord-modals');
-import { MessageButton } from 'discord.js';
+import { MessageButton, MessageSelectMenu } from 'discord.js';
 import prompt from '../../../components/embeds/prompt';
-import type { QuestionDocument, QuestionType } from './../../../schemas/Question';
-class Prompt {
+import type { Question, QuestionDocument, QuestionType } from './../../../schemas/Question';
+class Prompt implements Question {
 	readonly _id: string;
+	readonly creatorId: string;
 	readonly formId: string;
 	readonly type: QuestionType;
 	readonly required: boolean;
 	readonly question: string;
-	public value?: string;
+	readonly value: string;
+	readonly minSelected?: number;
+	readonly maxSelected?: number;
+	readonly options?: [{ label: string; value: string; description?: string }];
 	readonly placeholder?: string;
 
 	public constructor(formId: string, question: QuestionDocument) {
 		this.formId = formId;
 		this._id = question._id;
+		this.creatorId = question.creatorId;
 		this.type = question.type;
+		this.value = question.value;
 		this.required = question.required ?? false;
 		this.question = question.value;
 		this.placeholder = question.placeholder;
+		this.minSelected = question.minSelected;
+		this.maxSelected = question.maxSelected;
+		this.options = question.options;
 	}
 
 	public createEmbed(footerText?: string, value?: string) {
@@ -41,8 +50,30 @@ class Prompt {
 		return actions;
 	}
 
+	public createSelectComponent() {
+		const selectMenu = new MessageSelectMenu();
+		const skipButton = new MessageButton().setLabel('Skip').setCustomId(`___entry-skip-${this.formId}`).setStyle('SECONDARY');
+		selectMenu.setCustomId(`___select-${this._id}-${this.formId}`);
+		if (this.placeholder) {
+			selectMenu.setPlaceholder(this.placeholder);
+		}
+		if (this.minSelected) {
+			selectMenu.setMinValues(this.minSelected);
+		}
+		if (this.maxSelected) {
+			selectMenu.setMaxValues(this.maxSelected);
+		}
+		selectMenu.setOptions(...this.options);
+		return [selectMenu, skipButton];
+	}
+
 	public createQuestionComponents(withValue = false) {
-		return this.createInputComponents(withValue);
+		switch (this.type) {
+			case 'SELECT':
+				return this.createSelectComponent();
+			default:
+				return this.createInputComponents(withValue);
+		}
 	}
 
 	public createInputModal() {

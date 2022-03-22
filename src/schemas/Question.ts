@@ -10,10 +10,13 @@ interface _Question {
 	required?: boolean;
 	default?: string;
 	command?: string;
-	options: [
+	minSelected?: number;
+	maxSelected?: number;
+	options?: [
 		{
 			label: string;
-			identifier: string;
+			value: string;
+			description?: string;
 		}
 	];
 }
@@ -43,10 +46,13 @@ const QuestionSchema = new Schema<QuestionDocument>({
 	required: Boolean,
 	command: String,
 	default: String,
+	minSelected: Number,
+	maxSelected: Number,
 	options: [
 		{
 			label: String,
-			identifier: String
+			value: String,
+			description: String
 		}
 	]
 });

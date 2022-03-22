@@ -36,11 +36,19 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 
 			const index = _formEntry.answers.findIndex((answer) => answer.question._id == questionId);
 			if (index >= 0 && _formEntry.answers[index]) {
-				_formEntry.answers[index].answer = input;
+				_formEntry.answers[index].answer = [{
+					label: input,
+					value: input
+				}];
 			} else {
 				_formEntry.answers.push({
 					question,
-					answer: input
+					answer: [
+						{
+							label: input,
+							value: input
+						}
+					]
 				});
 			}
 		} else {

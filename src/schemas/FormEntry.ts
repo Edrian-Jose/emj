@@ -21,7 +21,10 @@ export interface FormEntry extends _FormEntry {
 	form: FormDocument | FormDocument['_id'];
 	answers: {
 		question: QuestionDocument | QuestionDocument['_id'];
-		answer?: string;
+		answer?: {
+			label: string;
+			value: string;
+		}[];
 	}[];
 }
 
@@ -35,7 +38,10 @@ export interface FormEntryDocument extends FormEntryBaseDocument {
 	answers: [
 		{
 			question: QuestionDocument['_id'];
-			answer?: string;
+			answer?: {
+				label: string;
+				value: string;
+			}[];
 		}
 	];
 }
@@ -45,7 +51,10 @@ export interface FormEntryPopulatedDocument extends FormEntryDocument {
 	answers: [
 		{
 			question: QuestionDocument;
-			answer?: string;
+			answer?: {
+				label: string;
+				value: string;
+			}[];
 		}
 	];
 }
@@ -71,7 +80,12 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 				type: Schema.Types.ObjectId,
 				ref: 'Question'
 			},
-			answer: String
+			answer: [
+				{
+					label: String,
+					value: String
+				}
+			]
 		}
 	],
 	form: {
