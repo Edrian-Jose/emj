@@ -6,6 +6,9 @@ import type { FormEntryDocument } from '../../schemas/FormEntry';
 import type { EntrySubActions } from './FormEntry';
 import FormEntry from './FormEntry';
 import entrySkip from './Subactions/entrySkip';
+import entryCancel from './Subactions/entryCancel';
+import entryBack from './Subactions/entryBack';
+import entryNext from './Subactions/entryNext';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
 	await interaction.deferUpdate();
@@ -16,9 +19,14 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 			case 'skip':
 				await entrySkip(entry, interaction);
 				break;
+			case 'back':
+				await entryBack(entry, interaction);
+				break;
+			case 'next':
+				await entryNext(entry, interaction);
+				break;
 			default:
-				//Cancel
-				await interaction.followUp({ content: `${entry._id}`, ephemeral: true });
+				await entryCancel(_entry);
 				break;
 		}
 	} else {

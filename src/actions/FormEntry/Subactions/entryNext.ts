@@ -4,11 +4,11 @@ import temporaryMessage from '../../Message/temporaryMessage';
 import type FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
 
-const entryBack = async (entry: FormEntry, interaction: ButtonInteraction) => {
+const entryNext = async (entry: FormEntry, interaction: ButtonInteraction) => {
 	const question = await QuestionModel.findById(entry.getPrompt()._id);
 
 	if (question) {
-		entry._document.index = entry.index - 1 >= 0 ? entry.index - 1 : 0;
+		entry._document.index = entry.index + 1 < entry.questions.length ? entry.index + 1 : entry.index;
 		const newEntry = await entry._document.save();
 		await updateNavigator(interaction, newEntry._id);
 	} else {
@@ -18,4 +18,4 @@ const entryBack = async (entry: FormEntry, interaction: ButtonInteraction) => {
 	}
 };
 
-export default entryBack;
+export default entryNext;
