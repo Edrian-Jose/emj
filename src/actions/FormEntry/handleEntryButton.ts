@@ -9,6 +9,7 @@ import entrySkip from './Subactions/entrySkip';
 import entryCancel from './Subactions/entryCancel';
 import entryBack from './Subactions/entryBack';
 import entryNext from './Subactions/entryNext';
+import entryClear from './Subactions/entryClear';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
 	await interaction.deferUpdate();
@@ -16,6 +17,9 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 	const entry = new FormEntry(_entry);
 	if (_entry) {
 		switch (type) {
+			case 'clear':
+				await entryClear(entry, interaction);
+				break;
 			case 'skip':
 				await entrySkip(entry, interaction);
 				break;
