@@ -10,6 +10,7 @@ import temporaryReply from '../../actions/Message/temporaryReply';
 import { avatar } from '../../lib/constants';
 import type { Form as IForm } from '../../schemas/Form';
 import GuildModel from '../../schemas/Guild';
+import QuestionModel, { Question } from '../../schemas/Question';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	subCommands: ['upload', 'activate']
@@ -22,6 +23,12 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Attach the .emjform or .json file that you want to upload`, true);
 		}
 		const formFile: IForm = await fetch<Form>(location, FetchResultTypes.JSON);
+		formFile.questions = formFile.questions.map(async (question: String | Question) => {
+			if (typeof question === 'string') {
+				return await QuestionModel.findById(question);
+			}
+			return question;
+		});
 
 		await message.channel.sendTyping();
 		if (member && guild) {

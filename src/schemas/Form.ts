@@ -40,7 +40,7 @@ interface _Form {
 }
 
 export interface Form extends _Form {
-	questions: [QuestionDocument] | QuestionDocument['_id'][];
+	questions: QuestionDocument[] | QuestionDocument['_id'][];
 }
 
 interface FormBaseDocument extends _Form, Document {
