@@ -26,6 +26,10 @@ class Form implements IForm {
 			ids: Snowflake[];
 		}
 	];
+	commands?: {
+		onSubmit?: string[];
+		onCancel?: string[];
+	};
 	resultDestination: {
 		type: FormResultDestinationType;
 		id: Snowflake;
@@ -55,6 +59,7 @@ class Form implements IForm {
 		this.instances = document.instances;
 		this.verification = document.verification;
 		this.questions = document.questions;
+		this.commands = document.commands;
 	}
 
 	public createEmbed(dm = false) {

@@ -1,9 +1,9 @@
-import { getGuildDocument } from './../../Guild/syncGuild';
+import { getGuildDocument } from '../../Guild/syncGuild';
 import type { ButtonInteraction, GuildMember } from 'discord.js';
 import type { FormEntryDocument } from '../../../schemas/FormEntry';
 import getPersonalThread from '../../Thread/getPersonalThread';
 
-const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteraction) => {
+const entryCancel = async (_form: FormEntryDocument, interaction: ButtonInteraction) => {
 	const { guild, member, user } = interaction;
 	if (guild && member) {
 		const [_guild] = await getGuildDocument(guild);
@@ -15,10 +15,6 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 					await thread?.messages.delete(_form.navigatorId);
 				}
 			}
-			
-			
-			
-			
 		}
 	} else {
 		const channel = await user.createDM();
@@ -30,4 +26,4 @@ const formCancel = async (_form: FormEntryDocument, interaction: ButtonInteracti
 	await _form.delete();
 };
 
-export default formCancel;
+export default entryCancel;

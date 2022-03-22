@@ -5,17 +5,21 @@ import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/F
 import Form from '../Form/Strategies/Form';
 import Prompt from '../Form/Strategies/Prompt';
 
+export type EntrySubActions = 'back' | 'next' | 'cancel' | 'submit' | 'skip' | 'clear';
 class FormEntry implements IFormEntry {
 	_id: string;
+	_document: FormEntryDocument;
 	index: number;
 	location: { type: 'DM' | 'GUILD_TEXT'; guildId?: string | undefined; channelId: string };
 	form: Form;
 	ownerId: string;
 	navigatorId: string;
 	questions: Prompt[];
+
 	answers: { question: Prompt; answer?: string | undefined }[];
 
 	public constructor(entry: FormEntryDocument) {
+		this._document = entry;
 		this._id = entry._id;
 		this.index = entry.index;
 		this.location = entry.location;
@@ -35,6 +39,9 @@ class FormEntry implements IFormEntry {
 		return navigator(this);
 	}
 
+	public getPrompt() {
+		return this.questions[this.index];
+	}
 	public createQuestionEmbed() {
 		let value = this.answers[this.index] ? this.answers[this.index].answer : undefined;
 		return this.questions[this.index].createEmbed(`${this.index + 1} of ${this.questions.length}`, value);
@@ -46,10 +53,11 @@ class FormEntry implements IFormEntry {
 		const nextButton = new MessageButton().setLabel('Next').setCustomId(`___entry-next-${this._id}`).setStyle('PRIMARY');
 		const cancelButton = new MessageButton().setLabel('Cancel').setCustomId(`___entry-cancel-${this._id}`).setStyle('DANGER');
 		const submitButton = new MessageButton().setLabel('Submit').setCustomId(`___entry-submit-${this._id}`).setStyle('SUCCESS');
+
 		if (this.index > 0) {
 			actions.push(backButton);
 		}
-		if (this.index < this.form.questions.length - 1) {
+		if (this.index < this.answers.length && this.answers[this.index] && this.answers[this.index].answer) {
 			actions.push(nextButton);
 		}
 		if (this.form.questions.length === this.answers.length) {

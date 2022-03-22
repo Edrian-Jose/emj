@@ -4,7 +4,7 @@ import type { FormDocument } from '../../../schemas/Form';
 import FormEntryModel from '../../../schemas/FormEntry';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
 import FormEntry from '../../FormEntry/FormEntry';
-import formCancel from '../../FormEntry/Subactions/formCancel';
+import entryCancel from '../../FormEntry/Subactions/entryCancel';
 const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
 	const { channel, user, guild, member, channelId } = interaction;
 
@@ -12,7 +12,7 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 		let _formEntry = await FormEntryModel.findOne({ ownerId: user.id, form: _form._id });
 
 		if (_formEntry) {
-			await formCancel(_formEntry, interaction);
+			await entryCancel(_formEntry, interaction);
 		}
 
 		_formEntry = await FormEntryModel.create({

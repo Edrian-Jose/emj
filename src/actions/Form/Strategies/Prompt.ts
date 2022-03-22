@@ -8,6 +8,7 @@ class Prompt {
 	readonly type: QuestionType;
 	readonly required: boolean;
 	readonly question: string;
+	public value?: string;
 	readonly placeholder?: string;
 
 	public constructor(formId: string, question: QuestionDocument) {
@@ -32,6 +33,11 @@ class Prompt {
 				.setStyle('SECONDARY')
 		);
 
+		if (!this.required && !withValue) {
+			actions.push(new MessageButton().setLabel('Skip').setCustomId(`___entry-skip-${this.formId}`).setStyle('SECONDARY'));
+		} else if (withValue && !this.required) {
+			actions.push(new MessageButton().setLabel('Clear').setCustomId(`___entry-clear-${this.formId}`).setStyle('SECONDARY'));
+		}
 		return actions;
 	}
 

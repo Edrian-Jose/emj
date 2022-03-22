@@ -24,6 +24,10 @@ interface _Form {
 			ids: Snowflake[];
 		}
 	];
+	commands?: {
+		onSubmit?: string[];
+		onCancel?: string[];
+	};
 	resultDestination: {
 		type: FormResultDestinationType;
 		id: Snowflake;
@@ -36,7 +40,6 @@ interface _Form {
 		}
 	];
 	verification: boolean;
-	command?: string;
 }
 
 export interface Form extends _Form {
@@ -79,6 +82,10 @@ const FormSchema = new Schema<FormDocument>({
 			ids: [String]
 		}
 	],
+	commands: {
+		onSubmit: [String],
+		onCancel: [String]
+	},
 	resultDestination: {
 		type: {
 			type: String,
@@ -89,7 +96,6 @@ const FormSchema = new Schema<FormDocument>({
 	},
 
 	verification: Boolean,
-	command: String,
 	instances: [
 		{
 			type: {

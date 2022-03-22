@@ -60,10 +60,6 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 	},
 	navigatorId: String,
 	ownerId: String,
-	commands: {
-		onSubmit: String,
-		onCancel: String
-	},
 	index: {
 		type: Number,
 		required: true,

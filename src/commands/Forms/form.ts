@@ -23,12 +23,18 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Attach the .emjform or .json file that you want to upload`, true);
 		}
 		const formFile: IForm = await fetch<Form>(location, FetchResultTypes.JSON);
-		formFile.questions = formFile.questions.map(async (question: String | Question) => {
-			if (typeof question === 'string') {
-				return await QuestionModel.findById(question);
+		const questions: Question[] = [];
+		for (const q of formFile.questions) {
+			if (typeof q === 'string') {
+				const _q = await QuestionModel.findById(q);
+				if (_q) {
+					questions.push(_q);
+				}
+			} else {
+				questions.push(q);
 			}
-			return question;
-		});
+		}
+		formFile.questions = questions;
 
 		await message.channel.sendTyping();
 		if (member && guild) {
