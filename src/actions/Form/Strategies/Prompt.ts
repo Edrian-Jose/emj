@@ -24,7 +24,7 @@ class Prompt {
 		return prompt(this, footerText, value);
 	}
 
-	public createQuestionComponents(withValue = false) {
+	public createInputComponents(withValue: boolean) {
 		const actions: MessageButton[] = [];
 		actions.push(
 			new MessageButton()
@@ -39,6 +39,10 @@ class Prompt {
 			actions.push(new MessageButton().setLabel('Clear').setCustomId(`___entry-clear-${this.formId}`).setStyle('SECONDARY'));
 		}
 		return actions;
+	}
+
+	public createQuestionComponents(withValue = false) {
+		return this.createInputComponents(withValue);
 	}
 
 	public createInputModal() {
