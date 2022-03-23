@@ -94,7 +94,7 @@ const FormEntrySchema = new Schema<FormEntryDocument>({
 	}
 });
 
-export interface FormEntryModel extends Model<FormEntryDocument> {
+export interface IFormEntryModel extends Model<FormEntryDocument> {
 	getAll(id: string): Promise<FormEntryPopulatedDocument>;
 }
 
@@ -118,5 +118,6 @@ FormEntrySchema.statics.getAll = async function (this: Model<FormEntryDocument>,
 		])
 		.exec();
 };
+const FormEntryModel = model<FormEntryDocument, IFormEntryModel>('FormEntry', FormEntrySchema);
 
-export default model<FormEntryDocument, FormEntryModel>('FormEntry', FormEntrySchema);
+export default FormEntryModel;

@@ -6,6 +6,15 @@ const formDelete = async (_form: FormDocument, interaction: ButtonInteraction) =
 	
 	await _form.delete();
 	const { message } = interaction;
+
+	if (_form.creatorId !== interaction.user.id) {
+		await interaction.followUp({
+			content: `Only the admin or the form author can delete this form.`,
+			ephemeral: true
+		});
+		return;
+	}
+
 	if (message instanceof Message) {
 		if (message.deletable) {
 			await message.delete();

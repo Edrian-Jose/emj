@@ -2,6 +2,7 @@ import { channelMention } from '@discordjs/builders';
 import { ButtonInteraction, GuildMember, Message, ThreadChannel } from 'discord.js';
 import type { FormDocument } from '../../../schemas/Form';
 import FormEntryModel from '../../../schemas/FormEntry';
+import MemberModel from '../../../schemas/Member';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
 import FormEntry from '../../FormEntry/FormEntry';
 import entryCancel from '../../FormEntry/Subactions/entryCancel';
@@ -9,6 +10,25 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 	const { user, guild, member } = interaction;
 
 	if (user) {
+		if (member && guild && _form.requiredRoles) {
+			const _member = await MemberModel.getAll(user.id, guild.id);
+			let hasAll = false;
+			_form.requiredRoles.forEach((roleId) => {
+				const role = _member?.roles?.find((role) => role.roleId == roleId);
+				if (role) {
+					hasAll = hasAll && true;
+				} else {
+					hasAll = hasAll && false;
+				}
+			});
+			if (!hasAll) {
+				await interaction.followUp({
+					content: `You didn't have the required roles necessary to fill out this form`,
+					ephemeral: true
+				});
+				return;
+			}
+		}
 		let _formEntry = await FormEntryModel.findOne({ ownerId: user.id, form: _form._id });
 
 		if (_formEntry) {

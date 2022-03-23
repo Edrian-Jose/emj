@@ -6,7 +6,6 @@ import RoleModel from '../../../schemas/Role';
 import parseChannel from '../../Channel/parseChannel';
 import getChannelWebhook from '../../Channel/Webhook/getChannelWebhook';
 import parseMember from '../../Member/parseMember';
-import temporaryMessage from '../../Message/temporaryMessage';
 import Form from '../Strategies/Form';
 import type { FormDocument } from './../../../schemas/Form';
 const formActivate = async (_form: FormDocument, interaction: ButtonInteraction) => {
@@ -16,6 +15,14 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 	if (!guild) {
 		return;
 	}
+	if (_form.creatorId !== interaction.user.id) {
+		await interaction.followUp({
+			content: `Only the admin or the form author can activate this form.`,
+			ephemeral: true
+		});
+		return;
+	}
+
 	const userIds: string[] = [];
 
 	for (const destination of _form.destination) {
@@ -70,12 +77,15 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 	}
 	if (interaction.channel) {
 		if (messages.length) {
-			temporaryMessage(interaction.channel, `Your Form has been sent to ${messages.length} channel(s)`);
+			await interaction.followUp({
+				content: `Your Form has been sent to ${messages.length} channel(s)`,
+				ephemeral: true
+			});
 		} else {
-			temporaryMessage(
-				interaction.channel,
-				`Form cannot activate. There might be a problem in our side or you just forgot to put the destination channels to your created form`
-			);
+			await interaction.followUp({
+				content: `Form cannot activate. There might be a problem in our side or you just forgot to put the destination channels to your created form`,
+				ephemeral: true
+			});
 		}
 	}
 };
