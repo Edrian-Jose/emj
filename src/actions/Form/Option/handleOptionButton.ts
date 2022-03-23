@@ -26,6 +26,12 @@ const handleOptionButton = async (
 	}
 
 	if (question && _formEntry) {
+		if (_formEntry.ownerId !== interaction.user.id) {
+			return await interaction.followUp({
+				content: `You are not the owner of this form entry.`,
+				ephemeral: true
+			});
+		}
 		const option = question.options?.find((option) => option.value == value);
 		const index = _formEntry.answers.findIndex((answer) => answer.question._id == questionId);
 		if (option) {

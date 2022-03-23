@@ -15,7 +15,14 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 	await interaction.deferUpdate();
 	const _entry = await FormEntryModel.getAll(entryId);
 	const entry = new FormEntry(_entry);
-	if (_entry) {
+
+	
+	if (entry.ownerId !== interaction.user.id) {
+		await interaction.followUp({
+			content: `You are not the owner of this form entry.`,
+			ephemeral: true
+		});
+	} else if (_entry) {
 		switch (type) {
 			case 'clear':
 				await entryClear(entry, interaction);

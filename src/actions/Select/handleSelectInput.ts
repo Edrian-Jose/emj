@@ -20,6 +20,14 @@ const handleSelectInput = async (interaction: SelectMenuInteraction, questionId:
 	}
 
 	if (question && _formEntry) {
+
+		if (_formEntry.ownerId !== interaction.user.id) {
+			return await interaction.followUp({
+				content: `You are not the owner of this form entry.`,
+				ephemeral: true
+			});
+		}
+		
 		const inputs = interaction.values.map((value) => {
 			const option = question.options!.find((option) => option.value == value);
 			return { label: option!.label, value: option!.value };
