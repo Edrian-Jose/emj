@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageSelectMenu } from 'discord.js';
 import navigator from '../../components/embeds/navigator';
 import type { FormDocument } from '../../schemas/Form';
 import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/FormEntry';
@@ -43,7 +43,7 @@ class FormEntry implements IFormEntry {
 		return this.questions[this.index];
 	}
 	public createQuestionEmbed() {
-		let value = this.answers[this.index] ? this.answers[this.index].answer?.map(answer => answer.label).join(', ') : undefined;
+		let value = this.answers[this.index] ? this.answers[this.index].answer?.map((answer) => answer.label).join(', ') : undefined;
 		return this.questions[this.index].createEmbed(`${this.index + 1} of ${this.questions.length}`, value);
 	}
 
@@ -57,7 +57,7 @@ class FormEntry implements IFormEntry {
 		if (this.index > 0) {
 			actions.push(backButton);
 		}
-		if (this.index < this.answers.length && this.answers[this.index] && this.answers[this.index].answer) {
+		if (this.index < this.answers.length && this.answers[this.index] && this.answers[this.index].answer?.length) {
 			actions.push(nextButton);
 		}
 		if (this.form.questions.length === this.answers.length) {
@@ -68,22 +68,43 @@ class FormEntry implements IFormEntry {
 		return actions;
 	}
 
+	createOptionComponents(value?: string) {
+		const actionRow = new MessageActionRow();
+		const actionRow2 = new MessageActionRow();
+
+		const optionComponents = this.questions[this.index].createQuestionComponents(value) as [MessageButton[], MessageButton];
+		if (optionComponents[0].length > 2) {
+			actionRow.addComponents(...optionComponents[0]);
+			actionRow2.addComponents(optionComponents[1], ...this.createNavigatorButtons());
+			return [actionRow, actionRow2];
+		} else {
+			actionRow.addComponents(...optionComponents[0], optionComponents[1], ...this.createNavigatorButtons());
+			return [actionRow];
+		}
+	}
+
 	public createComponents() {
 		const currentType = this.getPrompt().type;
 		const actionRow = new MessageActionRow();
 		const actionRow2 = new MessageActionRow();
-		const hasValue = this.answers[this.index] && this.answers[this.index].answer ? true : false;
+		const hasValue = this.answers[this.index] && this.answers[this.index].answer?.length ? true : false;
 		const values =
 			this.answers[this.index] && this.answers[this.index].answer ? this.answers[this.index].answer?.map((answer) => answer.value) : undefined;
 		switch (currentType) {
 			case 'SELECT':
-				const selectComponents = this.questions[this.index].createQuestionComponents(values);
-				actionRow.addComponents(...selectComponents.splice(0, 1));
-				actionRow2.addComponents(...selectComponents, ...this.createNavigatorButtons());
+				const selectComponents = this.questions[this.index].createQuestionComponents(values) as [MessageSelectMenu, MessageButton];
+				actionRow.addComponents(selectComponents[0]);
+				actionRow2.addComponents(selectComponents[1], ...this.createNavigatorButtons());
 				return [actionRow, actionRow2];
-
+			case 'OPTION':
+				return this.createOptionComponents(values ? values[0] : undefined);
+			case 'BOOLEAN':
+				return this.createOptionComponents(values ? values[0] : undefined);
 			default:
-				actionRow.addComponents(...this.questions[this.index].createQuestionComponents(hasValue), ...this.createNavigatorButtons());
+				actionRow.addComponents(
+					...(this.questions[this.index].createQuestionComponents(hasValue) as MessageButton[]),
+					...this.createNavigatorButtons()
+				);
 				return [actionRow];
 		}
 	}

@@ -33,6 +33,28 @@ class Prompt implements Question {
 		return prompt(this, footerText, value);
 	}
 
+	public createOptionComponents(value?: string) {
+		let options: MessageButton[] = [];
+		const skipButton = new MessageButton().setLabel('Skip').setCustomId(`___entry-skip-${this.formId}`).setStyle('SECONDARY');
+		const clearButton = new MessageButton().setLabel('Clear').setCustomId(`___entry-clear-${this.formId}`).setStyle('SECONDARY');
+		let navButton = clearButton;
+
+		options = this.options!.map((option) => {
+			return new MessageButton()
+				.setLabel(option.label)
+				.setCustomId(`___option-${this._id}-${this.formId}-${option.value}`)
+				.setStyle(value === option.value ? 'SUCCESS' : 'SECONDARY');
+		});
+
+		if (!this.required && !value) {
+			navButton = skipButton;
+		} else if (value && !this.required) {
+			navButton = clearButton;
+		}
+
+		return [options, navButton];
+	}
+
 	public createInputComponents(withValue: boolean) {
 		const actions: MessageButton[] = [];
 		actions.push(
@@ -110,10 +132,14 @@ class Prompt implements Question {
 		return [selectMenu, navButton];
 	}
 
-	public createQuestionComponents(value: boolean | string[] = false) {
+	public createQuestionComponents(value: any = false) {
 		switch (this.type) {
 			case 'SELECT':
 				return this.createSelectComponent(value as string[]);
+			case 'OPTION':
+				return this.createOptionComponents(value as string);
+			case 'BOOLEAN':
+				return this.createOptionComponents(value as string);
 			default:
 				return this.createInputComponents(value as boolean);
 		}
