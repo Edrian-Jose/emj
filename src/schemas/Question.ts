@@ -12,13 +12,11 @@ interface _Question {
 	command?: string;
 	minSelected?: number;
 	maxSelected?: number;
-	options?: [
-		{
-			label: string;
-			value: string;
-			description?: string;
-		}
-	];
+	options?: {
+		label: string;
+		value: string;
+		description?: string;
+	}[];
 }
 
 export interface Question extends _Question {

@@ -73,10 +73,11 @@ class FormEntry implements IFormEntry {
 		const actionRow = new MessageActionRow();
 		const actionRow2 = new MessageActionRow();
 		const hasValue = this.answers[this.index] && this.answers[this.index].answer ? true : false;
-
+		const values =
+			this.answers[this.index] && this.answers[this.index].answer ? this.answers[this.index].answer?.map((answer) => answer.value) : undefined;
 		switch (currentType) {
 			case 'SELECT':
-				const selectComponents = this.questions[this.index].createQuestionComponents(hasValue);
+				const selectComponents = this.questions[this.index].createQuestionComponents(values);
 				actionRow.addComponents(...selectComponents.splice(0, 1));
 				actionRow2.addComponents(...selectComponents, ...this.createNavigatorButtons());
 				return [actionRow, actionRow2];

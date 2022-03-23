@@ -1,9 +1,9 @@
 import FormEntryModel from './../../../schemas/FormEntry';
-import { ButtonInteraction, GuildMember, TextChannel, WebhookEditMessageOptions } from 'discord.js';
+import { GuildMember, MessageComponentInteraction, TextChannel, WebhookEditMessageOptions } from 'discord.js';
 import type { FormEntryDocument } from '../../../schemas/FormEntry';
 import FormEntry from '../FormEntry';
 import webhookEdit from '../../Channel/Webhook/webhookEdit';
-const updateNavigator = async (interaction: ButtonInteraction, formId: FormEntryDocument['_id']) => {
+const updateNavigator = async (interaction: MessageComponentInteraction, formId: FormEntryDocument['_id']) => {
 	const { guild, member, channel } = interaction;
 	const _formEntry = await FormEntryModel.getAll(formId);
 	const entry = new FormEntry(_formEntry);

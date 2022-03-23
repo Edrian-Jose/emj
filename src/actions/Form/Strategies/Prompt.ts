@@ -1,5 +1,5 @@
 const { Modal, TextInputComponent } = require('discord-modals');
-import { MessageButton, MessageSelectMenu } from 'discord.js';
+import { MessageButton, MessageSelectMenu, MessageSelectOptionData } from 'discord.js';
 import prompt from '../../../components/embeds/prompt';
 import type { Question, QuestionDocument, QuestionType } from './../../../schemas/Question';
 class Prompt implements Question {
@@ -12,7 +12,7 @@ class Prompt implements Question {
 	readonly value: string;
 	readonly minSelected?: number;
 	readonly maxSelected?: number;
-	readonly options?: [{ label: string; value: string; description?: string }];
+	readonly options?: { label: string; value: string; description?: string }[];
 	readonly placeholder?: string;
 
 	public constructor(formId: string, question: QuestionDocument) {
@@ -50,29 +50,72 @@ class Prompt implements Question {
 		return actions;
 	}
 
-	public createSelectComponent() {
+	getSelectPLaceholder() {
+		const min = this.minSelected ?? 1;
+		const max = this.maxSelected ?? 1;
+
+		if (!this.minSelected && !this.maxSelected && !this.required) {
+			return `Select one or skip this question`;
+		}
+
+		if (!this.minSelected && !this.maxSelected && this.required) {
+			return `Select atleast one from the options`;
+		}
+
+		if (this.minSelected && !this.maxSelected) {
+			return `Select atleast ${min} from the options`;
+		}
+
+		if (this.maxSelected && !this.minSelected) {
+			return `Select atmost ${max} from the options`;
+		}
+
+		if (min === max) {
+			return `Select ${min} from the options`;
+		}
+
+		return `Select ${min}-${max} from the options`;
+	}
+
+	public createSelectComponent(defaults?: string[]) {
 		const selectMenu = new MessageSelectMenu();
 		const skipButton = new MessageButton().setLabel('Skip').setCustomId(`___entry-skip-${this.formId}`).setStyle('SECONDARY');
+		const clearButton = new MessageButton().setLabel('Clear').setCustomId(`___entry-clear-${this.formId}`).setStyle('SECONDARY');
+		let navButton = clearButton;
 		selectMenu.setCustomId(`___select-${this._id}-${this.formId}`);
-		if (this.placeholder) {
-			selectMenu.setPlaceholder(this.placeholder);
-		}
+		selectMenu.setPlaceholder(this.getSelectPLaceholder());
 		if (this.minSelected) {
 			selectMenu.setMinValues(this.minSelected);
 		}
 		if (this.maxSelected) {
 			selectMenu.setMaxValues(this.maxSelected);
 		}
-		selectMenu.setOptions(...this.options);
-		return [selectMenu, skipButton];
+		let options: MessageSelectOptionData[] = this.options ?? [];
+		if (defaults) {
+			options = options.map((option) => {
+				if (defaults.includes(option.value)) {
+					option.default = true;
+				}
+				return option;
+			});
+		}
+		selectMenu.setOptions(...options);
+
+		if (!this.required && (!defaults || !defaults.length)) {
+			navButton = skipButton;
+		} else if (defaults && !this.required) {
+			navButton = clearButton;
+		}
+
+		return [selectMenu, navButton];
 	}
 
-	public createQuestionComponents(withValue = false) {
+	public createQuestionComponents(value: boolean | string[] = false) {
 		switch (this.type) {
 			case 'SELECT':
-				return this.createSelectComponent();
+				return this.createSelectComponent(value as string[]);
 			default:
-				return this.createInputComponents(withValue);
+				return this.createInputComponents(value as boolean);
 		}
 	}
 
