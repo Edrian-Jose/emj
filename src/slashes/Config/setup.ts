@@ -8,16 +8,16 @@ export const data = new SlashCommandBuilder()
 	.setName('setup')
 	.setDescription('Setup emj bot')
 	.addSubcommand((subcommand) => subcommand.setName('applications').setDescription('Set the server applications channel'))
-	.addSubcommand((subcommand) => subcommand.setName('admission').setDescription('Set the server admissions channel'));
+	.addSubcommand((subcommand) => subcommand.setName('desk').setDescription('Set the server desks channel'));
 
 export const execute = async (interaction: CommandInteraction) => {
 	if (await IsAllowed(interaction, AdminOnlyGuard)) {
 		const subcommand = interaction.options.getSubcommand();
 		switch (subcommand) {
-			case 'admission':
-				var _guild = await registerUtilityChannel(interaction, 'admission');
+			case 'desk':
+				var _guild = await registerUtilityChannel(interaction, 'desk');
 				await interaction.reply({
-					content: _guild ? `Admission channel set to ${channelMention(_guild.channels.admission)}` : `Admission channel failed to setup`,
+					content: _guild ? `Desks channel set to ${channelMention(_guild.channels.desk)}` : `Desks channel failed to setup`,
 					ephemeral: true
 				});
 				break;

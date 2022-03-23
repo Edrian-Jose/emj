@@ -10,7 +10,7 @@ interface Guild {
 		nickname: string;
 	};
 	channels: {
-		admission: Snowflake;
+		desk: Snowflake;
 		inquiries: Snowflake;
 		applications: Snowflake;
 		forms: Snowflake;
@@ -42,7 +42,7 @@ const GuildSchema = new Schema<GuildDocument>({
 		}
 	},
 	channels: {
-		admission: String,
+		desk: String,
 		inquiries: String,
 		applications: String,
 		forms: String
