@@ -1,9 +1,8 @@
 import type { QuestionDocument } from './../../../schemas/Question';
-import type { FormDocument } from './../../../schemas/Form';
+import type { FormDocument, FormVerifierType } from './../../../schemas/Form';
 import { MessageActionRow, MessageButton, Snowflake } from 'discord.js';
 import type { Form as IForm, FormType, FormDestinationType, FormResultDestinationType } from '../../../schemas/Form';
 import form from '../../../components/embeds/form';
-
 
 export type FormSubActions = 'activate' | 'create' | 'delete' | 'start' | 'cancel';
 
@@ -42,6 +41,7 @@ class Form implements IForm {
 		}
 	];
 	verification: boolean;
+	verifiers: [{ type: FormVerifierType; id: string }];
 
 	questions: QuestionDocument[];
 
@@ -58,6 +58,7 @@ class Form implements IForm {
 		this.resultDestination = document.resultDestination;
 		this.instances = document.instances;
 		this.verification = document.verification;
+		this.verifiers = document.verifiers;
 		this.questions = document.questions;
 		this.commands = document.commands;
 	}

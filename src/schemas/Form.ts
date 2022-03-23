@@ -5,6 +5,7 @@ import { Schema, model, Document } from 'mongoose';
 export type FormType = 'STEP' | 'SINGLE';
 export type FormDestinationType = 'USER_DM' | 'ROLE_DM' | 'GUILD_CHANNEL';
 export type FormResultDestinationType = 'DM_AUTHOR' | 'GUILD_CHANNEL';
+export type FormVerifierType = 'USER' | 'ROLE';
 
 interface _Form {
 	creatorId: Snowflake;
@@ -40,6 +41,12 @@ interface _Form {
 		}
 	];
 	verification: boolean;
+	verifiers: [
+		{
+			type: FormVerifierType;
+			id: Snowflake;
+		}
+	];
 }
 
 export interface Form extends _Form {
@@ -96,6 +103,15 @@ const FormSchema = new Schema<FormDocument>({
 	},
 
 	verification: Boolean,
+	verifiers: [
+		{
+			type: {
+				type: String,
+				enum: ['USER', 'ROLE']
+			},
+			id: String
+		}
+	],
 	instances: [
 		{
 			type: {
