@@ -10,13 +10,16 @@ import entryCancel from './Subactions/entryCancel';
 import entryBack from './Subactions/entryBack';
 import entryNext from './Subactions/entryNext';
 import entryClear from './Subactions/entryClear';
+import entrySubmit from './Subactions/entrySubmit';
+import updateNavigator from './Navigator/updateNavigator';
+import entryConfirmSubmit from './Subactions/entryConfirmSubmit';
+import formInstanceDelete from '../Form/Subactions/formInstanceDelete';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
 	await interaction.deferUpdate();
 	const _entry = await FormEntryModel.getAll(entryId);
 	const entry = new FormEntry(_entry);
 
-	
 	if (entry.ownerId !== interaction.user.id) {
 		await interaction.followUp({
 			content: `You are not the owner of this form entry.`,
@@ -36,13 +39,22 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 			case 'next':
 				await entryNext(entry, interaction);
 				break;
-			default:
+			case 'submit':
+				await entrySubmit(entry, interaction);
+				break;
+			case 'cancel':
 				await entryCancel(_entry);
+				break;
+			case 'confirmSubmit':
+				await entryConfirmSubmit(entry, interaction);
+				break;
+			default:
+				await updateNavigator(interaction, entry._id);
 				break;
 		}
 	} else {
-		//entry cancel
-		// await formInstanceDelete(interaction);
+		// entry cancel
+		await formInstanceDelete(interaction);
 		await interaction.followUp({ content: `Error occured. Must delete the form`, ephemeral: true });
 	}
 };

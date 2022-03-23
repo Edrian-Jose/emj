@@ -6,7 +6,7 @@ export default function prompt(prompt: Prompt, footerText?: string, value?: stri
 	const required = prompt.required ? 'Required' : 'Optional';
 	const valueField = value ? <field name="Recorded Input">{`${value}`}</field> : null;
 	return (
-		<embed color="RED">
+		<embed color={[100, 255, 100]}>
 			<title>{`${prompt.question}`}</title>
 			{placeholder}
 			{valueField}

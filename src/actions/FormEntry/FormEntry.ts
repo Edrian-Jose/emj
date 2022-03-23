@@ -5,7 +5,7 @@ import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/F
 import Form from '../Form/Strategies/Form';
 import Prompt from '../Form/Strategies/Prompt';
 
-export type EntrySubActions = 'back' | 'next' | 'cancel' | 'submit' | 'skip' | 'clear';
+export type EntrySubActions = 'back' | 'next' | 'cancel' | 'submit' | 'skip' | 'clear' | 'cancelSubmit' | 'confirmSubmit' | 'edit';
 class FormEntry implements IFormEntry {
 	_id: string;
 	_document: FormEntryDocument;
@@ -16,7 +16,7 @@ class FormEntry implements IFormEntry {
 	navigatorId: string;
 	questions: Prompt[];
 
-	answers: { question: any; answer?: { label: string; value: string }[] }[];
+	answers: { question: Prompt; answer?: { label: string; value: string }[] }[];
 
 	public constructor(entry: FormEntryDocument) {
 		this._document = entry;
@@ -33,6 +33,24 @@ class FormEntry implements IFormEntry {
 				answer: answer.answer
 			};
 		});
+	}
+
+	public createSubmitComponents() {
+		const actionRows: MessageActionRow[] = [];
+		const cancelButton = new MessageButton().setLabel('Cancel').setCustomId(`___entry-cancelSubmit-${this._id}`).setStyle('SECONDARY');
+		const confirmButton = new MessageButton().setLabel('Confirm').setCustomId(`___entry-confirmSubmit-${this._id}`).setStyle('SUCCESS');
+		actionRows.push(new MessageActionRow().addComponents(confirmButton, cancelButton));
+
+		return actionRows;
+	}
+
+	public createWaitComponents() {
+		const actionRows: MessageActionRow[] = [];
+		const cancelButton = new MessageButton().setLabel('Cancel').setCustomId(`___entry-cancel-${this._id}`).setStyle('DANGER');
+		const editButton = new MessageButton().setLabel('Confirm').setCustomId(`___entry-edit-${this._id}`).setStyle('SUCCESS');
+		actionRows.push(new MessageActionRow().addComponents(editButton, cancelButton));
+
+		return actionRows;
 	}
 
 	public createNavigatorEmbed() {
@@ -73,7 +91,7 @@ class FormEntry implements IFormEntry {
 
 		const optionComponents = this.questions[this.index].createQuestionComponents(value) as [MessageButton[], MessageButton];
 		if (optionComponents[0].length > 2) {
-			let buttonsChunks = this.splitArrayIntoChunksOfLen([...optionComponents[0], ...this.createNavigatorButtons()], 5);
+			let buttonsChunks = this.splitArrayIntoChunksOfLen([...optionComponents[0]], 5);
 			buttonsChunks.forEach((buttonsChunk) => {
 				if (actionRows.length < 5) {
 					actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
@@ -119,11 +137,11 @@ class FormEntry implements IFormEntry {
 				const selectComponents = this.questions[this.index].createQuestionComponents(values) as [MessageSelectMenu, MessageButton];
 				actionRows.push(new MessageActionRow().addComponents(selectComponents[0]));
 				buttonsChunks = this.splitArrayIntoChunksOfLen([selectComponents[1], ...this.createNavigatorButtons()], 5);
-				buttonsChunks.forEach((buttonsChunk => {
+				buttonsChunks.forEach((buttonsChunk) => {
 					if (actionRows.length < 5) {
 						actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
 					}
-				}))
+				});
 				return actionRows;
 			case 'OPTION':
 				return this.createOptionComponents(values ? values[0] : undefined);

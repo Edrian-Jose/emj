@@ -12,9 +12,11 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 	if (user) {
 		if (member && guild && _form.requiredRoles) {
 			const _member = await MemberModel.getAll(user.id, guild.id);
-			let hasAll = false;
+			let hasAll = true;
 			_form.requiredRoles.forEach((roleId) => {
-				const role = _member?.roles?.find((role) => role.roleId == roleId);
+				const role = _member?.roles?.find((role) => {
+					return role.roleId == roleId;
+				});
 				if (role) {
 					hasAll = hasAll && true;
 				} else {
