@@ -69,43 +69,77 @@ class FormEntry implements IFormEntry {
 	}
 
 	createOptionComponents(value?: string) {
-		const actionRow = new MessageActionRow();
-		const actionRow2 = new MessageActionRow();
+		const actionRows: MessageActionRow[] = [];
 
 		const optionComponents = this.questions[this.index].createQuestionComponents(value) as [MessageButton[], MessageButton];
 		if (optionComponents[0].length > 2) {
-			actionRow.addComponents(...optionComponents[0]);
-			actionRow2.addComponents(optionComponents[1], ...this.createNavigatorButtons());
-			return [actionRow, actionRow2];
+			let buttonsChunks = this.splitArrayIntoChunksOfLen([...optionComponents[0], ...this.createNavigatorButtons()], 5);
+			buttonsChunks.forEach((buttonsChunk) => {
+				if (actionRows.length < 5) {
+					actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
+				}
+			});
+			buttonsChunks = this.splitArrayIntoChunksOfLen([optionComponents[1], ...this.createNavigatorButtons()], 5);
+			buttonsChunks.forEach((buttonsChunk) => {
+				if (actionRows.length < 5) {
+					actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
+				}
+			});
+			return actionRows;
 		} else {
-			actionRow.addComponents(...optionComponents[0], optionComponents[1], ...this.createNavigatorButtons());
-			return [actionRow];
+			const buttonsChunks = this.splitArrayIntoChunksOfLen([...optionComponents[0], optionComponents[1], ...this.createNavigatorButtons()], 5);
+			buttonsChunks.forEach((buttonsChunk) => {
+				if (actionRows.length < 5) {
+					actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
+				}
+			});
+			return actionRows;
 		}
+	}
+
+	splitArrayIntoChunksOfLen<T>(arr: T[], len: number): T[][] {
+		var chunks: T[][] = [],
+			i = 0,
+			n = arr.length;
+		while (i < n) {
+			chunks.push(arr.slice(i, (i += len)));
+		}
+		return chunks;
 	}
 
 	public createComponents() {
 		const currentType = this.getPrompt().type;
-		const actionRow = new MessageActionRow();
-		const actionRow2 = new MessageActionRow();
+		const actionRows: MessageActionRow[] = [];
+		let buttonsChunks: MessageButton[][] = [];
 		const hasValue = this.answers[this.index] && this.answers[this.index].answer?.length ? true : false;
 		const values =
 			this.answers[this.index] && this.answers[this.index].answer ? this.answers[this.index].answer?.map((answer) => answer.value) : undefined;
 		switch (currentType) {
 			case 'SELECT':
 				const selectComponents = this.questions[this.index].createQuestionComponents(values) as [MessageSelectMenu, MessageButton];
-				actionRow.addComponents(selectComponents[0]);
-				actionRow2.addComponents(selectComponents[1], ...this.createNavigatorButtons());
-				return [actionRow, actionRow2];
+				actionRows.push(new MessageActionRow().addComponents(selectComponents[0]));
+				buttonsChunks = this.splitArrayIntoChunksOfLen([selectComponents[1], ...this.createNavigatorButtons()], 5);
+				buttonsChunks.forEach((buttonsChunk => {
+					if (actionRows.length < 5) {
+						actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
+					}
+				}))
+				return actionRows;
 			case 'OPTION':
 				return this.createOptionComponents(values ? values[0] : undefined);
 			case 'BOOLEAN':
 				return this.createOptionComponents(values ? values[0] : undefined);
 			default:
-				actionRow.addComponents(
-					...(this.questions[this.index].createQuestionComponents(hasValue) as MessageButton[]),
-					...this.createNavigatorButtons()
+				buttonsChunks = this.splitArrayIntoChunksOfLen(
+					[...(this.questions[this.index].createQuestionComponents(hasValue) as MessageButton[]), ...this.createNavigatorButtons()],
+					5
 				);
-				return [actionRow];
+				buttonsChunks.forEach((buttonsChunk) => {
+					if (actionRows.length < 5) {
+						actionRows.push(new MessageActionRow().addComponents(...buttonsChunk));
+					}
+				});
+				return actionRows;
 		}
 	}
 }
