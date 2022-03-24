@@ -14,9 +14,18 @@ import entrySubmit from './Subactions/entrySubmit';
 import updateNavigator from './Navigator/updateNavigator';
 import entryConfirmSubmit from './Subactions/entryConfirmSubmit';
 import formInstanceDelete from '../Form/Subactions/formInstanceDelete';
+import entryUpvote from './Subactions/entryUpvote';
+import entryDownvote from './Subactions/entryDownvote';
+import entryApprove from './Subactions/entryApprove';
+import entryDeny from './Subactions/entryDeny';
+import entryEdit from './Subactions/entryEdit';
+import entryDenyModal from './Subactions/entryDenyModal';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
-	await interaction.deferUpdate();
+	if (type !== 'denyModal' && type !== 'deny') {
+		await interaction.deferUpdate();
+	}
+
 	const _entry = await FormEntryModel.getAll(entryId);
 	const entry = new FormEntry(_entry);
 
@@ -47,6 +56,24 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 				break;
 			case 'confirmSubmit':
 				await entryConfirmSubmit(entry, interaction);
+				break;
+			case 'upvote':
+				await entryUpvote(entry, interaction);
+				break;
+			case 'downvote':
+				await entryDownvote(interaction);
+				break;
+			case 'approve':
+				await entryApprove(entry, interaction);
+				break;
+			case 'deny':
+				await entryDeny(entry, interaction);
+				break;
+			case 'denyModal':
+				await entryDenyModal(entry, interaction);
+				break;
+			case 'edit':
+				await entryEdit(entry, interaction);
 				break;
 			default:
 				await updateNavigator(interaction, entry._id);

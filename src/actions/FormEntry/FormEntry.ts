@@ -5,7 +5,21 @@ import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/F
 import Form from '../Form/Strategies/Form';
 import Prompt from '../Form/Strategies/Prompt';
 
-export type EntrySubActions = 'back' | 'next' | 'cancel' | 'submit' | 'skip' | 'clear' | 'cancelSubmit' | 'confirmSubmit' | 'edit';
+export type EntrySubActions =
+	| 'back'
+	| 'next'
+	| 'cancel'
+	| 'submit'
+	| 'skip'
+	| 'clear'
+	| 'cancelSubmit'
+	| 'confirmSubmit'
+	| 'edit'
+	| 'upvote'
+	| 'downvote'
+	| 'approve'
+	| 'deny'
+	| 'denyModal';
 class FormEntry implements IFormEntry {
 	_id: string;
 	_document: FormEntryDocument;
@@ -38,6 +52,16 @@ class FormEntry implements IFormEntry {
 		});
 	}
 
+	public createVerificationComponents() {
+		const actionRows: MessageActionRow[] = [];
+		const approveButton = new MessageButton().setEmoji('☑️').setCustomId(`___entry-approve-${this._id}`).setStyle('PRIMARY');
+		const denyButton = new MessageButton().setEmoji('❎').setCustomId(`___entry-denyModal-${this._id}`).setStyle('DANGER');
+		const upvoteButton = new MessageButton().setEmoji('👍').setCustomId(`___entry-upvote-${this._id}`).setStyle('SECONDARY');
+		const downvoteButton = new MessageButton().setEmoji('👎').setCustomId(`___entry-downvote-${this._id}`).setStyle('SECONDARY');
+		actionRows.push(new MessageActionRow().addComponents(upvoteButton, downvoteButton, approveButton, denyButton));
+
+		return actionRows;
+	}
 	public createSubmitComponents() {
 		const actionRows: MessageActionRow[] = [];
 		const cancelButton = new MessageButton().setLabel('Cancel').setCustomId(`___entry-cancelSubmit-${this._id}`).setStyle('SECONDARY');

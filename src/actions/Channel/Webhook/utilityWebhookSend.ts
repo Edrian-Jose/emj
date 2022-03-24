@@ -9,12 +9,14 @@ const utilityWebhookSend = async (
 	member: GuildMember,
 	utilityChannel: UtilityChannelTypes,
 	options: WebhookMessageOptions,
-	name?: string
-): Promise<Message<boolean> | APIMessage | undefined> => {
+	name?: string,
+	message?: Message
+): Promise<Message<boolean> | APIMessage | undefined | null> => {
 	const _guild = await GuildModel.findOne({ guildId: guild.id });
 	const threadName = name ?? `${member.user.username} ${utilityChannel}`;
+
 	if (_guild) {
-		return threadWebhookSend(guild, member, _guild.channels[utilityChannel], options, threadName);
+		return threadWebhookSend(guild, member, _guild.channels[utilityChannel], options, threadName, message);
 	}
 	return undefined;
 };

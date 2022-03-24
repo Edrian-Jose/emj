@@ -1,4 +1,5 @@
 import type { ButtonInteraction, GuildMember, Message, ThreadChannel } from 'discord.js';
+import approvalForm from '../../../components/embeds/approvalForm';
 import waitingApproval from '../../../components/embeds/waitingApproval';
 import MemberModel from '../../../schemas/Member';
 import RoleModel from '../../../schemas/Role';
@@ -33,7 +34,8 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 			member as GuildMember,
 			entry.form.resultDestination.id,
 			{
-				content: `Test lang`
+				embeds: [approvalForm(entry, entry.form, false)],
+				components: entry.createVerificationComponents()
 			},
 			`${member.user.username} applications`
 		);
@@ -52,8 +54,9 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 			}
 		});
 	} else {
-		const message = await interaction.client.users.send(entry.form.creatorId, {
-			content: `Test dm lang`
+		const message = await interaction.client.users.send(entry.form.resultDestination.id, {
+			embeds: [approvalForm(entry, entry.form, false)],
+			components: entry.createVerificationComponents()
 		});
 		entry._document.applicationId = message?.id;
 	}

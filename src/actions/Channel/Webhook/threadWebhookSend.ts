@@ -4,14 +4,16 @@ import parseChannel from '../parseChannel';
 import getChannelWebhook from './getChannelWebhook';
 import type { APIMessage } from 'discord.js/node_modules/discord-api-types';
 import type { Snowflake } from 'discord-api-types/globals';
+import webhookEdit from './webhookEdit';
 
 const threadWebhookSend = async (
 	guild: Guild,
 	member: GuildMember,
 	_channel: Snowflake | TextChannel | NewsChannel,
 	options: WebhookMessageOptions,
-	name?: string
-): Promise<Message<boolean> | APIMessage | undefined> => {
+	name?: string,
+	message?: Message
+): Promise<Message<boolean> | APIMessage | undefined | null> => {
 	const threadName = name ?? `${member.user.username} thread`;
 
 	const [channel] = await parseChannel(guild, _channel);
@@ -28,6 +30,9 @@ const threadWebhookSend = async (
 		}
 		const webhook = await getChannelWebhook(channel, true);
 
+		if (message) {
+			return await webhookEdit(channel, message, options);
+		}
 		return await webhook?.send(options);
 	}
 
