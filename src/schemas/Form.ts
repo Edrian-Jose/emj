@@ -32,6 +32,7 @@ interface _Form {
 	resultDestination: {
 		type: FormResultDestinationType;
 		id: Snowflake;
+		guildId?: Snowflake;
 	};
 	instances: [
 		{
@@ -41,7 +42,7 @@ interface _Form {
 		}
 	];
 	verification: boolean;
-	verifiers: [
+	verifiers?: [
 		{
 			type: FormVerifierType;
 			id: Snowflake;
@@ -99,7 +100,8 @@ const FormSchema = new Schema<FormDocument>({
 			enum: ['DM_AUTHOR', 'GUILD_CHANNEL'],
 			required: true
 		},
-		id: String
+		id: String,
+		guildId: String
 	},
 
 	verification: Boolean,

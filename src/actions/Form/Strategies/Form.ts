@@ -32,6 +32,7 @@ class Form implements IForm {
 	resultDestination: {
 		type: FormResultDestinationType;
 		id: Snowflake;
+		guildId?: Snowflake;
 	};
 	instances: [
 		{
@@ -41,7 +42,7 @@ class Form implements IForm {
 		}
 	];
 	verification: boolean;
-	verifiers: [{ type: FormVerifierType; id: string }];
+	verifiers?: [{ type: FormVerifierType; id: string }];
 
 	questions: QuestionDocument[];
 
