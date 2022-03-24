@@ -2,15 +2,15 @@ import type { ButtonInteraction, GuildMember, Message, ThreadChannel } from 'dis
 import waitingApproval from '../../../components/embeds/waitingApproval';
 import MemberModel from '../../../schemas/Member';
 import RoleModel from '../../../schemas/Role';
-import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
+import threadWebhookSend from '../../Channel/Webhook/threadWebhookSend';
 import parseMember from '../../Member/parseMember';
 import type FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
 
 const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteraction) => {
-	const options = { embeds: [waitingApproval(entry)], components: entry.createWaitComponents() };
-	updateNavigator(interaction, entry._id, options);
 	const { guild } = interaction;
+	const options = { embeds: [waitingApproval(entry, guild ? false : true)], components: entry.createWaitComponents() };
+	updateNavigator(interaction, entry._id, options);
 	const verifiers = entry.form.verifiers;
 	const userIds: string[] = [];
 	if (verifiers && guild) {
@@ -28,9 +28,16 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 	if (entry.form.resultDestination.type == 'GUILD_CHANNEL') {
 		const [member, guild] = await parseMember(entry.form.resultDestination.guildId!, entry.ownerId);
 
-		const message = await utilityWebhookSend(guild, member as GuildMember, 'applications', {
-			content: `Test lang`
-		});
+		const message = await threadWebhookSend(
+			guild,
+			member as GuildMember,
+			entry.form.resultDestination.id,
+			{
+				content: `Test lang`
+			},
+			`${member.user.username} applications`
+		);
+		entry._document.applicationId = message?.id;
 		const channel = (message as Message).channel as ThreadChannel;
 		userIds.forEach(async (id) => {
 			try {
@@ -45,10 +52,13 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 			}
 		});
 	} else {
-		await interaction.client.users.send(entry.form.creatorId, {
+		const message = await interaction.client.users.send(entry.form.creatorId, {
 			content: `Test dm lang`
 		});
+		entry._document.applicationId = message?.id;
 	}
+	entry._document.verifiers = userIds;
+	await entry._document.save();
 };
 
 export default entryConfirmSubmit;

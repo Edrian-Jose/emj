@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageSelectMenu } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageSelectMenu, Snowflake } from 'discord.js';
 import navigator from '../../components/embeds/navigator';
 import type { FormDocument } from '../../schemas/Form';
 import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/FormEntry';
@@ -15,7 +15,8 @@ class FormEntry implements IFormEntry {
 	ownerId: string;
 	navigatorId: string;
 	questions: Prompt[];
-
+	verifiers?: Snowflake[];
+	applicationId?: Snowflake;
 	answers: { question: Prompt; answer?: { label: string; value: string }[] }[];
 
 	public constructor(entry: FormEntryDocument) {
@@ -26,6 +27,8 @@ class FormEntry implements IFormEntry {
 		this.form = new Form(entry.form);
 		this.ownerId = entry.ownerId;
 		this.navigatorId = entry.navigatorId;
+		this.applicationId = entry.applicationId;
+		this.verifiers = entry.verifiers;
 		this.questions = (entry.form as FormDocument).questions.map((question) => new Prompt(entry._id, question));
 		this.answers = entry.answers.map((answer) => {
 			return {
@@ -46,8 +49,8 @@ class FormEntry implements IFormEntry {
 
 	public createWaitComponents() {
 		const actionRows: MessageActionRow[] = [];
-		const cancelButton = new MessageButton().setLabel('Cancel').setCustomId(`___entry-cancel-${this._id}`).setStyle('DANGER');
-		const editButton = new MessageButton().setLabel('Confirm').setCustomId(`___entry-edit-${this._id}`).setStyle('SUCCESS');
+		const cancelButton = new MessageButton().setLabel('Delete').setCustomId(`___entry-cancel-${this._id}`).setStyle('DANGER');
+		const editButton = new MessageButton().setLabel('Edit').setCustomId(`___entry-edit-${this._id}`).setStyle('SUCCESS');
 		actionRows.push(new MessageActionRow().addComponents(editButton, cancelButton));
 
 		return actionRows;

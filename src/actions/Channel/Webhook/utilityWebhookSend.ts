@@ -1,10 +1,8 @@
 import type { UtilityChannelTypes } from '../../Guild/registerChannel';
 import type { Guild, GuildMember, Message, WebhookMessageOptions } from 'discord.js';
 import GuildModel from '../../../schemas/Guild';
-import getPersonalThread from '../../Thread/getPersonalThread';
-import parseChannel from '../parseChannel';
-import getChannelWebhook from './getChannelWebhook';
 import type { APIMessage } from 'discord.js/node_modules/discord-api-types';
+import threadWebhookSend from './threadWebhookSend';
 
 const utilityWebhookSend = async (
 	guild: Guild,
@@ -16,22 +14,7 @@ const utilityWebhookSend = async (
 	const _guild = await GuildModel.findOne({ guildId: guild.id });
 	const threadName = name ?? `${member.user.username} ${utilityChannel}`;
 	if (_guild) {
-		const [channel] = await parseChannel(guild, _guild.channels[utilityChannel]);
-
-		if (channel?.isText()) {
-			let [thread] = await getPersonalThread(member, guild, channel, threadName);
-			if (thread) {
-				thread.setArchived(false);
-				if (!(await thread.members.fetch(member))) {
-					thread.members.add(member);
-				}
-				thread = await thread.setName(threadName);
-				options.threadId = thread.id;
-			}
-			const webhook = await getChannelWebhook(channel, true);
-
-			return await webhook?.send(options);
-		}
+		return threadWebhookSend(guild, member, _guild.channels[utilityChannel], options, threadName);
 	}
 	return undefined;
 };
