@@ -28,14 +28,17 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 	const reason: string | undefined = interaction.getTextInputValue(`reason`);
 	const recommendation: string | undefined = interaction.getTextInputValue(`recommendation`);
 	const verifiers = entry.verifiers;
-	if (entry.form.resultDestination.type == 'GUILD_CHANNEL' && verifiers) {
+	if (entry.form.resultDestination.type === 'GUILD_CHANNEL' && verifiers) {
 		const channel = interaction.channel as ThreadChannel;
-		const [member, guild] = await parseMember(entry.form.resultDestination.guildId!, entry.ownerId);
 		removeVerifiers(channel, verifiers, entry.ownerId);
+	}
+
+	if (entry.location.type === 'GUILD_TEXT') {
+		const [member, guild] = await parseMember(entry.location.guildId!, entry.ownerId);
 
 		const _guild = await GuildModel.findOne({ guildId: guild.id });
 		const [deskChannel] = await parseChannel(guild, _guild?.channels.desk!);
-		if (channel?.isText()) {
+		if (deskChannel?.isText()) {
 			let [thread] = await getPersonalThread(member, guild, deskChannel as TextChannel);
 
 			if (thread) {
@@ -57,7 +60,7 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 			}
 		}
 	} else {
-		const owner = await interaction.client.fetch(entry.ownerId);
+		const owner = await interaction.client.users.fetch(entry.ownerId);
 		const channel = owner.dmChannel ?? (await owner.createDM());
 		const message = await channel.messages.fetch(entry.navigatorId!);
 		if (message.editable) {

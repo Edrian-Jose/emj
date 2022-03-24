@@ -19,7 +19,8 @@ export type EntrySubActions =
 	| 'downvote'
 	| 'approve'
 	| 'deny'
-	| 'denyModal';
+	| 'denyModal'
+	| 'accept';
 class FormEntry implements IFormEntry {
 	_id: string;
 	_document: FormEntryDocument;
@@ -52,6 +53,14 @@ class FormEntry implements IFormEntry {
 		});
 	}
 
+	public createVerifiedComponents() {
+		const actionRows: MessageActionRow[] = [];
+		const acceptButton = new MessageButton().setLabel('Accept').setCustomId(`___entry-accept-${this._id}`).setStyle('SUCCESS');
+
+		actionRows.push(new MessageActionRow().addComponents(acceptButton));
+
+		return actionRows;
+	}
 	public createVerificationComponents() {
 		const actionRows: MessageActionRow[] = [];
 		const approveButton = new MessageButton().setEmoji('☑️').setCustomId(`___entry-approve-${this._id}`).setStyle('PRIMARY');
