@@ -3,6 +3,7 @@ import MemberModel, { MemberDocument } from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 import parseGuild from '../Guild/parseGuild';
 import { getGuildDocument } from '../Guild/syncGuild';
+import parseRole from '../Role/parseRole';
 import parseMember from './parseMember';
 
 export const getMemberDocument = async (
@@ -36,9 +37,30 @@ const syncMember = async (
 			_member.nickname = member.nickname;
 		}
 		_member.tag = member.user.tag;
-		const roles = Array.from(member.roles.cache.keys());
-		const _roleIds = await RoleModel.find({ $or: [{ roleId: { $in: roles } }, { members: { $all: [member.id] } }] }, '_id').exec();
-		_member.roles = _roleIds;
+		const cacheRoles = Array.from(member.roles.cache.keys());
+		const roles: string[] = [];
+		for (const roleId of cacheRoles) {
+			const [role, guild] = await parseRole(member.guild, roleId);
+			if (role && role.members.has(member.id) && role.id !== guild.id) {
+				roles.push(role.id);
+			}
+		}
+		const _roles = await RoleModel.find({ $or: [{ roleId: { $in: roles } }, { members: { $all: [member.id] } }] }).exec();
+		// console.log(_roles);
+		_roles.forEach(async (_role) => {
+			_role.members = _role.members.filter((memberId) => {
+				if (memberId == member.id && !roles.includes(_role.roleId)) {
+					return false;
+				}
+				return true;
+			});
+			if (!_role.members.includes(member.id) && roles.includes(_role.roleId)) {
+				_role.members.push(member.id);
+			}
+			await _role.save();
+		});
+
+		_member.roles = _roles.filter((_role) => roles.includes(_role.roleId)).map((_role) => _role._id);
 		await _member.save();
 	}
 	return [_member, member];

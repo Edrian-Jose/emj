@@ -20,6 +20,7 @@ import entryApprove from './Subactions/entryApprove';
 import entryDeny from './Subactions/entryDeny';
 import entryEdit from './Subactions/entryEdit';
 import entryDenyModal from './Subactions/entryDenyModal';
+import entryAccept from './Subactions/entryAccept';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
 	if (type !== 'denyModal' && type !== 'deny') {
@@ -74,6 +75,9 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 				break;
 			case 'edit':
 				await entryEdit(entry, interaction);
+				break;
+			case 'accept':
+				await entryAccept(entry, interaction);
 				break;
 			default:
 				await updateNavigator(interaction, entry._id);

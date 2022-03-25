@@ -7,7 +7,7 @@ const parseRole = async (guildResolvable: Snowflake | Guild, roleResolvable: Rol
 	if (guild.available) {
 		if (typeof roleResolvable === 'string') {
 			try {
-				role = await guild.roles.fetch(roleResolvable);
+				role = await guild.roles.fetch(roleResolvable, { force: true });
 			} catch (error) {}
 		} else {
 			role = roleResolvable;
