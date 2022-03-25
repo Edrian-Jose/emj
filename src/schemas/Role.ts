@@ -5,6 +5,7 @@ interface Role {
 	guildId: Snowflake;
 	roleId: Snowflake;
 	name: string;
+	position: number;
 	members: Snowflake[];
 }
 
@@ -20,6 +21,10 @@ const RoleSchema = new Schema<RoleDocument>({
 	guildId: String,
 	roleId: String,
 	name: String,
+	position: {
+		type: Number,
+		default: 0
+	},
 	members: [String]
 });
 

@@ -9,9 +9,10 @@ export const getThreadDocument = async (
 	threadResolvable: ThreadChannelResolvable
 ): Promise<[(ThreadDocument & { _id: any }) | null, ThreadChannel | null, Exclude<GuildTextBasedChannel, ThreadChannel> | null, Guild | null]> => {
 	let _thread: (ThreadDocument & { _id: any }) | null = null;
-	const [thread, channel, guild] = await parseThread(guildResolvable, channelResolvable, threadResolvable);
+
 	const cid = typeof channelResolvable === 'string' ? channelResolvable : channelResolvable.id;
 	const tid = typeof threadResolvable === 'string' ? threadResolvable : threadResolvable.id;
+	const [thread, channel, guild] = await parseThread(guildResolvable, channelResolvable, tid);
 	_thread = await ThreadModel.findOne({ parentId: cid, threadId: tid }).exec();
 	if (thread && channel) {
 		if (!_thread) {

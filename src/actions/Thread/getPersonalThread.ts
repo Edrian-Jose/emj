@@ -6,6 +6,7 @@ import syncThread from './syncThread';
 import type { ChannelDocument } from '../../schemas/Channel';
 import parseMember from '../Member/parseMember';
 
+
 const getPersonalThread = async (
 	member: Snowflake | GuildMember,
 	guildResolvable: Snowflake | Guild,
@@ -16,8 +17,8 @@ const getPersonalThread = async (
 	const [parsedMember] = await parseMember(guildResolvable, member);
 	if (channel?.isText() && _channel) {
 		let _thread = await ThreadModel.findOne({ ownerId: parsedMember.id, parentId: channel.id });
-		if (!_thread && threadName) {
-			const thread = await channel.threads.create({ name: threadName, autoArchiveDuration: 1440 });
+		if (!_thread) {
+			const thread = await channel.threads.create({ name: threadName ?? `${parsedMember.user.username} thread`, autoArchiveDuration: 1440 });
 			const ownerId = await thread.members.add(parsedMember);
 			const [threadDoc, threadC] = await syncThread(guildResolvable, channelResolvable, thread);
 			if (threadDoc) {
@@ -26,7 +27,20 @@ const getPersonalThread = async (
 				return [threadC, threadDoc, _channel];
 			}
 		} else if (_thread) {
-			const [thread] = await parseThread(guildResolvable, channel, _thread.threadId);
+			let [thread] = await parseThread(guildResolvable, channel, _thread.threadId);
+			if (!thread) {
+				const thread = await channel.threads.create({
+					name: threadName ?? `${parsedMember.user.username} thread`,
+					autoArchiveDuration: 1440
+				});
+				const ownerId = await thread.members.add(parsedMember);
+				const [threadDoc, threadC] = await syncThread(guildResolvable, channelResolvable, thread);
+				if (threadDoc) {
+					threadDoc.ownerId = ownerId;
+					await threadDoc.save();
+					return [threadC, threadDoc, _channel];
+				}
+			}
 			return [thread, _thread, _channel];
 		}
 	}

@@ -1,10 +1,11 @@
-import type { ButtonInteraction, GuildMember, Message, ThreadChannel } from 'discord.js';
+import type { ButtonInteraction, GuildMember, ThreadChannel } from 'discord.js';
 import approvalForm from '../../../components/embeds/approvalForm';
 import waitingApproval from '../../../components/embeds/waitingApproval';
 import MemberModel from '../../../schemas/Member';
 import RoleModel from '../../../schemas/Role';
 import threadWebhookSend from '../../Channel/Webhook/threadWebhookSend';
 import parseMember from '../../Member/parseMember';
+import getPersonalThread from '../../Thread/getPersonalThread';
 import type FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
 
@@ -28,19 +29,10 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 
 	if (entry.form.resultDestination.type == 'GUILD_CHANNEL') {
 		const [member, guild] = await parseMember(entry.form.resultDestination.guildId!, entry.ownerId);
+		const [thread] = await getPersonalThread(member, guild, entry.form.resultDestination.id, `${member.user.username} applications`);
 
-		const message = await threadWebhookSend(
-			guild,
-			member as GuildMember,
-			entry.form.resultDestination.id,
-			{
-				embeds: [approvalForm(entry, entry.form, false)],
-				components: entry.createVerificationComponents()
-			},
-			`${member.user.username} applications`
-		);
-		entry._document.applicationId = message?.id;
-		const channel = (message as Message).channel as ThreadChannel;
+		let channel = thread as ThreadChannel;
+		channel = await channel.setArchived(false);
 		userIds.forEach(async (id) => {
 			try {
 				const parent = channel.parent;
@@ -53,6 +45,18 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 				console.log(`error occured on ${id}`, error);
 			}
 		});
+
+		const message = await threadWebhookSend(
+			guild,
+			member as GuildMember,
+			entry.form.resultDestination.id,
+			{
+				embeds: [approvalForm(entry, entry.form, false)],
+				components: entry.createVerificationComponents()
+			},
+			`${member.user.username} applications`
+		);
+		entry._document.applicationId = message?.id;
 	} else {
 		const message = await interaction.client.users.send(entry.form.resultDestination.id, {
 			embeds: [approvalForm(entry, entry.form, false)],

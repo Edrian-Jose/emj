@@ -77,6 +77,7 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 							channelId: (navigatorMessage.channel as ThreadChannel)!.parent!.id
 						};
 					}
+
 					_formEntry.navigatorId = navigatorMessage.id;
 					await interaction.followUp({
 						content: `Form already sent to your desk, ${channelMention(navigatorMessage.channelId)}`,

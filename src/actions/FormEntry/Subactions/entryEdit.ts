@@ -4,9 +4,12 @@ import parseMember from '../../Member/parseMember';
 import getPersonalThread from '../../Thread/getPersonalThread';
 import type FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
+import { removeVerifiers } from './entryDeny';
 
 const entryEdit = async (entry: FormEntry, interaction: ButtonInteraction) => {
 	//
+
+	const verifiers = entry.verifiers;
 	if (entry.applicationId && entry.form.resultDestination) {
 		if (entry.form.resultDestination.type === 'GUILD_CHANNEL') {
 			const [member, guild] = await parseMember(entry.form.resultDestination.guildId!, entry.ownerId);
@@ -14,13 +17,17 @@ const entryEdit = async (entry: FormEntry, interaction: ButtonInteraction) => {
 			const [thread] = await getPersonalThread(member, guild, channel as TextChannel);
 			if (thread) {
 				thread.setArchived(false);
-				await thread.messages.delete(entry.applicationId);
+				thread.messages.delete(entry.applicationId).then(() => {
+					if (verifiers) {
+						removeVerifiers(thread, verifiers, entry.ownerId);
+					}
+				});
 			}
 		} else {
 			const channel = await interaction.client.channels.fetch(entry.form.resultDestination.id);
-			const message = await (channel as DMChannel).messages.fetch(entry.applicationId!);
+			let message = await (channel as DMChannel).messages.fetch(entry.applicationId!);
 			if (message.deletable) {
-				await message.delete();
+				message = await message.delete();
 			}
 		}
 		entry._document.applicationId = undefined;

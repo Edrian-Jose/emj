@@ -14,17 +14,35 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 	//
 	const verifiers = entry.verifiers;
 
+	if (!verifiers?.includes(interaction.user.id)) {
+		await interaction.followUp({
+			content: `You are not the owner of this form`,
+			ephemeral: true
+		});
+		return;
+	}
+
+	entry._document.applicationId = undefined;
+	await entry._document.save();
+	await interaction.followUp({
+		content: `Approved successfully.`,
+		ephemeral: true
+	});
+
 	if (entry.form.resultDestination.type === 'GUILD_CHANNEL' && verifiers) {
 		const channel = interaction.channel as ThreadChannel;
-		removeVerifiers(channel, verifiers, entry.ownerId);
 
-		const message = interaction.message as Message;
+		let message = interaction.message as Message;
 
-		await webhookEdit((interaction.channel as ThreadChannel).parent!, message, {
+		message = (await webhookEdit((interaction.channel as ThreadChannel).parent!, message, {
 			embeds: [approvedApplication(entry, interaction.user.username, false)],
 			components: [],
 			threadId: interaction.channel?.id
-		});
+		})) as Message;
+
+		if (message) {
+			removeVerifiers(channel, verifiers, entry.ownerId);
+		}
 	} else {
 		const creator = await interaction.client.users.fetch(entry.form.creatorId);
 		const channel = creator.dmChannel ?? (await creator.createDM());
@@ -48,7 +66,6 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 			if (thread) {
 				thread.setArchived(false);
 				const message = await thread.messages.fetch(entry.navigatorId);
-
 				if (message) {
 					await utilityWebhookSend(
 						guild,
@@ -76,12 +93,7 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 		}
 	}
 
-	entry._document.applicationId = undefined;
-	await entry._document.save();
-	await interaction.followUp({
-		content: `Approved successfully.`,
-		ephemeral: true
-	});
+	
 };
 
 export default entryApprove;

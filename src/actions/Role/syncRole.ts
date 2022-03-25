@@ -42,6 +42,7 @@ const syncRole = async (
 	if (role && _role) {
 		_role.members = Array.from(role.members.keys());
 		_role.name = role.name;
+		_role.position = role.position;
 		_role = await _role.save();
 	}
 	return [_role, role, guild];

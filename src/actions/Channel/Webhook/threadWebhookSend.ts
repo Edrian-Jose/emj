@@ -22,9 +22,7 @@ const threadWebhookSend = async (
 		let [thread] = await getPersonalThread(member, guild, channel, threadName);
 		if (thread) {
 			thread.setArchived(false);
-			if (!(await thread.members.fetch(member))) {
-				thread.members.add(member);
-			}
+			await thread.parent?.permissionOverwrites.create(member, { VIEW_CHANNEL: true });
 			thread = await thread.setName(threadName);
 			options.threadId = thread.id;
 		}

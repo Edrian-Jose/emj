@@ -1,6 +1,7 @@
 import type { ButtonInteraction, Message, MessageButton, ThreadChannel } from 'discord.js';
 import webhookEdit from '../../Channel/Webhook/webhookEdit';
 import type FormEntry from '../FormEntry';
+import entryApprove from './entryApprove';
 const entryUpvote = async (entry: FormEntry, interaction: ButtonInteraction) => {
 	//
 	const requiredUpvote = Math.floor((entry.verifiers?.length ?? 0) * 0.6);
@@ -20,11 +21,7 @@ const entryUpvote = async (entry: FormEntry, interaction: ButtonInteraction) => 
 		threadId: channel.id
 	});
 	if (upvotes >= requiredUpvote && upvotes > downvotes) {
-		await interaction.followUp({
-			content: `Upvote succesfully. The application has been approved because of sufficient upvotes.`,
-			ephemeral: true
-		});
-		//TODO: trigger approve here
+		await entryApprove(entry, interaction);
 	} else {
 		await interaction.followUp({
 			content: `Upvote succesfully. ${Math.max(

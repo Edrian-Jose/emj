@@ -1,16 +1,22 @@
 import { container } from '@sapphire/framework';
 import type { DMChannel } from 'discord.js';
 import type { FormEntryDocument } from '../../../schemas/FormEntry';
+import FormEntryModel from '../../../schemas/FormEntry';
 import getPersonalThread from '../../Thread/getPersonalThread';
 
 const entryCancel = async (_entry: FormEntryDocument) => {
 	if (_entry.location.type === 'GUILD_TEXT' && _entry.location.guildId && _entry.location.channelId) {
 		let [thread] = await getPersonalThread(_entry.ownerId, _entry.location.guildId, _entry.location.channelId);
-
+		const entries = await FormEntryModel.find({ ownerId: _entry.ownerId }).exec();
 		if (thread) {
 			thread = await thread.setArchived(false);
 			if (_entry.navigatorId) {
 				await thread?.messages.delete(_entry.navigatorId);
+			}
+
+			if (entries.length <= 1) {
+				await thread.parent?.permissionOverwrites.delete(_entry.ownerId);
+				thread = await thread.setArchived(true);
 			}
 		}
 		if (_entry.applicationId) {

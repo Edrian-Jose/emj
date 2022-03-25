@@ -2,9 +2,11 @@ import type { ButtonInteraction, Message, Snowflake, TextChannel, ThreadChannel 
 import waitingApproval from '../../../components/embeds/waitingApproval';
 import FormEntryModel from '../../../schemas/FormEntry';
 import GuildModel from '../../../schemas/Guild';
+import RoleModel from '../../../schemas/Role';
 import parseChannel from '../../Channel/parseChannel';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
 import parseMember from '../../Member/parseMember';
+import parseRole from '../../Role/parseRole';
 import getPersonalThread from '../../Thread/getPersonalThread';
 import type FormEntry from '../FormEntry';
 
@@ -32,6 +34,33 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 		const channel = interaction.channel as ThreadChannel;
 		removeVerifiers(channel, verifiers, entry.ownerId);
 	}
+
+	const rewardRoles = entry.form.rewardRoles;
+	rewardRoles.forEach(async (roleId) => {
+		const _role = await RoleModel.findOne({ roleId }).exec();
+		if (_role) {
+			const [role, guild] = await parseRole(_role.guildId, _role.roleId);
+			const clientMember = await guild.members.fetch(interaction.client.user!.id);
+			const botRole = clientMember.roles.botRole;
+			let [member] = await parseMember(guild, entry.ownerId);
+			if (member && role) {
+				if (botRole && botRole.position > _role.position) {
+					member = await member.roles.remove(role);
+				}
+			}
+		}
+	});
+
+	if ((interaction.message as Message).deletable) {
+		await (interaction.message as Message).delete();
+	}
+
+	entry._document.applicationId = undefined;
+	await entry._document.save();
+	await interaction.followUp({
+		content: `Denied successfully.`,
+		ephemeral: true
+	});
 
 	if (entry.location.type === 'GUILD_TEXT') {
 		const [member, guild] = await parseMember(entry.location.guildId!, entry.ownerId);
@@ -69,17 +98,6 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 			});
 		}
 	}
-
-	if ((interaction.message as Message).deletable) {
-		await (interaction.message as Message).delete();
-	}
-
-	entry._document.applicationId = undefined;
-	await entry._document.save();
-	await interaction.followUp({
-		content: `Denied successfully.`,
-		ephemeral: true
-	});
 };
 
 export default entryDeny;
