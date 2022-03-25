@@ -3,7 +3,7 @@ import MemberModel, { MemberDocument } from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 import parseGuild from '../Guild/parseGuild';
 import { getGuildDocument } from '../Guild/syncGuild';
-import parseRole from '../Role/parseRole';
+import syncRole from '../Role/syncRole';
 import parseMember from './parseMember';
 
 export const getMemberDocument = async (
@@ -40,7 +40,7 @@ const syncMember = async (
 		const cacheRoles = Array.from(member.roles.cache.keys());
 		const roles: string[] = [];
 		for (const roleId of cacheRoles) {
-			const [role, guild] = await parseRole(member.guild, roleId);
+			const [_role, role, guild] = await syncRole(member.guild, roleId);
 			if (role && role.members.has(member.id) && role.id !== guild.id) {
 				roles.push(role.id);
 			}
