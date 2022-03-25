@@ -14,6 +14,7 @@ class Prompt implements Question {
 	readonly maxSelected?: number;
 	readonly options?: { label: string; value: string; description?: string }[];
 	readonly placeholder?: string;
+	readonly command?: string;
 
 	public constructor(formId: string, question: QuestionDocument) {
 		this.formId = formId;
@@ -27,6 +28,7 @@ class Prompt implements Question {
 		this.minSelected = question.minSelected;
 		this.maxSelected = question.maxSelected;
 		this.options = question.options;
+		this.command = question.command;
 	}
 
 	public createEmbed(footerText?: string, value?: string) {

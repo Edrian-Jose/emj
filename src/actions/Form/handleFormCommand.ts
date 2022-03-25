@@ -1,5 +1,6 @@
 import type FormEntry from '../FormEntry/FormEntry';
 import defaultSubmit from './Commands/defaultSubmit';
+import executeQuestionCommand from './handlePromptCommand';
 import type Prompt from './Strategies/Prompt';
 
 export type EntryAnswer = {
@@ -36,6 +37,10 @@ const executeFormCommand = (entry: FormEntry, success = false) => {
 				}
 			});
 		}
+
+		answers.forEach((answer) => {
+			executeQuestionCommand(entry, answer.question, answer.value);
+		});
 	} else if (commands?.onCancel) {
 		commands.onCancel.forEach((command) => {
 			if (Object.keys(customCommands).includes(command)) {

@@ -19,10 +19,9 @@ const getPersonalThread = async (
 		let _thread = await ThreadModel.findOne({ ownerId: parsedMember.id, parentId: channel.id });
 		if (!_thread) {
 			const thread = await channel.threads.create({ name: threadName ?? `${parsedMember.user.username} thread`, autoArchiveDuration: 1440 });
-			const ownerId = await thread.members.add(parsedMember);
 			const [threadDoc, threadC] = await syncThread(guildResolvable, channelResolvable, thread);
 			if (threadDoc) {
-				threadDoc.ownerId = ownerId;
+				threadDoc.ownerId = parsedMember.id;
 				await threadDoc.save();
 				return [threadC, threadDoc, _channel];
 			}
