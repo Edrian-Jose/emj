@@ -46,7 +46,12 @@ class FormEntry implements IFormEntry {
 		this.navigatorId = entry.navigatorId;
 		this.applicationId = entry.applicationId;
 		this.verifiers = entry.verifiers;
-		this.questions = (entry.form as FormDocument).questions.map((question) => new Prompt(entry._id, question));
+		if ((entry.form as FormDocument).questions) {
+			this.questions = (entry.form as FormDocument).questions.map((question) => new Prompt(entry._id, question));
+		} else {
+			this.questions = [];
+		}
+		
 		this.answers = entry.answers.map((answer) => {
 			return {
 				question: new Prompt(entry._id, answer.question),

@@ -16,7 +16,7 @@ const stepModal = (entry: FormEntry) => {
 		}
 
 		if (entry.answers[i] && entry.answers[i].answer) {
-			const value = entry.answers[i]?.answer?.at(0)?.value;
+			const value = entry.answers[i]?.answer?.at(0)?.label;
 			if (value) {
 				component.setDefaultValue(value);
 			}

@@ -6,7 +6,7 @@ import FormEntryModel from '../../../schemas/FormEntry';
 import updateNavigator from '../../FormEntry/Navigator/updateNavigator';
 import moment from 'moment';
 
-const validateType = (question: QuestionDocument, input: string): boolean => {
+export const validateType = (question: QuestionDocument, input: string): boolean => {
 	switch (question.type) {
 		case 'BOOLEAN':
 			return ['true', 'false'].includes(input);
@@ -24,7 +24,7 @@ const validateType = (question: QuestionDocument, input: string): boolean => {
 	}
 };
 
-const parseValues = (question: QuestionDocument, input: string) => {
+export const parseValue = (question: QuestionDocument, input: string) => {
 	switch (question.type) {
 		case 'NUMBER':
 			return parseFloat(input).toString();
@@ -39,7 +39,7 @@ const parseValues = (question: QuestionDocument, input: string) => {
 	}
 };
 
-const getFormatString = (question: QuestionDocument) => {
+export const getFormatString = (question: QuestionDocument) => {
 	switch (question.type) {
 		case 'NUMBER':
 			return `The input should be a valid number (e.g. 1, 0, 3.5)`;
@@ -80,7 +80,7 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 				_formEntry.answers[index].answer = [
 					{
 						label: input,
-						value: parseValues(question, input)
+						value: parseValue(question, input)
 					}
 				];
 			} else {
@@ -89,7 +89,7 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 					answer: [
 						{
 							label: input,
-							value: parseValues(question, input)
+							value: parseValue(question, input)
 						}
 					]
 				});

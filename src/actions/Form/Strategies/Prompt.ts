@@ -4,6 +4,7 @@ import prompt from '../../../components/embeds/prompt';
 import type { Question, QuestionDocument, QuestionType } from './../../../schemas/Question';
 class Prompt implements Question {
 	readonly _id: string;
+	readonly _document: QuestionDocument;
 	readonly creatorId: string;
 	readonly formId: string;
 	readonly type: QuestionType;
@@ -20,6 +21,7 @@ class Prompt implements Question {
 	public constructor(formId: string, question: QuestionDocument) {
 		this.formId = formId;
 		this._id = question._id;
+		this._document = question;
 		this.creatorId = question.creatorId;
 		this.type = question.type;
 		this.value = question.value;

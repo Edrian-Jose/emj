@@ -34,10 +34,14 @@ const entryCancel = async (_entry: FormEntryDocument) => {
 				}
 			}
 		}
-	} else {
-		let channel = (await container.client.channels.fetch(_entry.location.channelId)) as DMChannel;
-		if (channel) {
-			await channel.messages.delete(_entry.navigatorId);
+	} else if (_entry.location.channelId) {
+		try {
+			let channel = (await container.client.channels.fetch(_entry.location.channelId)) as DMChannel;
+			if (channel) {
+				await channel.messages.delete(_entry.navigatorId);
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
