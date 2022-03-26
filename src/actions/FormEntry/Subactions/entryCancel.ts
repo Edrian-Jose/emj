@@ -3,8 +3,11 @@ import type { DMChannel } from 'discord.js';
 import type { FormEntryDocument } from '../../../schemas/FormEntry';
 import FormEntryModel from '../../../schemas/FormEntry';
 import getPersonalThread from '../../Thread/getPersonalThread';
+import FormEntry from '../FormEntry';
+import { removeVerifiers } from './entryDeny';
 
 const entryCancel = async (_entry: FormEntryDocument) => {
+	const entry = new FormEntry(_entry);
 	if (_entry.location.type === 'GUILD_TEXT' && _entry.location.guildId && _entry.location.channelId) {
 		let [thread] = await getPersonalThread(_entry.ownerId, _entry.location.guildId, _entry.location.channelId);
 		const entries = await FormEntryModel.find({ ownerId: _entry.ownerId }).exec();
@@ -21,10 +24,13 @@ const entryCancel = async (_entry: FormEntryDocument) => {
 		}
 		if (_entry.applicationId) {
 			let [appThread] = await getPersonalThread(_entry.ownerId, _entry.location.guildId, _entry.form.resultDestination.id);
+
 			if (appThread) {
 				appThread = await appThread.setArchived(false);
-				if (_entry.navigatorId) {
-					await appThread?.messages.delete(_entry.applicationId);
+				await appThread?.messages.delete(_entry.applicationId);
+
+				if (entry.verifiers) {
+					removeVerifiers(appThread, entry.verifiers, entry.ownerId);
 				}
 			}
 		}
@@ -32,13 +38,6 @@ const entryCancel = async (_entry: FormEntryDocument) => {
 		let channel = (await container.client.channels.fetch(_entry.location.channelId)) as DMChannel;
 		if (channel) {
 			await channel.messages.delete(_entry.navigatorId);
-		}
-
-		if (_entry.applicationId) {
-			let channel = (await container.client.channels.fetch(_entry.location.channelId)) as DMChannel;
-			if (channel) {
-				await channel.messages.delete(_entry.navigatorId);
-			}
 		}
 	}
 

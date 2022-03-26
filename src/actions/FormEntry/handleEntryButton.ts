@@ -21,16 +21,16 @@ import entryDeny from './Subactions/entryDeny';
 import entryEdit from './Subactions/entryEdit';
 import entryDenyModal from './Subactions/entryDenyModal';
 import entryAccept from './Subactions/entryAccept';
+import entrySubmitModal from './Subactions/entrySubmitModal';
 
 const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubActions, entryId: FormEntryDocument['_id']) => {
-	if (type !== 'denyModal' && type !== 'deny') {
-		await interaction.deferUpdate();
-	}
-
 	const _entry = await FormEntryModel.getAll(entryId);
 	const entry = new FormEntry(_entry);
 	const verifiers = entry.verifiers;
 
+	if (type !== 'denyModal' && type !== 'deny' && type !== 'submitModal' && type !== 'edit') {
+		await interaction.deferUpdate();
+	}
 	// verifier and not owner
 	if (verifiers && verifiers.includes(interaction.user.id) && entry.ownerId !== interaction.user.id) {
 		switch (type) {
@@ -100,6 +100,9 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 					break;
 				case 'accept':
 					await entryAccept(entry, interaction);
+					break;
+				case 'submitModal':
+					await entrySubmitModal(entry, interaction);
 					break;
 				default:
 					await updateNavigator(interaction, entry._id);

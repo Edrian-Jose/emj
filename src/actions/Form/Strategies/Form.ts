@@ -8,6 +8,7 @@ export type FormSubActions = 'activate' | 'create' | 'delete' | 'start' | 'cance
 
 class Form implements IForm {
 	_id: string;
+	_document: FormDocument;
 	creatorId: Snowflake;
 	author: {
 		userId: Snowflake;
@@ -48,6 +49,7 @@ class Form implements IForm {
 
 	public constructor(document: FormDocument) {
 		this._id = document._id;
+		this._document = document;
 		this.creatorId = document.creatorId;
 		this.author = document.author;
 		this.title = document.title;

@@ -37,15 +37,13 @@ interface FormEntryBaseDocument extends _FormEntry, Document {
 export interface FormEntryDocument extends FormEntryBaseDocument {
 	//store ref typings here
 	form: FormDocument['_id'];
-	answers: [
-		{
-			question: QuestionDocument['_id'];
-			answer?: {
-				label: string;
-				value: string;
-			}[];
-		}
-	];
+	answers: {
+		question: QuestionDocument['_id'];
+		answer?: {
+			label: string;
+			value: string;
+		}[];
+	}[];
 }
 export interface FormEntryPopulatedDocument extends FormEntryDocument {
 	//store ref typings here

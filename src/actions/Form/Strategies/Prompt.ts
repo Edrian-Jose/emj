@@ -10,6 +10,7 @@ class Prompt implements Question {
 	readonly required: boolean;
 	readonly question: string;
 	readonly value: string;
+	readonly default?: string;
 	readonly minSelected?: number;
 	readonly maxSelected?: number;
 	readonly options?: { label: string; value: string; description?: string }[];
@@ -22,6 +23,7 @@ class Prompt implements Question {
 		this.creatorId = question.creatorId;
 		this.type = question.type;
 		this.value = question.value;
+		this.default = question.default;
 		this.required = question.required ?? false;
 		this.question = question.value;
 		this.placeholder = question.placeholder;

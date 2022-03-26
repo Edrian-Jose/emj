@@ -36,24 +36,26 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 
 	await entry._document.delete();
 
-	if (entry.location.type === 'GUILD_TEXT') {
-		let thread = interaction.channel as ThreadChannel;
-		if (thread.isThread()) {
-			if (entries.length <= 1) {
-				await interaction.followUp({
-					content: `Thread last archived : ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`,
-					ephemeral: true
-				});
+	if (entry.form.verification) {
+		if (entry.location.type === 'GUILD_TEXT') {
+			let thread = interaction.channel as ThreadChannel;
+			if (thread.isThread()) {
+				if (entries.length <= 1) {
+					await interaction.followUp({
+						content: `Thread last archived : ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`,
+						ephemeral: true
+					});
 
-				await thread.parent?.permissionOverwrites.delete(interaction.user);
-				thread = await thread.setArchived(true);
-				return;
+					await thread.parent?.permissionOverwrites.delete(interaction.user);
+					thread = await thread.setArchived(true);
+					return;
+				}
 			}
 		}
 	}
 
 	await interaction.followUp({
-		content: `Application sent for approval has been deleted. You can now edit the form and resend it later.`,
+		content: `Rewards accepted if there's any.`,
 		ephemeral: true
 	});
 	return;

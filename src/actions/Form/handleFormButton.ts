@@ -7,9 +7,12 @@ import formInstanceDelete from './Subactions/formInstanceDelete';
 import formCreate from './Subactions/formCreate';
 
 const handleFormButton = async (interaction: ButtonInteraction, type: FormSubActions, formId: FormDocument['_id']) => {
-	await interaction.deferReply({
-		ephemeral: true
-	});
+	if (type !== 'start') {
+		await interaction.deferReply({
+			ephemeral: true
+		});
+	}
+	
 	const _form = await FormModel.findById(formId).populate('questions');
 	if (_form) {
 		switch (type) {

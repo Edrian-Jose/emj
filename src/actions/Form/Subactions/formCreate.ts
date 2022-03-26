@@ -6,6 +6,8 @@ import MemberModel from '../../../schemas/Member';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
 import FormEntry from '../../FormEntry/FormEntry';
 import entryCancel from '../../FormEntry/Subactions/entryCancel';
+const { showModal } = require('discord-modals');
+
 const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
 	const { user, guild, member } = interaction;
 
@@ -62,6 +64,9 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 
 		const entry = new FormEntry(_formEntry);
 		if (_form.type === 'STEP') {
+			await interaction.deferReply({
+				ephemeral: true
+			});
 			if (guild && member instanceof GuildMember) {
 				const navigatorMessage = (await utilityWebhookSend(guild, member, 'desk', {
 					embeds: [entry.createQuestionEmbed()],
@@ -94,7 +99,10 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				await interaction.followUp({ content: `Form already sent`, ephemeral: true });
 			}
 		} else {
-			await interaction.followUp({ content: `SINGLE FORMS NOT IMPLEMENTED YET`, ephemeral: true });
+			showModal(entry.createStepModal(), {
+				client: interaction.client,
+				interaction
+			});
 		}
 
 		await _formEntry.save();

@@ -1,5 +1,6 @@
 import { MessageActionRow, MessageButton, MessageSelectMenu, Snowflake } from 'discord.js';
 import navigator from '../../components/embeds/navigator';
+import stepModal from '../../components/modals/stepModal';
 import type { FormDocument } from '../../schemas/Form';
 import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/FormEntry';
 import Form from '../Form/Strategies/Form';
@@ -20,7 +21,8 @@ export type EntrySubActions =
 	| 'approve'
 	| 'deny'
 	| 'denyModal'
-	| 'accept';
+	| 'accept'
+	| 'submitModal';
 class FormEntry implements IFormEntry {
 	_id: string;
 	_document: FormEntryDocument;
@@ -53,6 +55,9 @@ class FormEntry implements IFormEntry {
 		});
 	}
 
+	public createStepModal() {
+		return stepModal(this);
+	}
 	public createVerifiedComponents() {
 		const actionRows: MessageActionRow[] = [];
 		const acceptButton = new MessageButton().setLabel('Accept').setCustomId(`___entry-accept-${this._id}`).setStyle('SUCCESS');
@@ -84,7 +89,9 @@ class FormEntry implements IFormEntry {
 		const actionRows: MessageActionRow[] = [];
 		const cancelButton = new MessageButton().setLabel('Delete').setCustomId(`___entry-cancel-${this._id}`).setStyle('DANGER');
 		const editButton = new MessageButton().setLabel('Edit').setCustomId(`___entry-edit-${this._id}`).setStyle('SUCCESS');
-		actionRows.push(new MessageActionRow().addComponents(editButton, cancelButton));
+		const actionRow = new MessageActionRow();
+		actionRow.addComponents(editButton, cancelButton);
+		actionRows.push(actionRow);
 
 		return actionRows;
 	}

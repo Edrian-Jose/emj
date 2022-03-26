@@ -12,7 +12,9 @@ import updateNavigator from '../Navigator/updateNavigator';
 const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteraction) => {
 	const { guild } = interaction;
 	const options = { embeds: [waitingApproval(entry, guild ? false : true)], components: entry.createWaitComponents() };
+
 	updateNavigator(interaction, entry._id, options);
+
 	const verifiers = entry.form.verifiers;
 	const userIds: string[] = [];
 	if (verifiers && guild) {
