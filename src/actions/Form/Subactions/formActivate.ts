@@ -67,11 +67,13 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 		if (userIds.length) {
 			for (const id of userIds) {
 				const [member] = await parseMember(guild, id);
-				const message = await member.send({
-					embeds: [form.createEmbed(true)],
-					components: form.createComponents('INSTANCE')
-				});
-				messages.push(message);
+				if (member) {
+					const message = await member.send({
+						embeds: [form.createEmbed(true)],
+						components: form.createComponents('INSTANCE')
+					});
+					messages.push(message);
+				}
 			}
 		}
 	}

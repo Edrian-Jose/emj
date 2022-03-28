@@ -20,7 +20,12 @@ const getChannelWebhook = async (channel: TextChannel | NewsChannel, force = fal
 	let webhook: Webhook | null = null;
 	const [_channel] = await getChannelDocument(channel.guild, channel);
 	if (_channel?.webhookId) {
-		webhook = await channel.client.fetchWebhook(_channel.webhookId);
+		try {
+			webhook = await channel.client.fetchWebhook(_channel.webhookId);
+		} catch (error) {
+			console.log(error);
+		}
+		
 	} else if (force) {
 		webhook = await registerWebhook(channel);
 	}

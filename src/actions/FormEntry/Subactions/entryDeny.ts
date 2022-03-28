@@ -40,19 +40,23 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 		const _role = await RoleModel.findOne({ roleId }).exec();
 		if (_role) {
 			const [role, guild] = await parseRole(_role.guildId, _role.roleId);
-			const clientMember = await guild.members.fetch(interaction.client.user!.id);
-			const botRole = clientMember.roles.botRole;
-			let [member] = await parseMember(guild, entry.ownerId);
-			if (member && role) {
-				if (botRole && botRole.position > _role.position) {
-					member = await member.roles.remove(role);
+			try {
+				const clientMember = await guild.members.fetch(interaction.client.user!.id);
+				const botRole = clientMember.roles.botRole;
+				let [member] = await parseMember(guild, entry.ownerId);
+				if (member && role) {
+					if (botRole && botRole.position > _role.position) {
+						member = await member.roles.remove(role);
+					}
 				}
+			} catch (error) {
+				console.log(error);
 			}
 		}
 	});
 
 	if ((interaction.message as Message).deletable) {
-		await (interaction.message as Message).delete();
+		await(interaction.message as Message).delete();
 	}
 
 	entry._document.applicationId = undefined;
@@ -67,35 +71,43 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 
 		const _guild = await GuildModel.findOne({ guildId: guild.id });
 		const [deskChannel] = await parseChannel(guild, _guild?.channels.desk!);
-		if (deskChannel?.isText()) {
+		if (deskChannel?.isText() && member) {
 			let [thread] = await getPersonalThread(member, guild, deskChannel as TextChannel);
 
 			if (thread) {
 				thread.setArchived(false);
-				const message = await thread.messages.fetch(entry.navigatorId);
+				try {
+					const message = await thread.messages.fetch(entry.navigatorId);
 
-				if (message) {
-					await utilityWebhookSend(
-						guild,
-						member,
-						'desk',
-						{
-							embeds: [waitingApproval(entry, false, 'Denied', reason, recommendation)]
-						},
-						`${member.user.username} desk`,
-						message
-					);
+					if (message) {
+						await utilityWebhookSend(
+							guild,
+							member,
+							'desk',
+							{
+								embeds: [waitingApproval(entry, false, 'Denied', reason, recommendation)]
+							},
+							`${member.user.username} desk`,
+							message
+						);
+					}
+				} catch (error) {
+					console.log(error);
 				}
 			}
 		}
 	} else {
-		const owner = await interaction.client.users.fetch(entry.ownerId);
-		const channel = owner.dmChannel ?? (await owner.createDM());
-		const message = await channel.messages.fetch(entry.navigatorId!);
-		if (message.editable) {
-			await message.edit({
-				embeds: [waitingApproval(entry, false, 'Denied', reason, recommendation)]
-			});
+		try {
+			const owner = await interaction.client.users.fetch(entry.ownerId);
+			const channel = owner.dmChannel ?? (await owner.createDM());
+			const message = await channel.messages.fetch(entry.navigatorId!);
+			if (message.editable) {
+				await message.edit({
+					embeds: [waitingApproval(entry, false, 'Denied', reason, recommendation)]
+				});
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 };

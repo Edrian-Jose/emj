@@ -22,14 +22,19 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 		const _role = await RoleModel.findOne({ roleId }).exec();
 		if (_role) {
 			const [role, guild] = await parseRole(_role.guildId, _role.roleId);
-			const clientMember = await guild.members.fetch(interaction.client.user!.id);
-			const botRole = clientMember.roles.botRole;
-			let [member] = await parseMember(guild, interaction.user);
-			if (member && role) {
-				if (botRole && botRole.position > _role.position) {
-					member = await member.roles.add(role);
+			try {
+				const clientMember = await guild.members.fetch(interaction.client.user!.id);
+				const botRole = clientMember.roles.botRole;
+				let [member] = await parseMember(guild, interaction.user);
+				if (member && role) {
+					if (botRole && botRole.position > _role.position) {
+						member = await member.roles.add(role);
+					}
 				}
+			} catch (error) {
+				console.log(error);
 			}
+			
 		}
 	});
 	executeFormCommand(entry, true);

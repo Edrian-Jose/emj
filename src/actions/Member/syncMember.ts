@@ -9,7 +9,7 @@ import parseMember from './parseMember';
 export const getMemberDocument = async (
 	guildResolvable: Snowflake | Guild,
 	memberResolvable: GuildMemberResolvable
-): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+): Promise<[(MemberDocument & { _id: any }) | null, GuildMember | null]> => {
 	let _member: (MemberDocument & { _id: any }) | null = null;
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
 	const id = typeof memberResolvable === 'string' ? memberResolvable : memberResolvable.id;
@@ -29,7 +29,7 @@ export const getMemberDocument = async (
 const syncMember = async (
 	guildResolvable: Snowflake | Guild,
 	memberResolvable: GuildMemberResolvable
-): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+): Promise<[(MemberDocument & { _id: any }) | null, GuildMember | null]> => {
 	const [_member, member] = await getMemberDocument(guildResolvable, memberResolvable);
 
 	if (_member && member && !member.user.bot) {

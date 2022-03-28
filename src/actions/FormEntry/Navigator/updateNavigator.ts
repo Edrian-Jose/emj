@@ -13,11 +13,15 @@ const updateNavigator = async (interaction: MessageComponentInteraction, formId:
 
 	if (channel) {
 		if (guild && member instanceof GuildMember) {
-			const message = _formEntry.navigatorId
-				? await channel.messages.fetch(_formEntry.navigatorId)
-				: ((await utilityWebhookSend(guild, member, 'desk', options)) as Message);
+			let message: Message;
 
-			let c = message.channel.isThread() ? message.channel.parent : message.channel;
+			if (_formEntry.navigatorId) {
+				message = await channel.messages.fetch(_formEntry.navigatorId);
+			} else {
+				message = (await utilityWebhookSend(guild, member, 'desk', options)) as Message;
+			}
+
+			let c = message?.channel.isThread() ? message.channel.parent : message.channel;
 
 			if (!_formEntry.navigatorId) {
 				_formEntry.navigatorId = message.id;
@@ -36,10 +40,15 @@ const updateNavigator = async (interaction: MessageComponentInteraction, formId:
 
 			await webhookEdit(c as TextChannel, message, options);
 		} else {
-			const message = await channel.messages.fetch(_formEntry.navigatorId);
-			if (message) {
-				await message.edit(options);
+			try {
+				const message = await channel.messages.fetch(_formEntry.navigatorId);
+				if (message) {
+					await message.edit(options);
+				}
+			} catch (error) {
+				console.log(error);
 			}
+			
 		}
 	}
 };

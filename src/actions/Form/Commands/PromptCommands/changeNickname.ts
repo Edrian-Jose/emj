@@ -10,7 +10,7 @@ const changeNickname = async (values: string[], prompt: Prompt, entry: FormEntry
 	const memberInstances = await MemberModel.find({ userId: ownerId }).exec();
 	for (const memberDocument of memberInstances) {
 		let [member] = await parseMember(memberDocument.guildId, memberDocument.userId);
-		if (values.length && member.manageable) {
+		if (values.length && member?.manageable) {
 			member = await member.setNickname(values[0]);
 		}
 	}
