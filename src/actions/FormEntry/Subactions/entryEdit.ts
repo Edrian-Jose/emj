@@ -17,11 +17,14 @@ export const deleteApplication = async (entry: FormEntry, interaction: ButtonInt
 				const [thread] = await getPersonalThread(member, guild, channel as TextChannel);
 				if (thread) {
 					thread.setArchived(false);
-					thread.messages.delete(entry.applicationId).then(() => {
-						if (verifiers) {
-							removeVerifiers(thread, verifiers, entry.ownerId);
-						}
-					});
+					thread.messages
+						.delete(entry.applicationId)
+						.then(() => {
+							if (verifiers) {
+								removeVerifiers(thread, verifiers, entry.ownerId);
+							}
+						})
+						.catch((error) => console.log(error));
 				}
 			}
 		} else {

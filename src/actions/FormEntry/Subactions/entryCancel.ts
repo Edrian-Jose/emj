@@ -18,7 +18,9 @@ const entryCancel = async (_entry: FormEntryDocument) => {
 			}
 
 			if (entries.length <= 1) {
-				await thread.parent?.permissionOverwrites.delete(_entry.ownerId);
+				try {
+					await thread.parent?.permissionOverwrites.delete(_entry.ownerId);
+				} catch (error) {}
 				thread = await thread.setArchived(true);
 			}
 		}
@@ -38,7 +40,12 @@ const entryCancel = async (_entry: FormEntryDocument) => {
 		try {
 			let channel = (await container.client.channels.fetch(_entry.location.channelId)) as DMChannel;
 			if (channel) {
-				await channel.messages.delete(_entry.navigatorId);
+				try {
+					await channel.messages.delete(_entry.navigatorId);
+				} catch (error) {
+					console.log(error);
+					
+				}
 			}
 		} catch (error) {
 			console.log(error);

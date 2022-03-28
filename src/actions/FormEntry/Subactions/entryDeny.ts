@@ -18,7 +18,9 @@ export const removeVerifiers = (channel: ThreadChannel, verifiers: string[], own
 		}
 		const entries = await FormEntryModel.find({ verifiers: { $all: [id] } }).exec();
 		if (entries.length <= 1) {
-			await channel.parent?.permissionOverwrites.delete(id);
+			try {
+				await channel.parent?.permissionOverwrites.delete(id);
+			} catch (error) {}
 		}
 	});
 };

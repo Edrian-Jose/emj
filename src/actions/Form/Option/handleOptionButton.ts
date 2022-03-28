@@ -18,7 +18,9 @@ const handleOptionButton = async (
 	await interaction.deferReply({ ephemeral: true });
 
 	if (!_formEntry || !_formEntry.form) {
-		await message.delete();
+		if (message.deletable) {
+			await message.delete();
+		}
 		return await interaction.followUp({
 			content: ` You can't use the form. Looks like the form is deleted`,
 			ephemeral: true

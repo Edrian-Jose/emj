@@ -50,8 +50,12 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 						content: `Thread last archived : ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`,
 						ephemeral: true
 					});
-
-					await thread.parent?.permissionOverwrites.delete(interaction.user);
+					try {
+						await thread.parent?.permissionOverwrites.delete(interaction.user);
+					} catch (error) {
+						console.log(error);
+					}
+					
 					thread = await thread.setArchived(true);
 					return;
 				}
