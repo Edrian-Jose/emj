@@ -43,7 +43,7 @@ export const formInstantiate = async (user: User, _form: FormDocument, answers?:
 
 const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
 	const { user, guild, member } = interaction;
-
+	
 	if (user) {
 		if (member && guild && _form.requiredRoles) {
 			const _member = await MemberModel.getAll(user.id, guild.id);
@@ -59,6 +59,11 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				}
 			});
 			if (!hasAll) {
+				if (!interaction.deferred) {
+					await interaction.deferReply({
+						ephemeral: true
+					});
+				}
 				await interaction.followUp({
 					content: `You didn't have the required roles necessary to fill out this form`,
 					ephemeral: true
