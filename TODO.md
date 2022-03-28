@@ -2,7 +2,7 @@
 
 ## Features
 - Guid member add application
-- Forms
+- Forms /
 - Voice channel link
 - And roles
 - public rooms
