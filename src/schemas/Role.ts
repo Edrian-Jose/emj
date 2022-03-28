@@ -5,6 +5,7 @@ interface Role {
 	guildId: Snowflake;
 	roleId: Snowflake;
 	name: string;
+	position: number;
 	members: Snowflake[];
 }
 
@@ -19,7 +20,12 @@ export interface RoleDocument extends RoleBaseDocument {
 const RoleSchema = new Schema<RoleDocument>({
 	guildId: String,
 	roleId: String,
-	name: String
+	name: String,
+	position: {
+		type: Number,
+		default: 0
+	},
+	members: [String]
 });
 
 const RoleModel = model<RoleDocument>('Role', RoleSchema);

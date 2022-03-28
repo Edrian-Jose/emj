@@ -1,4 +1,5 @@
 {
+	
 	"extends": "@sapphire/ts-config",
 	"compilerOptions": {
 		"rootDir": "src",
@@ -8,5 +9,8 @@
 		"jsxFactory": "EmbedJsx.make",
 		"noImplicitAny": false
 	},
-	"include": ["src"]
+	"include": [
+		"src"
+	],
 }
+

@@ -3,6 +3,7 @@ import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
 interface Thread {
+	threadId: Snowflake;
 	archived: boolean;
 	membersId: Snowflake[];
 	parentId: Snowflake;
@@ -19,6 +20,7 @@ export interface ThreadDocument extends ThreadBaseDocument {
 }
 
 const ThreadSchema = new Schema<ThreadDocument>({
+	threadId: String,
 	archived: Boolean,
 	membersId: [String],
 	parentId: String,

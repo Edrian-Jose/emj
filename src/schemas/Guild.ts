@@ -9,6 +9,12 @@ interface Guild {
 		channel: string;
 		nickname: string;
 	};
+	channels: {
+		desk: Snowflake;
+		inquiries: Snowflake;
+		applications: Snowflake;
+		forms: Snowflake;
+	};
 }
 
 interface GuildBaseDocument extends Guild, Document {
@@ -34,6 +40,12 @@ const GuildSchema = new Schema<GuildDocument>({
 			default: '・',
 			required: true
 		}
+	},
+	channels: {
+		desk: String,
+		inquiries: String,
+		applications: String,
+		forms: String
 	}
 });
 
