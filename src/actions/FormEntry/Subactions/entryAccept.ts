@@ -53,11 +53,19 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 			}
 		}
 	}
+	if (rewardRoles && rewardRoles.length) {
+		await interaction.followUp({
+			content: `Reward role(s) are assigned to you.`,
+			ephemeral: true
+		});
+		return;
+	}
 
 	await interaction.followUp({
-		content: `Rewards accepted if there's any.`,
+		content: `Form result accepted`,
 		ephemeral: true
 	});
+	
 	return;
 };
 

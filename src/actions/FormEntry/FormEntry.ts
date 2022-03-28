@@ -22,7 +22,7 @@ export type EntrySubActions =
 	| 'deny'
 	| 'denyModal'
 	| 'accept'
-	| 'submitModal';
+	| 'editModal';
 class FormEntry implements IFormEntry {
 	_id: string;
 	_document: FormEntryDocument;
@@ -51,7 +51,7 @@ class FormEntry implements IFormEntry {
 		} else {
 			this.questions = [];
 		}
-		
+
 		this.answers = entry.answers.map((answer) => {
 			return {
 				question: new Prompt(entry._id, answer.question),
@@ -60,8 +60,8 @@ class FormEntry implements IFormEntry {
 		});
 	}
 
-	public createStepModal() {
-		return stepModal(this);
+	public static createStepModal(form: FormDocument, entry?: FormEntry) {
+		return stepModal(form, entry);
 	}
 	public createVerifiedComponents() {
 		const actionRows: MessageActionRow[] = [];

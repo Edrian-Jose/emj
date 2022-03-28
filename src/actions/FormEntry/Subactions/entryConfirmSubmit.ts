@@ -8,8 +8,14 @@ import parseMember from '../../Member/parseMember';
 import getPersonalThread from '../../Thread/getPersonalThread';
 import type FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
+import entryAccept from './entryAccept';
 
 const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteraction) => {
+	if (!entry.form.verification) {
+		await entryAccept(entry, interaction);
+		return;
+	}
+
 	const { guild } = interaction;
 	const options = { embeds: [waitingApproval(entry, guild ? false : true)], components: entry.createWaitComponents() };
 

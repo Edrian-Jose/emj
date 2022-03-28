@@ -1,4 +1,5 @@
 import type { ButtonInteraction } from 'discord.js';
+import handleFormButton from '../Form/handleFormButton';
 import handleInputSubmit from '../Form/Input/handleInputSubmit';
 import handleEntryButton from '../FormEntry/handleEntryButton';
 
@@ -8,6 +9,7 @@ interface Interactions {
 
 const customInteractions: Interactions = {
 	input: handleInputSubmit,
+	form: handleFormButton,
 	entry: handleEntryButton
 };
 const interactions: Interactions = {};

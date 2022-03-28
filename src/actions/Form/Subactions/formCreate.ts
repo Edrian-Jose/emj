@@ -1,12 +1,45 @@
 import { channelMention } from '@discordjs/builders';
-import { ButtonInteraction, GuildMember, Message, ThreadChannel } from 'discord.js';
+import { ButtonInteraction, GuildMember, Message, ThreadChannel, User } from 'discord.js';
 import type { FormDocument } from '../../../schemas/Form';
-import FormEntryModel from '../../../schemas/FormEntry';
+import FormEntryModel, { FormEntryDocument } from '../../../schemas/FormEntry';
 import MemberModel from '../../../schemas/Member';
 import utilityWebhookSend from '../../Channel/Webhook/utilityWebhookSend';
 import FormEntry from '../../FormEntry/FormEntry';
 import entryCancel from '../../FormEntry/Subactions/entryCancel';
 const { showModal } = require('discord-modals');
+
+export const formInstantiate = async (user: User, _form: FormDocument, answers?: FormEntryDocument['answers']) => {
+	let _formEntry = await FormEntryModel.findOne({ ownerId: user.id, form: _form._id });
+	if (_formEntry) {
+		await entryCancel(_formEntry);
+	}
+
+	_formEntry = await FormEntryModel.create({
+		ownerId: user.id,
+		form: _form._id,
+		index: 0,
+		answers: answers
+	});
+
+	_formEntry = await _formEntry.populate([
+		{
+			path: 'answers',
+			populate: {
+				path: 'questions',
+				model: 'Question'
+			}
+		},
+		{
+			path: 'form',
+			populate: {
+				path: 'questions',
+				model: 'Question'
+			}
+		}
+	]);
+
+	return _formEntry;
+};
 
 const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
 	const { user, guild, member } = interaction;
@@ -33,37 +66,10 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				return;
 			}
 		}
-		let _formEntry = await FormEntryModel.findOne({ ownerId: user.id, form: _form._id });
 
-		if (_formEntry) {
-			await entryCancel(_formEntry);
-		}
-
-		_formEntry = await FormEntryModel.create({
-			ownerId: user.id,
-			form: _form._id,
-			index: 0
-		});
-
-		_formEntry = await _formEntry.populate([
-			{
-				path: 'answers',
-				populate: {
-					path: 'questions',
-					model: 'Question'
-				}
-			},
-			{
-				path: 'form',
-				populate: {
-					path: 'questions',
-					model: 'Question'
-				}
-			}
-		]);
-
-		const entry = new FormEntry(_formEntry);
 		if (_form.type === 'STEP') {
+			const _formEntry = await formInstantiate(user, _form);
+			const entry = new FormEntry(_formEntry);
 			await interaction.deferReply({
 				ephemeral: true
 			});
@@ -97,15 +103,14 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 				};
 				_formEntry.navigatorId = navigatorMessage.id;
 				await interaction.followUp({ content: `Form already sent`, ephemeral: true });
+				await _formEntry.save();
 			}
 		} else {
-			showModal(entry.createStepModal(), {
+			showModal(FormEntry.createStepModal(_form), {
 				client: interaction.client,
 				interaction
 			});
 		}
-
-		await _formEntry.save();
 	} else {
 		await interaction.followUp({ content: `Internal problem. Try again or contact the support.`, ephemeral: true });
 	}

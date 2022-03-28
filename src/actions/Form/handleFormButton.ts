@@ -5,14 +5,15 @@ import formActivate from './Subactions/formActivate';
 import formDelete from './Subactions/formDelete';
 import formInstanceDelete from './Subactions/formInstanceDelete';
 import formCreate from './Subactions/formCreate';
+import entrySubmitModal from '../FormEntry/Subactions/entrySubmitModal';
 
 const handleFormButton = async (interaction: ButtonInteraction, type: FormSubActions, formId: FormDocument['_id']) => {
-	if (type !== 'start') {
+	if (type !== 'start' && type !== 'submitModal') {
 		await interaction.deferReply({
 			ephemeral: true
 		});
 	}
-	
+
 	const _form = await FormModel.findById(formId).populate('questions');
 	if (_form) {
 		switch (type) {
@@ -24,6 +25,9 @@ const handleFormButton = async (interaction: ButtonInteraction, type: FormSubAct
 				break;
 			case 'start':
 				await formCreate(_form, interaction);
+				break;
+			case 'submitModal':
+				await entrySubmitModal(_form, interaction);
 				break;
 			default:
 				await interaction.followUp({ content: `${_form._id}`, ephemeral: true });

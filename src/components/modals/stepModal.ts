@@ -1,9 +1,10 @@
 import type FormEntry from '../../actions/FormEntry/FormEntry';
+import type { FormDocument } from '../../schemas/Form';
 
 const { Modal, TextInputComponent } = require('discord-modals');
 
-const stepModal = (entry: FormEntry) => {
-	const components = entry.questions.map((question, i) => {
+const stepModal = (form: FormDocument, entry?: FormEntry) => {
+	const components = form.questions.map((question, i) => {
 		const component = new TextInputComponent()
 			.setCustomId(`${question._id}`)
 			.setLabel(`${question.value}`)
@@ -15,7 +16,7 @@ const stepModal = (entry: FormEntry) => {
 			component.setDefaultValue(question.default);
 		}
 
-		if (entry.answers[i] && entry.answers[i].answer) {
+		if (entry && entry.answers[i] && entry.answers[i].answer) {
 			const value = entry.answers[i]?.answer?.at(0)?.label;
 			if (value) {
 				component.setDefaultValue(value);
@@ -25,9 +26,9 @@ const stepModal = (entry: FormEntry) => {
 		return component;
 	});
 
-	const modal = new Modal() // We create a Modal
-		.setCustomId(`___entry-submitModal-${entry._id}`)
-		.setTitle(`${entry.form.title}`)
+	const modal = new Modal()
+		.setCustomId(entry ? `___entry-editModal-${entry._id}` : `___form-submitModal-${form._id}`)
+		.setTitle(`${form.title}`)
 		.addComponents(...components);
 
 	return modal;

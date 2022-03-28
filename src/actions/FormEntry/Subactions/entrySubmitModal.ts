@@ -1,8 +1,9 @@
 import type { ButtonInteraction } from 'discord.js';
+import type { FormDocument } from '../../../schemas/Form';
 import FormEntryModel from '../../../schemas/FormEntry';
 import { getFormatString, parseValue, validateType } from '../../Form/Input/handleInputSubmit';
+import { formInstantiate } from '../../Form/Subactions/formCreate';
 import FormEntry from '../FormEntry';
-import entryAccept from './entryAccept';
 import entryCancel from './entryCancel';
 import entryConfirmSubmit from './entryConfirmSubmit';
 import { deleteApplication } from './entryEdit';
@@ -24,9 +25,8 @@ const validateInputs = (entry: FormEntry): [boolean, string[]] => {
 	return [isValid, errors];
 };
 
-const entrySubmitModal = async (entry: FormEntry, interaction: ButtonInteraction | any) => {
-	await interaction.deferReply({ ephemeral: true });
-	entry.answers = entry.questions.map((question) => {
+const getAnswers = async (entry: FormEntry, interaction: ButtonInteraction & { getTextInputValue: Function }) => {
+	return entry.questions.map((question) => {
 		const input = interaction.getTextInputValue(`${question._id}`);
 		return {
 			question: question,
@@ -40,10 +40,17 @@ const entrySubmitModal = async (entry: FormEntry, interaction: ButtonInteraction
 				: []
 		};
 	});
+};
 
+export const entryEditModal = async (entry: FormEntry, interaction: ButtonInteraction | any, newEntry = false) => {
+	await interaction.deferReply({ ephemeral: true });
+
+	entry.answers = await getAnswers(entry, interaction);
 	const [isValid, errors] = validateInputs(entry);
 	if (!isValid) {
-		await entryCancel(entry._document);
+		if (newEntry) {
+			await entryCancel(entry._document);
+		}
 		await interaction.followUp({ content: errors.join(', '), ephemeral: true });
 		return;
 	}
@@ -67,12 +74,17 @@ const entrySubmitModal = async (entry: FormEntry, interaction: ButtonInteraction
 
 	entry = new FormEntry(await entry._document.save());
 	entry = new FormEntry(await FormEntryModel.getAll(entry._id));
+	await entryConfirmSubmit(entry, interaction);
 	if (entry.form.verification) {
-		await entryConfirmSubmit(entry, interaction);
 		await interaction.followUp({ content: `Form submitted`, ephemeral: true });
-	} else {
-		await entryAccept(entry, interaction);
 	}
+};
+
+const entrySubmitModal = async (_form: FormDocument, interaction: ButtonInteraction | any) => {
+	const { user } = interaction;
+	const _formEntry = await formInstantiate(user, _form);
+	let entry = new FormEntry(_formEntry);
+	await entryEditModal(entry, interaction, true);
 };
 
 export default entrySubmitModal;

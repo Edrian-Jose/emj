@@ -2,7 +2,7 @@ import type { ButtonInteraction, DMChannel, TextChannel } from 'discord.js';
 import parseChannel from '../../Channel/parseChannel';
 import parseMember from '../../Member/parseMember';
 import getPersonalThread from '../../Thread/getPersonalThread';
-import type FormEntry from '../FormEntry';
+import FormEntry from '../FormEntry';
 import updateNavigator from '../Navigator/updateNavigator';
 import { removeVerifiers } from './entryDeny';
 const { showModal } = require('discord-modals');
@@ -48,7 +48,7 @@ const entryEdit = async (entry: FormEntry, interaction: ButtonInteraction) => {
 			ephemeral: true
 		});
 	} else {
-		showModal(entry.createStepModal(), {
+		showModal(FormEntry.createStepModal(entry.form._document, entry), {
 			client: interaction.client,
 			interaction
 		});
