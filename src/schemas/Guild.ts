@@ -1,5 +1,6 @@
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
+import type { FormDocument } from './Form';
 
 interface Guild {
 	guildId: Snowflake;
@@ -8,6 +9,10 @@ interface Guild {
 	seperators: {
 		channel: string;
 		nickname: string;
+	};
+	join?: {
+		roles?: Snowflake[];
+		form?: string[];
 	};
 	channels: {
 		desk: Snowflake;
@@ -23,6 +28,17 @@ interface GuildBaseDocument extends Guild, Document {
 
 export interface GuildDocument extends GuildBaseDocument {
 	//store ref typings here
+	join: {
+		roles: Snowflake[];
+		form: FormDocument['_id'];
+	};
+}
+
+export interface GuildPopulatedDocument extends GuildDocument {
+	join: {
+		roles: Snowflake[];
+		form: FormDocument;
+	};
 }
 
 const GuildSchema = new Schema<GuildDocument>({
@@ -39,6 +55,13 @@ const GuildSchema = new Schema<GuildDocument>({
 			type: String,
 			default: '・',
 			required: true
+		}
+	},
+	join: {
+		roles: [String],
+		form: {
+			type: Schema.Types.ObjectId,
+			ref: 'Form'
 		}
 	},
 	channels: {

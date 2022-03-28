@@ -13,7 +13,7 @@ export const getMemberDocument = async (
 	let _member: (MemberDocument & { _id: any }) | null = null;
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
 	const id = typeof memberResolvable === 'string' ? memberResolvable : memberResolvable.id;
-	_member = await MemberModel.findOne({ guildId: guild.id, userId: id }).exec();
+	_member = await MemberModel.findOne({ guildId: guild.id, userId: id }).populate('roles').exec();
 	if (member && !member.user.bot) {
 		if (!_member) {
 			_member = await MemberModel.create({
