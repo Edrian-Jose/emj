@@ -1,7 +1,7 @@
 # TODO list
 
 ## Features
-- Guid member add application
+- Guid member add application /
 - Forms /
 - Voice channel link
 - And roles
