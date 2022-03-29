@@ -1,10 +1,12 @@
 # TODO list
 
 ## Features
-- Guid member add application /
-- Forms /
-- Voice channel link
-- And roles
+- Guid member add application [/]
+- Forms [/]
+- Voice channel link [x]
+- And roles 
+- badges
+- teams
 - public rooms
 - private rooms
 - birthday event
