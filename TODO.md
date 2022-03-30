@@ -6,7 +6,7 @@
 - Voice channel link [x]
 - And roles  [/]
 - badges [badge assign,set,role] [/]
-- teams / groups
+- teams / groups [/]
 - public rooms
 - private rooms
 - birthday event
