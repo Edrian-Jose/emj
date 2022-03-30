@@ -1,3 +1,4 @@
+import { roleMention, userMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
@@ -9,8 +10,10 @@ import refreshBadge from '../../actions/Member/refreshBadge';
 import setMemberNickname from '../../actions/Member/setNickname';
 const getEmojisFromString = require('get-emojis-from-string');
 import { getMemberDocument } from '../../actions/Member/syncMember';
+import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
 import MemberModel, { MemberPopulatedDocument } from '../../schemas/Member';
+import RoleModel from '../../schemas/Role';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	subCommands: ['set', 'assign', 'role', 'refresh']
@@ -22,6 +25,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		}
 
 		await refreshBadge(message.author.id);
+		return temporaryReply(message, `${userMention(message.author.id)} badges has been refreshed`, true);
 	}
 	public async set(message: Message) {
 		if (!message.guild) {
@@ -31,8 +35,15 @@ export class UserCommand extends SubCommandPluginCommand {
 
 		let [_member, member] = await getMemberDocument(message.guild, message.author);
 		if (_member && member) {
-			const _newMember = await assignMemberBadge(_member, 'custom', badges.length ? badges[0].name : undefined);
-			setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
+			const badge = badges.length ? badges[0].name : undefined;
+			const _role = await RoleModel.findOne({ badge }).exec();
+			if (_role) {
+				return temporaryReply(message, `Badge ${badge} is reserved to Role ${roleMention(_role.roleId)}`, true);
+			} else {
+				const _newMember = await assignMemberBadge(_member, 'custom', badge);
+				setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
+				return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
+			}
 		}
 	}
 
@@ -44,8 +55,10 @@ export class UserCommand extends SubCommandPluginCommand {
 		const badges = getEmojisFromString(message.content, { onlyDefaultEmojis: true });
 		let [_member, member] = await getMemberDocument(message.guild, user);
 		if (_member && member) {
-			const _newMember = await assignMemberBadge(_member, 'assigned', badges.length ? badges[0].name : undefined);
+			const badge = badges.length ? badges[0].name : undefined;
+			const _newMember = await assignMemberBadge(_member, 'assigned', badge);
 			setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
+			return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
 		}
 	}
 
@@ -56,10 +69,17 @@ export class UserCommand extends SubCommandPluginCommand {
 
 		const roleArg = await args.pick('role');
 		const badges = getEmojisFromString(message.content, { onlyDefaultEmojis: true });
+		const badge = badges.length ? badges[0].name : undefined;
+		const _roleExisted = await RoleModel.findOne({ badge }).exec();
+		if (_roleExisted) {
+			return temporaryReply(message, `Badge ${badge} is reserved to Role ${roleMention(_roleExisted.roleId)}`, true);
+		}
+
 		let [_role] = await getRoleDocument(message.guild, roleArg);
 		if (_role) {
-			_role.badge = badges.length ? badges[0].name : undefined;
+			_role.badge = badge;
 			_role = await _role.save();
+
 			for (const memberId of _role.members) {
 				const _member = (await MemberModel.findOne({ userId: memberId }).populate('roles').exec()) as MemberPopulatedDocument;
 
@@ -71,6 +91,8 @@ export class UserCommand extends SubCommandPluginCommand {
 					}
 				}
 			}
+
+			return temporaryReply(message, `Badge ${badge} is set to Role ${roleMention(_role.roleId)}`, true);
 		}
 	}
 }

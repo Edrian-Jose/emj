@@ -15,7 +15,7 @@ const setMemberNickname = async (member: GuildMember, nickname: string, memberDo
 			}
 		}
 	}
-	if (_guild) {
+	if (_guild && member.manageable) {
 		await member.setNickname(nick.join(_guild.seperators.nickname));
 	}
 };
