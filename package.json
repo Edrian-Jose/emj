@@ -29,6 +29,7 @@
 		"discord-modals": "^1.2.9",
 		"discord.js": "^13.6.0",
 		"dotenv-cra": "^3.0.2",
+		"get-emojis-from-string": "^1.6.1",
 		"moment": "^2.29.1",
 		"mongoose": "^6.2.5",
 		"reflect-metadata": "^0.1.13"

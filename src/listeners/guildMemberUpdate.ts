@@ -1,8 +1,11 @@
+import { getBadge } from './../actions/Member/assignBadge';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
 import type { GuildMember } from 'discord.js';
+const getEmojisFromString = require('get-emojis-from-string');
 import syncMember from '../actions/Member/syncMember';
 import RoleModel from '../schemas/Role';
+import refreshBadge from '../actions/Member/refreshBadge';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
@@ -14,7 +17,6 @@ export class UserEvent extends Listener {
 		const rolesRemoved = oldRoles.filter((roleId) => !newRoles.includes(roleId));
 		const forAddition: string[] = [];
 		const forRemoval: string[] = [];
-
 		for (const roleAdded of rolesAdded) {
 			const _assigningRoles = await RoleModel.find({ and: { $all: [roleAdded] }, roleId: { $not: { $in: newRoles } } }).exec();
 			for (const _role of _assigningRoles) {
@@ -44,7 +46,15 @@ export class UserEvent extends Listener {
 		} else if (forRemoval.length) {
 			await newMember.roles.remove(forRemoval);
 		} else {
-			await syncMember(oldMember.guild, syncingMember);
+			const [_member] = await syncMember(oldMember.guild, syncingMember);
+			if (newMember.nickname && _member) {
+				const badges = getEmojisFromString(newMember.nickname, { onlyDefaultEmojis: true });
+				const dbBadge = getBadge(_member);
+				const badge = badges.length ? badges[badges.length - 1].name : '';
+				if (dbBadge !== badge) {
+					await refreshBadge(_member.userId);
+				}
+			}
 		}
 	}
 }

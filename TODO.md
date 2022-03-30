@@ -4,8 +4,8 @@
 - Guid member add application [/]
 - Forms [/]
 - Voice channel link [x]
-- And roles 
-- badges
+- And roles  [/]
+- badges [badge assign,set,role]
 - teams
 - public rooms
 - private rooms

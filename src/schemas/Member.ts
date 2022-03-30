@@ -2,11 +2,18 @@ import type { Snowflake } from 'discord.js';
 import { Schema, model, Document, Model } from 'mongoose';
 import type { RoleDocument } from './Role';
 
+export type BadgeTypes = 'assigned' | 'custom' | 'role';
+
 interface Member {
 	guildId: Snowflake;
 	userId: Snowflake;
 	tag: string;
 	nickname?: string;
+	badge?: {
+		assigned?: string;
+		custom?: string;
+		role?: string;
+	};
 }
 
 interface MemberBaseDocument extends Member, Document {
@@ -27,6 +34,11 @@ const MemberSchema = new Schema<MemberDocument>({
 	userId: String,
 	tag: String,
 	nickname: String,
+	badge: {
+		assigned: String,
+		custom: String,
+		role: String
+	},
 	roles: [
 		{
 			type: Schema.Types.ObjectId,
