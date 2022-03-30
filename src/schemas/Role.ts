@@ -7,6 +7,7 @@ interface Role {
 	name: string;
 	position: number;
 	badge?: string;
+	threadId?: string;
 	and?: Snowflake[];
 	members: Snowflake[];
 }
@@ -28,6 +29,7 @@ const RoleSchema = new Schema<RoleDocument>({
 		default: 0
 	},
 	badge: String,
+	threadId: String,
 	and: [String],
 	members: [String]
 });

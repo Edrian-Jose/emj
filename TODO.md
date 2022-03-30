@@ -5,8 +5,8 @@
 - Forms [/]
 - Voice channel link [x]
 - And roles  [/]
-- badges [badge assign,set,role]
-- teams
+- badges [badge assign,set,role] [/]
+- teams / groups
 - public rooms
 - private rooms
 - birthday event

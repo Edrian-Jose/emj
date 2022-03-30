@@ -8,7 +8,7 @@ import temporaryReply from '../../actions/Message/temporaryReply';
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
 	preconditions: ['AdminOnly'],
-	subCommands: ['desk', 'applications', 'forms', 'welcome']
+	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams']
 })
 export class UserCommand extends SubCommandPluginCommand {
 	public async desk(message: Message) {
@@ -45,5 +45,13 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Welcome channel set to ${channelMention(_guild.channels.welcome)}`, true);
 		}
 		return temporaryReply(message, `Welcome channel failed to setup`, true);
+	}
+	public async teams(message: Message) {
+		const _guild = await registerUtilityChannel(message, 'teams');
+
+		if (_guild && _guild.channels.teams) {
+			return temporaryReply(message, `Teams channel set to ${channelMention(_guild.channels.teams)}`, true);
+		}
+		return temporaryReply(message, `Teams channel failed to setup`, true);
 	}
 }

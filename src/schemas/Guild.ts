@@ -20,6 +20,7 @@ interface Guild {
 		applications: Snowflake;
 		forms: Snowflake;
 		welcome: Snowflake;
+		teams: Snowflake;
 	};
 }
 
@@ -70,7 +71,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		inquiries: String,
 		applications: String,
 		forms: String,
-		welcome: String
+		welcome: String,
+		teams: String
 	}
 });
 
