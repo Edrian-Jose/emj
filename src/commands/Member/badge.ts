@@ -44,7 +44,11 @@ export class UserCommand extends SubCommandPluginCommand {
 			} else {
 				const _newMember = await assignMemberBadge(_member, 'custom', badge);
 				setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
-				return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
+				if (badge) {
+					return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
+				}
+				return temporaryReply(message, `Custom Badge cleared for User ${userMention(_newMember.userId)}`, true);
+
 			}
 		}
 	}
@@ -60,7 +64,10 @@ export class UserCommand extends SubCommandPluginCommand {
 			const badge = badges.length ? badges[0].name : undefined;
 			const _newMember = await assignMemberBadge(_member, 'assigned', badge);
 			setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
-			return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
+			if (badge) {
+				return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
+			}
+			return temporaryReply(message, `Assigned Badge cleared for User ${userMention(_newMember.userId)}`, true);
 		}
 	}
 
@@ -94,7 +101,11 @@ export class UserCommand extends SubCommandPluginCommand {
 				}
 			}
 
-			return temporaryReply(message, `Badge ${badge} is set to Role ${roleMention(_role.roleId)}`, true);
+			if (badge) {
+				return temporaryReply(message, `Badge ${badge} is set to Role ${roleMention(_role.roleId)}`, true);
+			}
+			return temporaryReply(message, `Role Badge cleared for Role ${roleMention(_role.roleId)}`, true);
+			
 		}
 	}
 }
