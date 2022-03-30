@@ -39,7 +39,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		if (_member && member) {
 			const badge = badges.length ? badges[0].name : undefined;
 			const _role = await RoleModel.findOne({ badge }).exec();
-			if (_role) {
+			if (_role && badge) {
 				return temporaryReply(message, `Badge ${badge} is reserved to Role ${roleMention(_role.roleId)}`, true);
 			} else {
 				const _newMember = await assignMemberBadge(_member, 'custom', badge);
@@ -48,7 +48,6 @@ export class UserCommand extends SubCommandPluginCommand {
 					return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
 				}
 				return temporaryReply(message, `Custom Badge cleared for User ${userMention(_newMember.userId)}`, true);
-
 			}
 		}
 	}
@@ -80,7 +79,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		const badges = getEmojisFromString(message.content, { onlyDefaultEmojis: true });
 		const badge = badges.length ? badges[0].name : undefined;
 		const _roleExisted = await RoleModel.findOne({ badge }).exec();
-		if (_roleExisted) {
+		if (_roleExisted && badge) {
 			return temporaryReply(message, `Badge ${badge} is reserved to Role ${roleMention(_roleExisted.roleId)}`, true);
 		}
 
