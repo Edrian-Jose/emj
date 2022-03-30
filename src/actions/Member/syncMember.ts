@@ -53,7 +53,6 @@ const syncMember = async (
 			}
 		}
 		const _roles = await RoleModel.find({ $or: [{ roleId: { $in: roles } }, { members: { $all: [member.id] } }] }).exec();
-		// console.log(_roles);
 		_roles.forEach(async (_role) => {
 			_role.members = _role.members.filter((memberId) => {
 				if (memberId == member.id && !roles.includes(_role.roleId)) {
