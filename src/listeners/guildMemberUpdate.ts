@@ -1,3 +1,4 @@
+import { getRoleDocument } from './../actions/Role/syncRole';
 import { getBadge } from './../actions/Member/assignBadge';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
@@ -6,6 +7,7 @@ const getEmojisFromString = require('get-emojis-from-string');
 import syncMember from '../actions/Member/syncMember';
 import RoleModel from '../schemas/Role';
 import refreshBadge from '../actions/Member/refreshBadge';
+import parseThread from '../actions/Thread/parseThread';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
@@ -26,6 +28,14 @@ export class UserEvent extends Listener {
 					}
 				}
 			}
+
+			const [_role] = await getRoleDocument(newMember.guild, roleAdded);
+			if (_role?.thread) {
+				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
+				if (thread) {
+					await thread.members.add(newMember.id);
+				}
+			}
 		}
 
 		for (const roleRemoved of rolesRemoved) {
@@ -37,6 +47,14 @@ export class UserEvent extends Listener {
 							forRemoval.push(_role.roleId);
 						}
 					}
+				}
+			}
+
+			const [_role] = await getRoleDocument(newMember.guild, roleRemoved);
+			if (_role?.thread) {
+				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
+				if (thread) {
+					await thread.members.remove(newMember.id);
 				}
 			}
 		}
