@@ -12,6 +12,8 @@ const getEmojisFromString = require('get-emojis-from-string');
 import { getMemberDocument } from '../../actions/Member/syncMember';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
+import { IsCommandAllowed } from '../../lib/slashGuard';
+import { AdminOnlyGuard } from '../../preconditions/AdminOnly';
 import MemberModel, { MemberPopulatedDocument } from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 
@@ -48,7 +50,7 @@ export class UserCommand extends SubCommandPluginCommand {
 	}
 
 	public async assign(message: Message, args: Args) {
-		if (!message.guild) {
+		if (!message.guild || !(await IsCommandAllowed(message, AdminOnlyGuard))) {
 			return;
 		}
 		const user = await args.pick('user');
