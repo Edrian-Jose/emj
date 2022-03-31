@@ -10,7 +10,7 @@ import type { GuildBasedChannelTypes } from '@sapphire/discord.js-utilities';
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Exempt syncing to channels inside a category, or threads inside a channel',
 	preconditions: ['AdminOnly'],
-	subCommands: ['cat', 'channel']
+	subCommands: ['cat', 'tchannel']
 })
 export class UserCommand extends SubCommandPluginCommand {
 	public async cat(message: Message, args: Args) {
@@ -51,7 +51,8 @@ export class UserCommand extends SubCommandPluginCommand {
 			return await temporaryReply(message, `${channelMention(channel.parent.id)} child channels will not be synced to the database`, true);
 		}
 	}
-	public async channel(message: Message, args: Args) {
+
+	public async tchannel(message: Message, args: Args) {
 		if (!message.guild) {
 			return;
 		}
@@ -65,26 +66,26 @@ export class UserCommand extends SubCommandPluginCommand {
 
 		const [_guild] = await getGuildDocument(message.guild);
 
-		if (_guild && (channel.parent instanceof TextChannel || channel.parent instanceof NewsChannel)) {
+		if (_guild && (channel instanceof TextChannel || channel instanceof NewsChannel)) {
 			if (_guild.exempted) {
 				if (_guild.exempted.threadParent) {
-					if (_guild.exempted.threadParent.includes(channel.parent.id)) {
-						_guild.exempted.channelCategory = _guild.exempted.threadParent.filter((id) => id !== channel.parent?.id);
+					if (_guild.exempted.threadParent.includes(channel.id)) {
+						_guild.exempted.threadParent = _guild.exempted.threadParent.filter((id) => id !== channel.id);
 						await _guild.save();
-						return await temporaryReply(message, `${channelMention(channel.parent.id)} threads will be synced to the database`, true);
+						return await temporaryReply(message, `${channelMention(channel.id)} threads will be synced to the database`, true);
 					}
-					_guild.exempted.threadParent.push(channel.parent.id);
+					_guild.exempted.threadParent.push(channel.id);
 				} else {
-					_guild.exempted.threadParent = [channel.parent.id];
+					_guild.exempted.threadParent = [channel.id];
 				}
 			} else {
 				_guild.exempted = {
-					threadParent: [channel.parent.id]
+					threadParent: [channel.id]
 				};
 			}
 
 			await _guild.save();
-			return await temporaryReply(message, `${channelMention(channel.parent.id)} threads will not be synced to the database`, true);
+			return await temporaryReply(message, `${channelMention(channel.id)} threads will not be synced to the database`, true);
 		}
 	}
 }
