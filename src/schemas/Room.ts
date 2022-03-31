@@ -10,6 +10,9 @@ interface Room {
 	password?: string;
 	locked?: boolean;
 	hidden?: boolean;
+	createdByEvent: boolean;
+	host: Snowflake;
+	cohost?: Snowflake;
 }
 
 interface RoomBaseDocument extends Room, Document {
@@ -31,7 +34,13 @@ const RoomSchema = new Schema<RoomDocument>({
 	},
 	password: String,
 	locked: Boolean,
-	hidden: Boolean
+	hidden: Boolean,
+	createdByEvent: {
+		type: Boolean,
+		default: false
+	},
+	host: String,
+	cohost: String
 });
 
 const RoomModel = model<RoomDocument>('Room', RoomSchema);

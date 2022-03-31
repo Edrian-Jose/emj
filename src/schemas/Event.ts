@@ -14,6 +14,7 @@ interface Event {
 	channelId: Snowflake;
 	privacyLevel: PrivacyLevel;
 	creatorId: Snowflake;
+	createdTimestamp?: number;
 }
 
 interface EventBaseDocument extends Event, Document {
@@ -39,7 +40,8 @@ const EventSchema = new Schema<EventDocument>({
 	entityType: String,
 	channelId: String,
 	privacyLevel: String,
-	creatorId: String
+	creatorId: String,
+	createdTimestamp: Number
 });
 
 const EventModel = model<EventDocument>('Event', EventSchema);
