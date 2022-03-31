@@ -14,7 +14,7 @@ export class UserEvent extends Listener {
 
 		if (thread && thread.guild && thread.parent) {
 			const [_guild] = await getGuildDocument(thread.guild);
-			if (_guild?.exempted.threadParent.includes(thread.parent.id)) {
+			if (_guild?.exempted?.threadParent?.includes(thread.parent.id)) {
 				return;
 			}
 		}

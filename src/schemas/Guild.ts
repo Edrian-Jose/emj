@@ -14,9 +14,9 @@ interface Guild {
 		roles?: Snowflake[];
 		form?: string[];
 	};
-	exempted: {
-		channelCategory: Snowflake[];
-		threadParent: Snowflake[];
+	exempted?: {
+		channelCategory?: Snowflake[];
+		threadParent?: Snowflake[];
 	};
 	channels: {
 		desk: Snowflake;

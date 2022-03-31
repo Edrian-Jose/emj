@@ -9,7 +9,7 @@ export class UserEvent extends Listener {
 	public async run(thread: ThreadChannel) {
 		if (thread.guild && thread.parent) {
 			const [_guild] = await getGuildDocument(thread.guild);
-			if (_guild?.exempted.threadParent.includes(thread.parent.id)) {
+			if (_guild?.exempted?.threadParent?.includes(thread.parent.id)) {
 				return;
 			}
 		}

@@ -9,7 +9,7 @@ export class UserEvent extends Listener {
 	public async run(oldChannel: GuildChannel, newChannel: GuildChannel) {
 		if (newChannel.guild && newChannel.parent) {
 			const [_guild] = await getGuildDocument(newChannel.guild);
-			if (_guild?.exempted.channelCategory.includes(newChannel.parent.id)) {
+			if (_guild?.exempted?.channelCategory?.includes(newChannel.parent.id)) {
 				return;
 			}
 		}
