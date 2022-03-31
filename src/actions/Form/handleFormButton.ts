@@ -8,10 +8,13 @@ import formCreate from './Subactions/formCreate';
 import entrySubmitModal from '../FormEntry/Subactions/entrySubmitModal';
 
 const handleFormButton = async (interaction: ButtonInteraction, type: FormSubActions, formId: FormDocument['_id']) => {
+
 	if (type !== 'start' && type !== 'submitModal') {
-		await interaction.deferReply({
-			ephemeral: true
-		});
+		if (!interaction.deferred) {
+			await interaction.deferReply({
+				ephemeral: true
+			});
+		}
 	}
 
 	const _form = await FormModel.findById(formId).populate('questions');
