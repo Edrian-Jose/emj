@@ -14,6 +14,10 @@ interface Guild {
 		roles?: Snowflake[];
 		form?: string[];
 	};
+	exempted: {
+		channelCategory: Snowflake[];
+		threadParent: Snowflake[];
+	};
 	channels: {
 		desk: Snowflake;
 		inquiries: Snowflake;
@@ -65,6 +69,10 @@ const GuildSchema = new Schema<GuildDocument>({
 			type: Schema.Types.ObjectId,
 			ref: 'Form'
 		}
+	},
+	exempted: {
+		channelCategory: [String],
+		threadParent: [String]
 	},
 	channels: {
 		desk: String,

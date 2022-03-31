@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
 import type { Snowflake } from 'discord-api-types/globals';
 import type { Collection, ThreadMember } from 'discord.js';
+import { getGuildDocument } from '../actions/Guild/syncGuild';
 import parseMember from '../actions/Member/parseMember';
 import syncThread from '../actions/Thread/syncThread';
 import RoleModel from '../schemas/Role';
@@ -10,6 +11,14 @@ import RoleModel from '../schemas/Role';
 export class UserEvent extends Listener {
 	public async run(oldMembers: Collection<Snowflake, ThreadMember>, newMembers: Collection<Snowflake, ThreadMember>) {
 		const thread = (oldMembers.first() ?? newMembers.first())?.thread;
+
+		if (thread && thread.guild && thread.parent) {
+			const [_guild] = await getGuildDocument(thread.guild);
+			if (_guild?.exempted.threadParent.includes(thread.parent.id)) {
+				return;
+			}
+		}
+
 		const addedMembers = newMembers.filter((member) => !Array.from(oldMembers.keys()).includes(member.id));
 		if (thread && thread.parent) {
 			await syncThread(thread.guild, thread.parent, thread, newMembers);
