@@ -18,6 +18,11 @@ interface Guild {
 		channelCategory?: Snowflake[];
 		threadParent?: Snowflake[];
 	};
+	generatorConfig: {
+		index: number;
+		defaultEmoji: string;
+		defaultName: string;
+	};
 	channels: {
 		desk: Snowflake;
 		inquiries: Snowflake;
@@ -25,6 +30,8 @@ interface Guild {
 		forms: Snowflake;
 		welcome: Snowflake;
 		teams: Snowflake;
+		rooms: Snowflake;
+		generator: Snowflake;
 	};
 }
 
@@ -74,13 +81,29 @@ const GuildSchema = new Schema<GuildDocument>({
 		channelCategory: [String],
 		threadParent: [String]
 	},
+	generatorConfig: {
+		index: {
+			type: Number,
+			default: 0
+		},
+		defaultEmoji: {
+			type: String,
+			default: '🚪'
+		},
+		defaultName: {
+			type: String,
+			default: 'Room'
+		}
+	},
 	channels: {
 		desk: String,
 		inquiries: String,
 		applications: String,
 		forms: String,
 		welcome: String,
-		teams: String
+		teams: String,
+		rooms: String,
+		generator: String
 	}
 });
 
