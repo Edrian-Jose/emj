@@ -3,8 +3,10 @@ import type { RoomDocument } from '../../schemas/Room';
 import RoomModel from '../../schemas/Room';
 import type { RoomSubActions } from './Room';
 import Room from './Room';
+import editRoom from './Subactions/editRoom';
 import enterRoom from './Subactions/enterRoom';
 import lockRoom from './Subactions/lockRoom';
+import showEditModal from './Subactions/showEditModal';
 import showLockModal from './Subactions/showLockModal';
 import showPasscodeModal from './Subactions/showPasscodeModal';
 import toggleRoomVisibility from './Subactions/toggleRoomVisibility';
@@ -44,10 +46,7 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 				await toggleRoomVisibility(room, interaction);
 				break;
 			case 'edit':
-				await interaction.reply({
-					content: `Shows a modal then update the embed`,
-					ephemeral: true
-				});
+				await showEditModal(room, interaction);
 				break;
 			case 'thread':
 				await interaction.reply({
@@ -69,6 +68,9 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 				break;
 			case 'enterSubmit':
 				await enterRoom(room, interaction);
+				break;
+			case 'editSubmit':
+				await editRoom(room, interaction);
 				break;
 			default:
 				await interaction.reply({ content: `${room._id}`, ephemeral: true });

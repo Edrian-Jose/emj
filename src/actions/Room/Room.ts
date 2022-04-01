@@ -6,7 +6,7 @@ import getChannelWebhook from '../Channel/Webhook/getChannelWebhook';
 import { getGuildDocument } from '../Guild/syncGuild';
 import parseMember from '../Member/parseMember';
 
-export type RoomSubActions = 'lock' | 'hide' | 'thread' | 'event' | 'edit' | 'lockSubmit' | 'unlockSubmit' | 'enterSubmit';
+export type RoomSubActions = 'lock' | 'hide' | 'thread' | 'event' | 'edit' | 'lockSubmit' | 'unlockSubmit' | 'enterSubmit' | 'editSubmit';
 class Room implements IRoom {
 	channelId?: string;
 	_id: RoomDocument['_id'];

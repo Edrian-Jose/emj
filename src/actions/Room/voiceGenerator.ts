@@ -14,11 +14,15 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			if (_guild.channels.generator && _guild.channels.generator === channel.id) {
 				const [generatorChannel] = await parseChannel(guild, _guild.channels.generator);
 				const { index, defaultName, defaultEmoji } = _guild.generatorConfig;
-				const name = `${defaultEmoji}${_guild.seperators.channel}${defaultName} ${index + 1}`;
+				const name = `${defaultName} ${index + 1}`;
 				if (generatorChannel?.parent?.id) {
-					const channel = await guild.channels.create(name, { parent: generatorChannel?.parent?.id, type: 'GUILD_VOICE' });
+					const channel = await guild.channels.create(`${defaultEmoji}${_guild.seperators.channel}${name}`, {
+						parent: generatorChannel?.parent?.id,
+						type: 'GUILD_VOICE'
+					});
 
 					const _room = await RoomModel.create({
+						emoji: defaultEmoji,
 						channelId: channel.id,
 						guildId: _guild.guildId,
 						name,
@@ -27,8 +31,6 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						createdByEvent: false,
 						host: id
 					});
-					const room = new Room(_room);
-					room.updatecontroller(channel);
 
 					await newState.setChannel(channel);
 					await _room.save();
@@ -44,9 +46,11 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			}
 
 			if (_room && _room.channelId) {
+				const room = new Room(_room);
 				const [channel] = await parseChannel(guild, _room.channelId);
 				if (channel?.isVoice()) {
 					channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
+					room.updatecontroller(channel);
 				}
 			}
 		} else if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
