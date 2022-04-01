@@ -10,6 +10,7 @@ interface Room {
 	name: string;
 	emoji: string;
 	password?: string;
+	hint?: string;
 	locked?: boolean;
 	hidden?: boolean;
 	createdByEvent: boolean;
@@ -39,6 +40,7 @@ const RoomSchema = new Schema<RoomDocument>({
 		default: '🚪'
 	},
 	password: String,
+	hint: String,
 	locked: Boolean,
 	hidden: Boolean,
 	createdByEvent: {

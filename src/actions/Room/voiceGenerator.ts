@@ -28,7 +28,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						host: id
 					});
 					const room = new Room(_room);
-					room.updatecontroller(newState);
+					room.updatecontroller(channel);
 
 					await newState.setChannel(channel);
 					await _room.save();
@@ -39,8 +39,15 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			if (_room && !_room.cohost && _room.host !== id) {
 				_room.cohost = id;
 				const room = new Room(_room);
-				room.updatecontroller(newState);
+				room.updatecontroller(channel);
 				await _room.save();
+			}
+
+			if (_room && _room.channelId) {
+				const [channel] = await parseChannel(guild, _room.channelId);
+				if (channel?.isVoice()) {
+					channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
+				}
 			}
 		} else if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
@@ -74,7 +81,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					}
 				}
 				const room = new Room(_room);
-				room.updatecontroller(newState, oldHost);
+				room.updatecontroller(oldChannel, oldHost);
 				await _room.save();
 			}
 
@@ -82,8 +89,15 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 				const otherMembers = oldChannel.members.filter((member) => member.id !== _room.cohost && member.id !== _room.host);
 				_room.cohost = otherMembers.firstKey();
 				const room = new Room(_room);
-				room.updatecontroller(newState);
+				room.updatecontroller(oldChannel);
 				await _room.save();
+			}
+
+			if (_room && _room.channelId) {
+				const [channel] = await parseChannel(guild, _room.channelId);
+				if (channel?.isVoice()) {
+					channel.permissionOverwrites.delete(id);
+				}
 			}
 		}
 	}

@@ -3,6 +3,7 @@ import handleFormButton from '../Form/handleFormButton';
 import handleInputButton from '../Form/Input/handleInputButton';
 import handleOptionButton from '../Form/Option/handleOptionButton';
 import handleEntryButton from '../FormEntry/handleEntryButton';
+import handleRoomButton from '../Room/handleRoomButton';
 
 interface Interactions {
 	[name: string]: Function;
@@ -12,7 +13,8 @@ const customInteractions: Interactions = {
 	input: handleInputButton,
 	option: handleOptionButton,
 	form: handleFormButton,
-	entry: handleEntryButton
+	entry: handleEntryButton,
+	room: handleRoomButton
 };
 const interactions: Interactions = {};
 
