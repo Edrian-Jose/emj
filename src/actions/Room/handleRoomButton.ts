@@ -68,6 +68,12 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 			case 'editSubmit':
 				await editRoom(room, interaction);
 				break;
+			case 'threadSubmit':
+				await editRoom(room, interaction);
+				break;
+			case 'eventSubmit':
+				await editRoom(room, interaction);
+				break;
 			default:
 				await interaction.reply({ content: `${room._id}`, ephemeral: true });
 				break;
