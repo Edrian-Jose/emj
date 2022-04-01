@@ -69,9 +69,11 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 				await editRoom(room, interaction);
 				break;
 			case 'threadSubmit':
+				//TODO: handle threadSubmit
 				await editRoom(room, interaction);
 				break;
 			case 'eventSubmit':
+				//TODO: handle eventSubmit
 				await editRoom(room, interaction);
 				break;
 			default:
