@@ -7,8 +7,10 @@ import editRoom from './Subactions/editRoom';
 import enterRoom from './Subactions/enterRoom';
 import lockRoom from './Subactions/lockRoom';
 import showEditModal from './Subactions/showEditModal';
+import showEventModal from './Subactions/showEventModal';
 import showLockModal from './Subactions/showLockModal';
 import showPasscodeModal from './Subactions/showPasscodeModal';
+import showThreadModal from './Subactions/showThreadModal';
 import toggleRoomVisibility from './Subactions/toggleRoomVisibility';
 import unlockRoom from './Subactions/unlockRoom';
 
@@ -49,16 +51,10 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 				await showEditModal(room, interaction);
 				break;
 			case 'thread':
-				await interaction.reply({
-					content: `Shows a modal that prompts the name of the thread`,
-					ephemeral: true
-				});
+				await showThreadModal(room, interaction);
 				break;
 			case 'event':
-				await interaction.reply({
-					content: `Shows a modal that prompts the event name, and decription`,
-					ephemeral: true
-				});
+				await showEventModal(room, interaction);
 				break;
 			case 'lockSubmit':
 				await lockRoom(room, interaction);
