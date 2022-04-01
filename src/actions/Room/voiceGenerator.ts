@@ -1,7 +1,8 @@
 import type { VoiceState } from 'discord.js';
 import RoomModel from '../../schemas/Room';
+import parseChannel from '../Channel/parseChannel';
 import { getGuildDocument } from '../Guild/syncGuild';
-import parseChannel from './parseChannel';
+import Room from './Room';
 
 const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 	const oldChannel = oldState.channel;
@@ -16,14 +17,19 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 				const name = `${defaultEmoji}${_guild.seperators.channel}${defaultName} ${index + 1}`;
 				if (generatorChannel?.parent?.id) {
 					const channel = await guild.channels.create(name, { parent: generatorChannel?.parent?.id, type: 'GUILD_VOICE' });
+
 					const _room = await RoomModel.create({
 						channelId: channel.id,
+						guildId: _guild.guildId,
 						name,
 						index,
 						createdTimestamp: channel.createdTimestamp,
 						createdByEvent: false,
 						host: id
 					});
+					const room = new Room(_room);
+					room.updatecontroller(newState);
+
 					await newState.setChannel(channel);
 					await _room.save();
 				}
@@ -32,19 +38,27 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			const _room = await RoomModel.findOne({ channelId: channel.id });
 			if (_room && !_room.cohost && _room.host !== id) {
 				_room.cohost = id;
+				const room = new Room(_room);
+				room.updatecontroller(newState);
 				await _room.save();
 			}
-		} else if (oldChannel && oldChannel?.members.size < 1) {
+		} else if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
 			if (!_room?.createdByEvent || Date.now() - (_room?.createdTimestamp ?? 0) > 1800000) {
-				await _room?.delete();
+				if (_room) {
+					const room = new Room(_room);
+					room.deleteController();
+				}
+
 				if (oldChannel.deletable) {
 					await oldChannel.delete();
 				}
 			}
 		} else if (oldChannel) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
+
 			if (_room && _room.host === id) {
+				const oldHost = _room?.host;
 				if (_room.cohost) {
 					const otherMembers = oldChannel.members.filter((member) => member.id !== _room.cohost && member.id !== _room.host);
 					_room.host = _room.cohost;
@@ -59,12 +73,16 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						}
 					}
 				}
+				const room = new Room(_room);
+				room.updatecontroller(newState, oldHost);
 				await _room.save();
 			}
 
 			if (_room && _room.cohost === id) {
 				const otherMembers = oldChannel.members.filter((member) => member.id !== _room.cohost && member.id !== _room.host);
 				_room.cohost = otherMembers.firstKey();
+				const room = new Room(_room);
+				room.updatecontroller(newState);
 				await _room.save();
 			}
 		}

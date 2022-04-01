@@ -54,6 +54,11 @@
 - thread - create a thread under rooms name it after the room name. (add all the current members), if thread is already created shows a modal prompting for thread name.
 - edit - [room name, room emoji, password, cohost]
 
+lock, [unlock, enter], 
+hide, unhide
+event
+thread,
+edit
 
 # Events
 - create an event document (mongodb)
