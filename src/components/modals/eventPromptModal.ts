@@ -30,7 +30,7 @@ const eventPromptModal = (room: Room) => {
 
 	const modal = new Modal() // We create a Modal
 		.setCustomId(`___room-threadSubmit-${room._id}`)
-		.setTitle(`Create Thread`)
+		.setTitle(`Create Room Event`)
 		.addComponents(name, time, desc);
 
 	return modal;

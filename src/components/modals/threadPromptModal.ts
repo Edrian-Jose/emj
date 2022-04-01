@@ -13,7 +13,7 @@ const threadPromptModal = (room: Room) => {
 
 	const modal = new Modal() // We create a Modal
 		.setCustomId(`___room-threadSubmit-${room._id}`)
-		.setTitle(`Create Thread`)
+		.setTitle(`Create Room Thread`)
 		.addComponents(name);
 
 	return modal;
