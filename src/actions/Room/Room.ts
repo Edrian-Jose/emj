@@ -36,6 +36,8 @@ class Room implements IRoom {
 	host: string;
 	cohost?: string;
 	controllerMessage: string;
+	threadId?: string;
+	eventId?: string;
 
 	public constructor(document: RoomDocument) {
 		this.channelId = document.channelId;
@@ -55,6 +57,8 @@ class Room implements IRoom {
 		this.host = document.host;
 		this.cohost = document.cohost;
 		this.controllerMessage = document.controllerMessage;
+		this.threadId = document.threadId;
+		this.eventId = document.eventId;
 	}
 
 	public createController(count?: number) {

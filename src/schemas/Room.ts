@@ -17,6 +17,8 @@ interface Room {
 	host: Snowflake;
 	cohost?: Snowflake;
 	controllerMessage: Snowflake;
+	threadId?: Snowflake;
+	eventId?: Snowflake;
 }
 
 export interface IRoom extends Room {}
@@ -49,7 +51,9 @@ const RoomSchema = new Schema<RoomDocument>({
 	},
 	host: String,
 	cohost: String,
-	controllerMessage: String
+	controllerMessage: String,
+	threadId: String,
+	eventId: String
 });
 
 const RoomModel = model<RoomDocument>('Room', RoomSchema);

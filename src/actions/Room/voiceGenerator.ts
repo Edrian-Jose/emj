@@ -53,7 +53,21 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					room.updatecontroller(channel);
 				}
 			}
-		} else if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
+
+			if (_room && _room.threadId) {
+				try {
+					const [channel] = await parseChannel(guild, _guild.channels.threads);
+					if (channel?.isText()) {
+						const thread = await channel.threads.fetch(_room.threadId);
+						if (thread) {
+							await thread.members.add(id);
+						}
+					}
+				} catch (error) {}
+			}
+		}
+
+		if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
 			if (!_room?.createdByEvent || Date.now() - (_room?.createdTimestamp ?? 0) > 1800000) {
 				if (_room) {
@@ -63,6 +77,18 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 
 				if (oldChannel.deletable) {
 					await oldChannel.delete();
+				}
+
+				if (_room && _room.threadId) {
+					try {
+						const [channel] = await parseChannel(guild, _guild.channels.threads);
+						if (channel?.isText()) {
+							const thread = await channel.threads.fetch(_room.threadId);
+							if (thread) {
+								await thread.setArchived(true);
+							}
+						}
+					} catch (error) {}
 				}
 			}
 		} else if (oldChannel) {
@@ -102,6 +128,18 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 				if (channel?.isVoice()) {
 					channel.permissionOverwrites.delete(id);
 				}
+			}
+
+			if (_room && _room.threadId) {
+				try {
+					const [channel] = await parseChannel(guild, _guild.channels.threads);
+					if (channel?.isText()) {
+						const thread = await channel.threads.fetch(_room.threadId);
+						if (thread) {
+							await thread.members.remove(id);
+						}
+					}
+				} catch (error) {}
 			}
 		}
 	}

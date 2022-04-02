@@ -32,6 +32,7 @@ interface Guild {
 		teams: Snowflake;
 		rooms: Snowflake;
 		generator: Snowflake;
+		threads: Snowflake;
 	};
 }
 
@@ -103,7 +104,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		welcome: String,
 		teams: String,
 		rooms: String,
-		generator: String
+		generator: String,
+		threads: String
 	}
 });
 

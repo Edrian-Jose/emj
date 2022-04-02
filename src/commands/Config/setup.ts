@@ -11,7 +11,7 @@ import parseChannel from '../../actions/Channel/parseChannel';
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
 	preconditions: ['AdminOnly'],
-	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator']
+	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads']
 })
 export class UserCommand extends SubCommandPluginCommand {
 	public async desk(message: Message) {
@@ -65,6 +65,15 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Rooms channel set to ${channelMention(_guild.channels.rooms)}`, true);
 		}
 		return temporaryReply(message, `Rooms channel failed to setup`, true);
+	}
+
+	public async threads(message: Message) {
+		const _guild = await registerUtilityChannel(message, 'threads');
+
+		if (_guild && _guild.channels.rooms) {
+			return temporaryReply(message, `Threads channel set to ${channelMention(_guild.channels.threads)}`, true);
+		}
+		return temporaryReply(message, `Threads channel failed to setup`, true);
 	}
 
 	public async generator(message: Message, args: Args) {

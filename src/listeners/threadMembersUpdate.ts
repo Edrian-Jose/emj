@@ -27,20 +27,23 @@ export class UserEvent extends Listener {
 		if (thread) {
 			const _roles = await RoleModel.find({ 'thread.id': thread.id }).exec();
 
-			for (const [id] of addedMembers) {
-				const [member] = await parseMember(thread.guild, id);
-				if (member) {
-					const cacheRoles = Array.from(member.roles.cache.keys());
+			if (_roles.length) {
+				for (const [id] of addedMembers) {
+					const [member] = await parseMember(thread.guild, id);
+					if (member) {
+						const cacheRoles = Array.from(member.roles.cache.keys());
 
-					let IsAllowed: boolean = false;
-					for (const _role of _roles) {
-						IsAllowed = IsAllowed || cacheRoles.includes(_role.roleId);
-					}
-					if (!IsAllowed) {
-						thread.members.remove(id);
+						let IsAllowed: boolean = false;
+						for (const _role of _roles) {
+							IsAllowed = IsAllowed || cacheRoles.includes(_role.roleId);
+						}
+						if (!IsAllowed) {
+							thread.members.remove(id);
+						}
 					}
 				}
 			}
+			
 		}
 	}
 }
