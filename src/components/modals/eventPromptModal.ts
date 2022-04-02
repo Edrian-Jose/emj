@@ -17,7 +17,7 @@ const eventPromptModal = (room: Room) => {
 		.setLabel(`Datetime Start (MM/DD/YYYY h:mm A)`)
 		.setStyle('SHORT')
 		.setRequired(true)
-		.setDefaultValue(moment().format('MM/DD/YYYY h:mm A'))
+		.setDefaultValue(moment().add(5, 'minutes').format('MM/DD/YYYY h:mm A'))
 		.setPlaceholder(`e.g. 12/30/2000 1:16 AM`);
 
 	const desc = new TextInputComponent()
@@ -29,7 +29,7 @@ const eventPromptModal = (room: Room) => {
 		.setPlaceholder(`Event description goes here....`);
 
 	const modal = new Modal() // We create a Modal
-		.setCustomId(`___room-threadSubmit-${room._id}`)
+		.setCustomId(`___room-eventSubmit-${room._id}`)
 		.setTitle(`Create Room Event`)
 		.addComponents(name, time, desc);
 

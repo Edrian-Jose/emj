@@ -3,6 +3,7 @@ import type { RoomDocument } from '../../schemas/Room';
 import RoomModel from '../../schemas/Room';
 import type { RoomSubActions } from './Room';
 import Room from './Room';
+import createRoomEvent from './Subactions/createRoomEvent';
 import createRoomThread from './Subactions/createRoomThread';
 import editRoom from './Subactions/editRoom';
 import enterRoom from './Subactions/enterRoom';
@@ -74,7 +75,7 @@ const handleRoomButton = async (interaction: ButtonInteraction, type: RoomSubAct
 				break;
 			case 'eventSubmit':
 				//TODO: handle eventSubmit
-				await editRoom(room, interaction);
+				await createRoomEvent(room, interaction);
 				break;
 			default:
 				await interaction.reply({ content: `${room._id}`, ephemeral: true });
