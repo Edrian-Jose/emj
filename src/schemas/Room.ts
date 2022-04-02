@@ -18,6 +18,7 @@ interface Room {
 	cohost?: Snowflake;
 	controllerMessage: Snowflake;
 	threadId?: Snowflake;
+	threadName?: string;
 	eventId?: Snowflake;
 }
 
@@ -53,6 +54,7 @@ const RoomSchema = new Schema<RoomDocument>({
 	cohost: String,
 	controllerMessage: String,
 	threadId: String,
+	threadName: String,
 	eventId: String
 });
 

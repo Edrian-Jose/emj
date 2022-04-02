@@ -37,6 +37,7 @@ class Room implements IRoom {
 	cohost?: string;
 	controllerMessage: string;
 	threadId?: string;
+	threadName?: string;
 	eventId?: string;
 
 	public constructor(document: RoomDocument) {
@@ -58,6 +59,7 @@ class Room implements IRoom {
 		this.cohost = document.cohost;
 		this.controllerMessage = document.controllerMessage;
 		this.threadId = document.threadId;
+		this.threadName = document.threadName;
 		this.eventId = document.eventId;
 	}
 

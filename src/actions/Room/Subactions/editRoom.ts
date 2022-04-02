@@ -22,6 +22,22 @@ const editRoom = async (room: Room, interaction: ButtonInteraction & any) => {
 		if (emojis && emojis.length) {
 			room._document.emoji = emojis[emojis.length - 1].name.toString();
 		}
+		if (room.threadId) {
+			try {
+				const [_guild, guild] = await getGuildDocument(room.guildId);
+				if (_guild) {
+					const [channel] = await parseChannel(guild, _guild.channels.threads);
+					if (channel?.isText()) {
+						const thread = await channel.threads.fetch(room.threadId);
+						if (thread) {
+							await thread.setName(
+								`${emojis[emojis.length - 1].name.toString()}${_guild.seperators.channel}${room.threadName ?? room.name}`
+							);
+						}
+					}
+				}
+			} catch (error) {}
+		}
 	}
 
 	if (desc) {
