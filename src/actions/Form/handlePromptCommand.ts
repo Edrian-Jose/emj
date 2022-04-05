@@ -1,4 +1,5 @@
 import type FormEntry from '../FormEntry/FormEntry';
+import changeBadge from './Commands/PromptCommands/changeBadge';
 import changeNickname from './Commands/PromptCommands/changeNickname';
 import type Prompt from './Strategies/Prompt';
 
@@ -9,8 +10,8 @@ interface QuestionCommands {
 }
 
 const customCommands: QuestionCommands = {
-	//
-	changeNickname
+	changeNickname,
+	changeBadge
 };
 
 const executeQuestionCommand = (entry: FormEntry, prompt: Prompt, values?: string[]) => {

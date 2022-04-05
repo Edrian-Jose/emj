@@ -8,6 +8,7 @@ import syncMember from '../actions/Member/syncMember';
 import parseChannel from '../actions/Channel/parseChannel';
 import getChannelWebhook from '../actions/Channel/Webhook/getChannelWebhook';
 import welcome from '../components/embeds/welcome';
+import randomHook from '../lib/randomHook';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
@@ -30,10 +31,13 @@ export class UserEvent extends Listener {
 				const [welcomeChannel] = await parseChannel(guild, _guild.channels.welcome);
 				const channel = welcomeChannel as TextChannel;
 				const webhook = await getChannelWebhook(channel, true);
+				const randomUser = await randomHook();
 				if (webhook) {
 					webhook.send({
 						content: `Hi ${userMention(member.user.id)}`,
 						embeds: [await welcome(member)],
+						username: randomUser.name,
+						avatarURL: randomUser.avatar,
 						components: [
 							new MessageActionRow().addComponents(
 								new MessageButton().setCustomId(`___form-start-${_guild.join.form}`).setLabel('Join').setStyle('PRIMARY')
