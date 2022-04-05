@@ -1,6 +1,6 @@
 import { roleMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command, CommandOptions } from '@sapphire/framework';
+import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
@@ -9,9 +9,9 @@ import { getRoleDocument } from '../../actions/Role/syncRole';
 	description: 'AND Roles, assign a role when a and b roles are assigned. '
 })
 export class UserCommand extends Command {
-	public async messageRun(message: Message) {
+	public async messageRun(message: Message, args: Args) {
 		const { guild } = message;
-		const roles = Array.from(message.mentions.roles.keys());
+		const roles = args.rest('role');
 		if (roles.length >= 3 && guild) {
 			const assigningRole = roles.splice(0, 1)[0];
 			const conditionRoles = roles;
