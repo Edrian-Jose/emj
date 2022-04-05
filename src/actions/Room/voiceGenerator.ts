@@ -69,7 +69,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			}
 		}
 
-		if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel?.members.size < 1) {
+		if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel.id !== _guild.channels.stage && oldChannel?.members.size < 1) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
 			if (!_room?.createdByEvent || Date.now() - (_room?.createdTimestamp ?? 0) > 1800000) {
 				if (_room) {
