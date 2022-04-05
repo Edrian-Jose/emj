@@ -7,7 +7,7 @@ import EventModel from '../schemas/Event';
 export class EventCreateTask extends ScheduledTask {
 	public constructor(context: PieceContext) {
 		super(context, {
-			interval: 120 * 1000, // 60 seconds,
+			cron: '0 0 * * *',
 			name: 'EventCreate'
 		});
 	}
