@@ -34,8 +34,7 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 			if (_guild.join.roles) {
 				await member.roles.remove(_guild.join.roles);
 			}
-			
-			await EventModel.create({
+			const options = {
 				customId: `birthday-${member.id}`,
 				type: 'STAGE',
 				name: `🎉 Happy Birthday ${member.user.username}! 🎉`,
@@ -47,7 +46,15 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 				channelId: _guild.channels.stage,
 				privacyLevel: 2,
 				creatorId: member.id
-			});
+			};
+
+			const bevent = await EventModel.findOne({ customId: `birthday-${member.id}` }).exec();
+			if (bevent) {
+				await bevent.update({ $set: options }).exec();
+			} else {
+				await EventModel.create(options);
+			}
+			
 
 			if (_guild && _guild.channels.feeds) {
 				const [feedsChannel] = await parseChannel(guild, _guild.channels.feeds);
