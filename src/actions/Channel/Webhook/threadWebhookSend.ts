@@ -12,7 +12,8 @@ const threadWebhookSend = async (
 	_channel: Snowflake | TextChannel | NewsChannel,
 	options: WebhookMessageOptions,
 	name?: string,
-	message?: Message
+	message?: Message,
+	notSelf?: boolean
 ): Promise<Message<boolean> | APIMessage | undefined | null> => {
 	const threadName = name ?? `${member.user.username} thread`;
 
@@ -22,7 +23,9 @@ const threadWebhookSend = async (
 		let [thread] = await getPersonalThread(member, guild, channel, threadName);
 		if (thread) {
 			thread.setArchived(false);
-			await thread.parent?.permissionOverwrites.create(member, { VIEW_CHANNEL: true });
+			if (!notSelf) {
+				await thread.parent?.permissionOverwrites.create(member, { VIEW_CHANNEL: true });
+			}
 			thread = await thread.setName(threadName);
 			options.threadId = thread.id;
 		}

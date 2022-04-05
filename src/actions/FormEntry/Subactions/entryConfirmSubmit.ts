@@ -65,7 +65,9 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 					embeds: [approvalForm(entry, entry.form, false)],
 					components: entry.createVerificationComponents()
 				},
-				`${member.user.username} applications`
+				`${member.user.username} applications`,
+				undefined,
+				true
 			);
 			entry._document.applicationId = message?.id;
 		}
