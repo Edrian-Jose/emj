@@ -7,8 +7,8 @@
 - And roles  [/]
 - badges [badge assign,set,role] [/]
 - teams / groups [/]
-- public rooms
-- private rooms
+- public rooms [/]
+- private rooms [/]
 - birthday event
 - feeds (future)
 

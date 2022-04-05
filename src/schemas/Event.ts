@@ -1,18 +1,21 @@
-import type { GuildScheduledEventEntityType, PrivacyLevel, Snowflake } from 'discord.js';
+import type { GuildScheduledEventEntityType, Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 import type { RoomDocument } from './Room';
 
 export type EventType = 'ROOM' | 'STAGE' | 'EXTERNAL';
 
 interface Event {
+	customId: string;
+	eventId?: Snowflake;
 	type: EventType;
 	name: string;
-	description: string;
+	guildId: Snowflake;
+	description?: string;
 	scheduledStartTimestamp: number;
-	scheduledEndTimestamp: number;
+	scheduledEndTimestamp?: number;
 	entityType: GuildScheduledEventEntityType;
-	channelId: Snowflake;
-	privacyLevel: PrivacyLevel;
+	channelId?: Snowflake;
+	privacyLevel: number;
 	creatorId: Snowflake;
 	createdTimestamp?: number;
 }
@@ -32,14 +35,23 @@ export interface EventPopulatedDocument extends EventBaseDocument {
 }
 
 const EventSchema = new Schema<EventDocument>({
+	customId: String,
+	eventId: String,
 	type: String,
 	name: String,
+	guildId: String,
 	description: String,
 	scheduledStartTimestamp: Number,
 	scheduledEndTimestamp: Number,
-	entityType: String,
+	entityType: {
+		type: String,
+		default: 'VOICE'
+	},
 	channelId: String,
-	privacyLevel: String,
+	privacyLevel: {
+		type: Number,
+		default: 2
+	},
 	creatorId: String,
 	createdTimestamp: Number
 });

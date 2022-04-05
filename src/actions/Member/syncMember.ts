@@ -21,7 +21,7 @@ export const getMemberDocument = async (
 				guildId: guild.id,
 				userId: member.user.id
 			});
-			_member = await _member.save();
+			return [_member, member];
 		}
 	}
 	return [_member, member];

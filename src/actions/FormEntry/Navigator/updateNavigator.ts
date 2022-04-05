@@ -30,7 +30,12 @@ const updateNavigator = async (interaction: MessageComponentInteraction, formId:
 					channelId: (c as TextChannel).id,
 					guildId: guild.id
 				};
-				await _formEntry.save();
+				try {
+					await _formEntry.save();
+				} catch (error) {
+					console.log(error);
+				}
+				
 			}
 
 			if (message.channel.isThread()) {

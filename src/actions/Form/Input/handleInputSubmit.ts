@@ -102,7 +102,12 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 				question
 			};
 		}
-		await _formEntry.save();
+		try {
+			await _formEntry.save();
+		} catch (error) {
+			console.log(error);
+		}
+		
 		await updateNavigator(interaction, formId);
 		return await interaction.followUp({
 			content: input ? `Input recorded` : 'Input cleared',

@@ -95,6 +95,12 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 					}
 
 					_formEntry.navigatorId = navigatorMessage.id;
+					try {
+						await _formEntry.save();
+					} catch (error) {
+						console.log(error);
+					}
+					
 					await interaction.followUp({
 						content: `Form already sent to your desk, ${channelMention(navigatorMessage.channelId)}`,
 						ephemeral: true

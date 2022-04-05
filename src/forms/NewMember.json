@@ -1,0 +1,154 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "950422297204899890",
+	"type": "STEP",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "C4$huALL Membership Form",
+	"description": "_Only for new members_ . Server membership is equivalent to Level 1 membership. Membership perks includes access to announcements, social feeds, teams channels, and more. In answering the form you must understand that the information you provided will be publicly available in the community and aware of the risk of your information being publicly available across the internet. Don't share any sensitive or critical information",
+	"requiredRoles": ["950678056790523914"],
+	"rewardRoles": ["950678234389966888"],
+	"commands": {
+		"onSubmit": ["basicAdmission"],
+		"onCancel": ["defaultCancel"]
+	},
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["951385025889304606"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "950986292475355159",
+		"guildId": "950422297204899890"
+	},
+	"verification": true,
+	"verifiers": [
+		{
+			"type": "USER",
+			"id": "949328284758462584"
+		},
+		{
+			"type": "ROLE",
+			"id": "950985316922163210"
+		}
+	],
+	"questions": [
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Nickname",
+			"placeholder": "e.g. CashualChuck",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "OPTION",
+			"value": "Your Pronoun",
+			"options": [
+				{
+					"label": "They/Them",
+					"value": "they"
+				},
+				{
+					"label": "She/Her",
+					"value": "she"
+				},
+				{
+					"label": "He/Him",
+					"value": "he"
+				},
+				{
+					"label": "Any",
+					"value": "any"
+				}
+			],
+			"placeholder": "You can skip this question if you want to, but it was highly recommended to put an answer, for our managers to address you well "
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "DATE",
+			"value": "Birthdate",
+			"placeholder": "Type it in this format MM/DD/YYYY. If you don't want to disclose your age you can just input a random year for YYYY but please five your real birth month (MM) and birth day (DD)",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Hobbies and Interests",
+			"placeholder": "e.g. Drawing, Digital Art, Song making, Playing video games, etc."
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "About yourself",
+			"placeholder": "Tell us about yourself e.g. Shy in person but noisy in text chats"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Twitter Username",
+			"placeholder": "Please don't change it until the approval of your membership. Skip this question if you don't have a twitter account"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Tiktok Username",
+			"placeholder": "Please don't change it until the approval of your membership. Skip this question if you don't have a tiktok account"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Instagram Username",
+			"placeholder": "Please don't change it until the approval of your membership. Skip this question if you don't have an instragram account"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Nationality and Citizenship",
+			"placeholder": "e.g. Filipino"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Languange(s) Spoken",
+			"placeholder": "e.g. Filipino, English, Bisaya, Ilocano, German",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Contact Email",
+			"placeholder": "This doesn't need to be your personal email. We only need an active email where we can contact you. This might be used for giveaways information but with proper request to you.",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "YouTube Channel Link",
+			"placeholder": "Ask the staffs on how to get your youtube channel link",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "BOOLEAN",
+			"value": "Terms and Agreement",
+			"options": [
+				{
+					"label": "Yes",
+					"value": "true"
+				},
+				{
+					"label": "No",
+					"value": "false"
+				}
+			],
+			"placeholder": "Did you agree to the terms and agreement stated in the link provided here? --> https://bit.ly/12123sa",
+			"required": true
+		}
+	]
+}

@@ -5,9 +5,9 @@ export const config = {
 		TOKEN: process.env.DISCORD_TOKEN ?? ''
 	},
 	REDIS: {
-		HOST: process.env.REDIS_HOST,
-		PASS: process.env.REDIS_PASS,
-		PORT: process.env.REDIS_PORT
+		HOST: process.env.NODE_ENV === 'development' ? '127.0.0.1' : process.env.REDIS_HOST,
+		PASS: process.env.NODE_ENV === 'development' ? undefined : process.env.REDIS_PASS,
+		PORT: process.env.NODE_ENV === 'development' ? '6379' : process.env.REDIS_PORT
 	},
 	API: {
 		PORT: parseInt(process.env.PORT ?? '4000'),

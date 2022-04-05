@@ -29,6 +29,10 @@ const clientOptions: ClientOptions = {
 					port: config.REDIS.PORT,
 					password: config.REDIS.PASS,
 					host: config.REDIS.HOST
+				},
+				defaultJobOptions: {
+					removeOnComplete: true,
+					removeOnFail: true
 				}
 			}
 		})

@@ -17,7 +17,6 @@ export const getEmojiDocument = async (
 				guildId: guild.id,
 				emojiId: emoji.id
 			});
-			_emoji = await _emoji.save();
 		}
 		return [_emoji, emoji, guild];
 	} else if (_emoji) {

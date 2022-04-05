@@ -11,7 +11,7 @@ import parseChannel from '../../actions/Channel/parseChannel';
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
 	preconditions: ['AdminOnly'],
-	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads']
+	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads', 'stage', 'feeds']
 })
 export class UserCommand extends SubCommandPluginCommand {
 	public async desk(message: Message) {
@@ -76,6 +76,38 @@ export class UserCommand extends SubCommandPluginCommand {
 		return temporaryReply(message, `Threads channel failed to setup`, true);
 	}
 
+	public async feeds(message: Message) {
+		const _guild = await registerUtilityChannel(message, 'feeds');
+
+		if (_guild && _guild.channels.feeds) {
+			return temporaryReply(message, `Feeds channel set to ${channelMention(_guild.channels.feeds)}`, true);
+		}
+		return temporaryReply(message, `Feeds channel failed to setup`, true);
+	}
+
+	public async stage(message: Message, args: Args) {
+		if (!message.guild) {
+			return;
+		}
+		let channelId: string;
+		try {
+			let [_guild] = await getGuildDocument(message.guild);
+			channelId = await args.pick('string');
+
+			const [channel] = await parseChannel(message.guild, channelId);
+			if (_guild && channel) {
+				_guild.channels.stage = channel.id;
+				_guild = await _guild.save();
+
+				if (_guild.channels.stage) {
+					return temporaryReply(message, `Stage channel set to ${channelMention(_guild.channels.stage)}`, true);
+				}
+			}
+		} catch (error) {
+			console.log(error);
+			return temporaryReply(message, `Stage channel failed to setup`, true);
+		}
+	}
 	public async generator(message: Message, args: Args) {
 		if (!message.guild) {
 			return;

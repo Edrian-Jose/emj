@@ -14,7 +14,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			if (_guild.channels.generator && _guild.channels.generator === channel.id) {
 				const [generatorChannel] = await parseChannel(guild, _guild.channels.generator);
 				const { index, defaultName, defaultEmoji } = _guild.generatorConfig;
-				const name = `${defaultName} ${index + 1}`;
+				const name = `${defaultName}`;
 				if (generatorChannel?.parent?.id) {
 					const channel = await guild.channels.create(`${defaultEmoji}${_guild.seperators.channel}${name}`, {
 						parent: generatorChannel?.parent?.id,
@@ -31,6 +31,8 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						createdByEvent: false,
 						host: id
 					});
+					_guild.generatorConfig.index += 1;
+					await _guild.save();
 
 					await newState.setChannel(channel);
 					await _room.save();
@@ -77,6 +79,8 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 
 				if (oldChannel.deletable) {
 					await oldChannel.delete();
+					_guild.generatorConfig.index = _guild.generatorConfig.index ? _guild.generatorConfig.index - 1 : 0;
+					await _guild.save();
 				}
 
 				if (_room && _room.threadId) {

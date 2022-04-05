@@ -8,7 +8,6 @@
 		"jsxFactory": "EmbedJsx.make",
 		"noImplicitAny": false
 	},
-	
 	"include": [
 		"src"
 	],
