@@ -31,6 +31,10 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 		}
 		if (member && _guild && _guild.channels.stage) {
 			await setMemberNickname(member, nickname ?? member.user.username);
+			if (_guild.join.roles) {
+				await member.roles.remove(_guild.join.roles);
+			}
+			
 			await EventModel.create({
 				customId: `birthday-${member.id}`,
 				type: 'STAGE',

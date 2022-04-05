@@ -1,0 +1,75 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "960780818870075412",
+	"type": "STEP",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "Manager Application Form (F-3)",
+	"description": "Create request to become a manager of this server by filling out the form below",
+	"requiredRoles": ["960789447446765568"],
+	"rewardRoles": ["960789763022028830"],
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["960788501488623626"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "960788579829833728",
+		"guildId": "960780818870075412"
+	},
+	"verification": true,
+	"verifiers": [
+		{
+			"type": "USER",
+			"id": "949328284758462584"
+		},
+		{
+			"type": "ROLE",
+			"id": "960789882563862568"
+		}
+	],
+	"questions": [
+		{
+			"customId": "managerReasonA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Reason",
+			"placeholder": "Why do u want to be a manager?",
+			"required": true
+		},
+		{
+			"customId": "managerConfirmA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Confirmation",
+			"placeholder": "If you really understand the tasks of a manager. Cite some of it's tasks and responsibilities",
+			"required": true
+		},
+		{
+			"customId": "managert&aA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "BOOLEAN",
+			"value": "Terms and Agreement",
+			"options": [
+				{
+					"label": "Yes",
+					"value": "true"
+				},
+				{
+					"label": "No",
+					"value": "false"
+				}
+			],
+			"placeholder": "Do u agree to the Terms & Agreement stated in the link provided here? --> https://bit.ly/12123sa",
+			"required": true
+		}
+	]
+}
