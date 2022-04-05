@@ -1,6 +1,9 @@
 import type { ListenerOptions, PieceContext } from '@sapphire/framework';
 import { Listener, Store } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colorette';
+import moment from 'moment';
+import { getGuildDocument } from '../actions/Guild/syncGuild';
+import EventModel from '../schemas/Event';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -14,9 +17,33 @@ export class UserEvent extends Listener {
 		});
 	}
 
-	public run() {
+	public async run() {
 		this.printBanner();
 		this.printStoreDebugInformation();
+
+		const _events = await EventModel.find({
+			createdTimestamp: { $exists: false },
+			scheduledStartTimestamp: { $lte: moment().add(3, 'days').valueOf() }
+		});
+		try {
+			for (const _event of _events) {
+				const [_guild, guild] = await getGuildDocument(_event.guildId);
+				const event = await guild.scheduledEvents.create({
+					entityType: _event.entityType,
+					name: _event.name,
+					privacyLevel: _event.privacyLevel,
+					scheduledStartTime: _event.scheduledStartTimestamp,
+					channel: _event.channelId,
+					description: _event.description,
+					scheduledEndTime: _event.scheduledEndTimestamp
+				});
+				_event.eventId = event.id;
+				_event.createdTimestamp = moment().valueOf();
+				await _event.save();
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	private printBanner() {
