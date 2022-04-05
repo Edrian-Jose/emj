@@ -31,7 +31,25 @@ export class UserCommand extends SubCommandPluginCommand {
 					questions.push(_q);
 				}
 			} else {
-				questions.push(q);
+				if (q.customId) {
+					const _q = await QuestionModel.findOne({ customId: q.customId }).exec();
+					if (_q) {
+						if (q.lastRevision && q.lastRevision > _q.lastRevision) {
+							const _newQ = await QuestionModel.findByIdAndUpdate(_q._id, { $set: { ...q, options: q.options } }).exec();
+							if (_newQ) {
+								questions.push(_newQ);
+							} else {
+								questions.push(_q);
+							}
+						} else {
+							questions.push(_q);
+						}
+
+					}
+				} else {
+					questions.push(q);
+				}
+				
 			}
 		}
 		formFile.questions = questions;
