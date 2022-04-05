@@ -1,6 +1,5 @@
 import type { ButtonInteraction, Message } from 'discord.js';
 import type { APIMessage } from 'discord.js/node_modules/discord-api-types';
-import { webhooks } from '../../../lib/constants';
 import randomHook from '../../../lib/randomHook';
 import MemberModel from '../../../schemas/Member';
 import RoleModel from '../../../schemas/Role';
