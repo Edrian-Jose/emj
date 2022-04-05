@@ -11,7 +11,7 @@ import { getRoleDocument } from '../../actions/Role/syncRole';
 export class UserCommand extends Command {
 	public async messageRun(message: Message, args: Args) {
 		const { guild } = message;
-		const roles = args.rest('role');
+		const roles = await args.rest('role');
 		if (roles.length >= 3 && guild) {
 			const assigningRole = roles.splice(0, 1)[0];
 			const conditionRoles = roles;
