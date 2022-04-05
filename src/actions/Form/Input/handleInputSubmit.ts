@@ -60,7 +60,9 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 	await interaction.deferReply({ ephemeral: true });
 
 	if (!_formEntry || !_formEntry.form) {
-		await message.delete();
+		if (message.deletable) {
+			await message.delete();
+		}
 		return await interaction.followUp({
 			content: ` You can't use the form. Looks like the form is deleted`,
 			ephemeral: true
@@ -100,7 +102,12 @@ const handleInputSubmit = async (interaction: ButtonInteraction | any, questionI
 				question
 			};
 		}
-		await _formEntry.save();
+		try {
+			await _formEntry.save();
+		} catch (error) {
+			console.log(error);
+		}
+		
 		await updateNavigator(interaction, formId);
 		return await interaction.followUp({
 			content: input ? `Input recorded` : 'Input cleared',

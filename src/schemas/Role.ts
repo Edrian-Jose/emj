@@ -6,6 +6,12 @@ interface Role {
 	roleId: Snowflake;
 	name: string;
 	position: number;
+	badge?: string;
+	thread: {
+		parent: Snowflake;
+		id: Snowflake;
+	};
+	and?: Snowflake[];
 	members: Snowflake[];
 }
 
@@ -25,6 +31,12 @@ const RoleSchema = new Schema<RoleDocument>({
 		type: Number,
 		default: 0
 	},
+	badge: String,
+	thread: {
+		parent: String,
+		id: String
+	},
+	and: [String],
 	members: [String]
 });
 

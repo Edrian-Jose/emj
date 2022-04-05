@@ -6,10 +6,14 @@ const parseChannel = async (
 	channelResolvable: NonThreadGuildBasedChannel | string
 ): Promise<[NonThreadGuildBasedChannel | null, Guild]> => {
 	const guild = await parseGuild(guildResolvable);
-	let channel: NonThreadGuildBasedChannel | null;
+	let channel: NonThreadGuildBasedChannel | null = null;
 
 	if (typeof channelResolvable === 'string') {
-		channel = await guild.channels.fetch(channelResolvable);
+		try {
+			channel = await guild.channels.fetch(channelResolvable);
+		} catch (error) {
+			console.log(error);
+		}
 	} else {
 		channel = channelResolvable;
 	}

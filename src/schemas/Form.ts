@@ -62,6 +62,10 @@ export interface FormDocument extends FormBaseDocument {
 	//store ref typings here
 	questions: QuestionDocument['_id'][];
 }
+export interface FormPopulatedDocument extends FormBaseDocument {
+	//store ref typings here
+	questions: QuestionDocument[];
+}
 
 const FormSchema = new Schema<FormDocument>({
 	creatorId: String,

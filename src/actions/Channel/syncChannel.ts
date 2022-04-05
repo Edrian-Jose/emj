@@ -23,8 +23,8 @@ export const getChannelDocument = async (
 				guildId: guild.id,
 				channelId: channel.id
 			});
-			_channel = await _channel.save();
 		}
+		return [_channel, channel, guild];
 	} else if (_channel) {
 		_channel = await _channel.delete();
 	}
@@ -50,7 +50,11 @@ const syncChannel = async (
 
 		_channel.type = channel.type;
 		_channel.name = channel.name;
-		_channel = await _channel.save();
+		try {
+			_channel = await _channel.save();
+		} catch (error) {
+			console.log(error);
+		}
 	}
 	return [_channel, channel, guild];
 };

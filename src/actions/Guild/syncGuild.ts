@@ -24,7 +24,7 @@ export const getGuildDocument = async (guildResolvable: Snowflake | Guild): Prom
 			_guild = await GuildModel.create({
 				guildId: guild.id
 			});
-			_guild = await _guild.save();
+			return [_guild, guild];
 		}
 	} else if (_guild) {
 		_guild = await _guild.delete();

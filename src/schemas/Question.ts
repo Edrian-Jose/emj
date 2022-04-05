@@ -4,6 +4,8 @@ export type QuestionType = 'NUMBER' | 'DATE' | 'DATETIME' | 'TEXT' | 'SELECT' | 
 
 interface _Question {
 	creatorId: string;
+	customId: string;
+	lastRevision: number;
 	type: QuestionType;
 	value: string;
 	placeholder?: string;
@@ -33,6 +35,8 @@ export interface QuestionDocument extends QuestionBaseDocument {
 
 const QuestionSchema = new Schema<QuestionDocument>({
 	creatorId: String,
+	customId: String,
+	lastRevision: Number,
 	type: {
 		type: String,
 		enum: ['NUMBER', 'DATE', 'DATETIME', 'TEXT', 'SELECT', 'BOOLEAN', 'OPTION'],

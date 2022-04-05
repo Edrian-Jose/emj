@@ -1,0 +1,120 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "950422297204899890",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "Create Event Form",
+	"description": "Step by step wizard for creating or scheduling event.",
+	"requiredRoles": ["950994824973127720"],
+	"rewardRoles": ["959697696518705162"],
+	"commands": {
+		"onSubmit": ["createEvent"],
+		"onCancel": ["defaultCancel"]
+	},
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["951385025889304606"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "950986292475355159"
+	},
+	"verification": true,
+	"verifiers": [
+		{
+			"type": "USER",
+			"id": "949328284758462584"
+		},
+		{
+			"type": "ROLE",
+			"id": "950985316922163210"
+		}
+	],
+	"questions": [
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Event Name",
+			"placeholder": "The name of the event",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Event Decription",
+			"placeholder": "Describe the event"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "DATETIME",
+			"value": "Event Start Time",
+			"placeholder": "When will the event will start",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "DATETIME",
+			"value": "Event End Time",
+			"placeholder": "When will the event will end"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "OPTION",
+			"value": "Privacy Level",
+			"options": [
+				{
+					"label": "Public",
+					"value": "PUBLIC"
+				},
+				{
+					"label": "Server Only",
+					"value": "GUILD_ONLY"
+				}
+			],
+			"placeholder": "Chhose one from the options",
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Event Setting",
+			"placeholder": "Where will the event will happen",
+			"options": [
+				{
+					"label": "Stage Channel",
+					"value": "STAGE_INSTANCE"
+				},
+				{
+					"label": "Voice Channel",
+					"value": "VOICE"
+				},
+				{
+					"label": "External Link",
+					"value": "EXTERNAL"
+				},
+				{
+					"label": "None",
+					"value": "NONE"
+				}
+			],
+			"required": true
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Event Channel ID",
+			"placeholder": "Skip this if the event setting is external or none"
+		},
+		{
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Event Metadata",
+			"placeholder": "Skip this if the event setting is stage channel or voice channel"
+		}
+	]
+}

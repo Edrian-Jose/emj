@@ -15,7 +15,7 @@ const getPersonalThread = async (
 ): Promise<[ThreadChannel | null, ThreadDocument | null, ChannelDocument | null]> => {
 	const [_channel, channel] = await getChannelDocument(guildResolvable, channelResolvable);
 	const [parsedMember] = await parseMember(guildResolvable, member);
-	if (channel?.isText() && _channel) {
+	if (channel?.isText() && _channel && parsedMember) {
 		let _thread = await ThreadModel.findOne({ ownerId: parsedMember.id, parentId: channel.id });
 		if (!_thread) {
 			const thread = await channel.threads.create({ name: threadName ?? `${parsedMember.user.username} thread`, autoArchiveDuration: 1440 });

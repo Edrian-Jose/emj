@@ -13,20 +13,29 @@ export const deleteApplication = async (entry: FormEntry, interaction: ButtonInt
 		if (entry.form.resultDestination.type === 'GUILD_CHANNEL') {
 			const [member, guild] = await parseMember(entry.form.resultDestination.guildId!, entry.ownerId);
 			const [channel] = await parseChannel(guild, entry.form.resultDestination.id);
-			const [thread] = await getPersonalThread(member, guild, channel as TextChannel);
-			if (thread) {
-				thread.setArchived(false);
-				thread.messages.delete(entry.applicationId).then(() => {
-					if (verifiers) {
-						removeVerifiers(thread, verifiers, entry.ownerId);
-					}
-				});
+			if (member) {
+				const [thread] = await getPersonalThread(member, guild, channel as TextChannel);
+				if (thread) {
+					thread.setArchived(false);
+					thread.messages
+						.delete(entry.applicationId)
+						.then(() => {
+							if (verifiers) {
+								removeVerifiers(thread, verifiers, entry.ownerId);
+							}
+						})
+						.catch((error) => console.log(error));
+				}
 			}
 		} else {
-			const channel = await interaction.client.channels.fetch(entry.form.resultDestination.id);
-			let message = await (channel as DMChannel).messages.fetch(entry.applicationId!);
-			if (message.deletable) {
-				message = await message.delete();
+			try {
+				const channel = await interaction.client.channels.fetch(entry.form.resultDestination.id);
+				let message = await(channel as DMChannel).messages.fetch(entry.applicationId!);
+				if (message.deletable) {
+					message = await message.delete();
+				}
+			} catch (error) {
+				console.log(error);
 			}
 		}
 		entry._document.applicationId = undefined;

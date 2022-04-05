@@ -57,10 +57,18 @@ const handleEntryButton = async (interaction: ButtonInteraction, type: EntrySubA
 				break;
 		}
 	} else if (entry.ownerId !== interaction.user.id) {
-		await interaction.followUp({
-			content: `You are not the owner or a verifier of this form entry.`,
-			ephemeral: true
-		});
+		if (interaction.deferred) {
+			await interaction.followUp({
+				content: `You are not the owner or a verifier of this form entry.`,
+				ephemeral: true
+			});
+		} else {
+			await interaction.reply({
+				content: `You are not the owner or a verifier of this form entry.`,
+				ephemeral: true
+			});
+		}
+		
 		// verifier and owner or not verifier but owner
 	} else if (_entry) {
 		if (['upvote', 'downvote', 'approve', 'deny', 'denyModal'].includes(type)) {

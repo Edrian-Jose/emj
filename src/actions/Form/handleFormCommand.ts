@@ -1,4 +1,5 @@
 import type FormEntry from '../FormEntry/FormEntry';
+import basicAdmission from './Commands/basicAdmission';
 import defaultSubmit from './Commands/defaultSubmit';
 import executeQuestionCommand from './handlePromptCommand';
 import type Prompt from './Strategies/Prompt';
@@ -8,14 +9,15 @@ export type EntryAnswer = {
 	question: Prompt;
 };
 
-export type FormCommand = (...answers: EntryAnswer[]) => Promise<void>;
+export type FormCommand = (entry: FormEntry, ...answers: EntryAnswer[]) => Promise<void>;
 
 interface FormCommands {
 	[name: string]: FormCommand;
 }
 
 const customCommands: FormCommands = {
-	defaultSubmit: defaultSubmit
+	defaultSubmit,
+	basicAdmission
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
@@ -33,7 +35,7 @@ const executeFormCommand = (entry: FormEntry, success = false) => {
 			commands.onSubmit.forEach((command) => {
 				if (Object.keys(customCommands).includes(command)) {
 					const executer = customCommands[command];
-					executer(...answers);
+					executer(entry, ...answers);
 				}
 			});
 		}
@@ -45,7 +47,7 @@ const executeFormCommand = (entry: FormEntry, success = false) => {
 		commands.onCancel.forEach((command) => {
 			if (Object.keys(customCommands).includes(command)) {
 				const executer = customCommands[command];
-				executer(...answers);
+				executer(entry, ...answers);
 			}
 		});
 	}

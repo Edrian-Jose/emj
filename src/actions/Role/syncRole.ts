@@ -19,7 +19,7 @@ export const getRoleDocument = async (
 					guildId: guild.id,
 					roleId: role.id
 				});
-				_role = await _role.save();
+				return [_role, role, guild];
 			}
 		}
 	} else if (_role) {

@@ -44,14 +44,18 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 			removeVerifiers(channel, verifiers, entry.ownerId);
 		}
 	} else {
-		const creator = await interaction.client.users.fetch(entry.form.creatorId);
-		const channel = creator.dmChannel ?? (await creator.createDM());
-		const message = await channel.messages.fetch(entry.navigatorId!);
-		if (message.editable) {
-			await message.edit({
-				embeds: [approvedApplication(entry, interaction.user.username)],
-				components: []
-			});
+		try {
+			const creator = await interaction.client.users.fetch(entry.form.creatorId);
+			const channel = creator.dmChannel ?? (await creator.createDM());
+			const message = await channel.messages.fetch(entry.navigatorId!);
+			if (message.editable) {
+				await message.edit({
+					embeds: [approvedApplication(entry, interaction.user.username)],
+					components: []
+				});
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
@@ -60,36 +64,44 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 
 		const _guild = await GuildModel.findOne({ guildId: guild.id });
 		const [deskChannel] = await parseChannel(guild, _guild?.channels.desk!);
-		if (deskChannel?.isText()) {
+		if (deskChannel?.isText() && member) {
 			let [thread] = await getPersonalThread(member, guild, deskChannel as TextChannel);
 
 			if (thread) {
 				thread.setArchived(false);
-				const message = await thread.messages.fetch(entry.navigatorId);
-				if (message) {
-					await utilityWebhookSend(
-						guild,
-						member,
-						'desk',
-						{
-							embeds: [waitingApproval(entry, false, 'Approved')],
-							components: entry.createVerifiedComponents()
-						},
-						`${member.user.username} desk`,
-						message
-					);
+				try {
+					const message = await thread.messages.fetch(entry.navigatorId);
+					if (message) {
+						await utilityWebhookSend(
+							guild,
+							member,
+							'desk',
+							{
+								embeds: [waitingApproval(entry, false, 'Approved')],
+								components: entry.createVerifiedComponents()
+							},
+							`${member.user.username} desk`,
+							message
+						);
+					}
+				} catch (error) {
+					console.log(error);
 				}
 			}
 		}
 	} else {
-		const owner = await interaction.client.users.fetch(entry.ownerId);
-		const channel = owner.dmChannel ?? (await owner.createDM());
-		const message = await channel.messages.fetch(entry.navigatorId!);
-		if (message.editable) {
-			await message.edit({
-				embeds: [waitingApproval(entry, false, 'Approved')],
-				components: entry.createVerifiedComponents()
-			});
+		try {
+			const owner = await interaction.client.users.fetch(entry.ownerId);
+			const channel = owner.dmChannel ?? (await owner.createDM());
+			const message = await channel.messages.fetch(entry.navigatorId!);
+			if (message.editable) {
+				await message.edit({
+					embeds: [waitingApproval(entry, false, 'Approved')],
+					components: entry.createVerifiedComponents()
+				});
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 

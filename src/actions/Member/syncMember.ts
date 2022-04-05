@@ -1,26 +1,27 @@
 import type { Guild, GuildMember, GuildMemberResolvable, Snowflake } from 'discord.js';
-import MemberModel, { MemberDocument } from '../../schemas/Member';
+import MemberModel, { MemberDocument, MemberPopulatedDocument } from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 import parseGuild from '../Guild/parseGuild';
 import { getGuildDocument } from '../Guild/syncGuild';
 import syncRole from '../Role/syncRole';
+import assignRoleBadge from './assignRoleBadge';
 import parseMember from './parseMember';
 
 export const getMemberDocument = async (
 	guildResolvable: Snowflake | Guild,
 	memberResolvable: GuildMemberResolvable
-): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+): Promise<[(MemberDocument & { _id: any }) | null, GuildMember | null]> => {
 	let _member: (MemberDocument & { _id: any }) | null = null;
 	const [member, guild] = await parseMember(guildResolvable, memberResolvable);
 	const id = typeof memberResolvable === 'string' ? memberResolvable : memberResolvable.id;
-	_member = await MemberModel.findOne({ guildId: guild.id, userId: id }).exec();
+	_member = await MemberModel.findOne({ guildId: guild.id, userId: id }).populate('roles').exec();
 	if (member && !member.user.bot) {
 		if (!_member) {
 			_member = await MemberModel.create({
 				guildId: guild.id,
 				userId: member.user.id
 			});
-			_member = await _member.save();
+			return [_member, member];
 		}
 	}
 	return [_member, member];
@@ -29,12 +30,18 @@ export const getMemberDocument = async (
 const syncMember = async (
 	guildResolvable: Snowflake | Guild,
 	memberResolvable: GuildMemberResolvable
-): Promise<[(MemberDocument & { _id: any }) | null, GuildMember]> => {
+): Promise<[(MemberDocument & { _id: any }) | null, GuildMember | null]> => {
 	const [_member, member] = await getMemberDocument(guildResolvable, memberResolvable);
-
+	const [_guild] = await getGuildDocument(guildResolvable);
 	if (_member && member && !member.user.bot) {
-		if (member.nickname) {
-			_member.nickname = member.nickname;
+		if (member.nickname && _guild) {
+			const index = member.nickname.lastIndexOf(_guild.seperators.nickname);
+			if (index > 0) {
+				const nick = member.nickname.substring(0, index);
+				_member.nickname = nick;
+			} else {
+				_member.nickname = member.nickname;
+			}
 		}
 		_member.tag = member.user.tag;
 		const cacheRoles = Array.from(member.roles.cache.keys());
@@ -46,7 +53,6 @@ const syncMember = async (
 			}
 		}
 		const _roles = await RoleModel.find({ $or: [{ roleId: { $in: roles } }, { members: { $all: [member.id] } }] }).exec();
-		// console.log(_roles);
 		_roles.forEach(async (_role) => {
 			_role.members = _role.members.filter((memberId) => {
 				if (memberId == member.id && !roles.includes(_role.roleId)) {
@@ -59,9 +65,11 @@ const syncMember = async (
 			}
 			await _role.save();
 		});
-
-		_member.roles = _roles.filter((_role) => roles.includes(_role.roleId)).map((_role) => _role._id);
-		await _member.save();
+		const newRoles = _roles.filter((_role) => roles.includes(_role.roleId)).map((_role) => _role._id);
+		_member.roles = newRoles;
+		let _newMember = await (await _member.save()).populate('roles');
+		_newMember = (await assignRoleBadge(_newMember as MemberPopulatedDocument, member)) as MemberDocument & { _id: any };
+		return [_newMember, member];
 	}
 	return [_member, member];
 };

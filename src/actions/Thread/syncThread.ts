@@ -22,7 +22,7 @@ export const getThreadDocument = async (
 			});
 		}
 
-		_thread = await _thread.save();
+		return [_thread, thread, channel, guild];
 	} else if (_thread) {
 		_thread = await _thread.delete();
 	}
@@ -41,7 +41,10 @@ const syncThread = async (
 	} else if (_thread && thread) {
 		_thread.membersId = Array.from(thread.members.cache.keys());
 	}
-	_thread = (await _thread?.save()) ?? null;
+	if (_thread) {
+		_thread = (await _thread.save()) ?? null;
+	}
+
 	return [_thread, thread, channel, guild];
 };
 
