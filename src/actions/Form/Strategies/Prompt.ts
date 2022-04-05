@@ -17,9 +17,13 @@ class Prompt implements Question {
 	readonly options?: { label: string; value: string; description?: string }[];
 	readonly placeholder?: string;
 	readonly command?: string;
+	customId: string;
+	lastRevision: number;
 
 	public constructor(formId: string, question: QuestionDocument) {
 		this.formId = formId;
+		this.customId = question.customId;
+		this.lastRevision = question.lastRevision;
 		this._id = question._id;
 		this._document = question;
 		this.creatorId = question.creatorId;
