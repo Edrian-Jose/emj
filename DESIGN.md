@@ -27,12 +27,14 @@
 - Only visible for users with teams
 ### threads
 - Public
+- exempt tchannel
 - Everyone can create threads here
 - Room threads will be created here
 
 ## Voice chats
 ### generator
 - Public
+- exempt cat
 
 ## Administration
 ### Rooms

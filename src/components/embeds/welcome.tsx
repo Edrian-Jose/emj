@@ -2,7 +2,7 @@ import { italic } from '@discordjs/builders';
 import { EmbedJsx } from '@sapphire/embed-jsx';
 import type { GuildMember } from 'discord.js';
 import { getGuildDocument } from '../../actions/Guild/syncGuild';
-import { DefaultAvatar } from '../../lib/constants';
+import { DefaultAvatar, DefaultFooter } from '../../lib/constants';
 import randomColor from '../../lib/randomColor';
 import FormModel from '../../schemas/Form';
 
@@ -25,7 +25,7 @@ export default async function welcome(member: GuildMember) {
 				{_form ? `Click the join button below and answer the application form` : `You are now a member!`}
 			</field>
 			{desc}
-			<footer iconURL={DefaultAvatar}>C4$huALL Community v1</footer>
+			<footer iconURL={DefaultAvatar}>{DefaultFooter}</footer>
 			<timestamp>{Date.now()}</timestamp>
 		</embed>
 	);

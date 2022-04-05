@@ -1,7 +1,7 @@
 import { italic, userMention } from '@discordjs/builders';
 import { EmbedJsx } from '@sapphire/embed-jsx';
 import type Room from '../../actions/Room/Room';
-import { DefaultAvatar } from '../../lib/constants';
+import { DefaultAvatar, DefaultFooter } from '../../lib/constants';
 import randomColor from '../../lib/randomColor';
 
 export default async function room(room: Room, count?: number) {
@@ -23,7 +23,7 @@ export default async function room(room: Room, count?: number) {
 			<field name="Co-host">{room.cohost ? userMention(room.cohost) : 'No assigned cohost'}</field>
 			<field name="Privacy Level">{level.join(' and ')}</field>
 			{membersCount}
-			<footer iconURL={DefaultAvatar}>{`C4shuALL Community v1`}</footer>
+			<footer iconURL={DefaultAvatar}>{DefaultFooter}</footer>
 			<timestamp>{room.createdTimestamp ?? Date.now()}</timestamp>
 		</embed>
 	);
