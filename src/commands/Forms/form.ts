@@ -45,6 +45,8 @@ export class UserCommand extends SubCommandPluginCommand {
 							questions.push(_q);
 						}
 
+					} else {
+						questions.push(q);
 					}
 				} else {
 					questions.push(q);
