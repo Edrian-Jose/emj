@@ -8,13 +8,15 @@ import type { Interaction } from 'discord.js';
 })
 export class UserEvent extends Listener {
 	public async run(interaction: Interaction) {
+		try {
+			if (!interaction.channel || (interaction.channel?.isThread() && interaction.channel.archived)) {
+				return;
+			}
 
-		if (!interaction.channel || (interaction.channel?.isThread() && interaction.channel.archived)) {
-			return;
-		}
+			if (!interaction.isButton()) return;
 
-		if (!interaction.isButton()) return;
-
-		executeButton(interaction);
+			executeButton(interaction);
+		} catch (error) {}
+		
 	}
 }

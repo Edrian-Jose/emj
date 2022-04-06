@@ -8,11 +8,14 @@ import { executeSelect } from '../actions/Select/executeSelect';
 })
 export class UserEvent extends Listener {
 	public run(interaction: Interaction) {
-		if (!interaction.channel || (interaction.channel?.isThread() && interaction.channel.archived)) {
-			return;
-		}
-		if (!interaction.isSelectMenu()) return;
+		try {
+			if (!interaction.channel || (interaction.channel?.isThread() && interaction.channel.archived)) {
+				return;
+			}
+			if (!interaction.isSelectMenu()) return;
 
-		executeSelect(interaction);
+			executeSelect(interaction);
+		} catch (error) {}
+		
 	}
 }
