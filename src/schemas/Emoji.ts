@@ -1,13 +1,19 @@
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
+export type EmojiType = 'Discord Emoji' | 'Default Emoji';
 interface Emoji {
 	guildId: Snowflake;
 	emojiId: Snowflake;
+	emojiType: EmojiType;
 	name: string;
 	identifier: string;
 	url: string;
-	roles: Snowflake[];
+	roles?: Snowflake[];
+	thread?: {
+		parent: Snowflake;
+		id: Snowflake;
+	};
 }
 
 interface EmojiBaseDocument extends Emoji, Document {
@@ -21,10 +27,19 @@ export interface EmojiDocument extends EmojiBaseDocument {
 const EmojiSchema = new Schema<EmojiDocument>({
 	guildId: String,
 	emojiId: String,
+	emojiType: {
+		type: String,
+		enum: ['Discord Emoji', 'Default Emoji'],
+		default: 'Discord Emoji'
+	},
 	name: String,
 	identifier: String,
 	url: String,
-	roles: [String]
+	roles: [String],
+	thread: {
+		parent: String,
+		id: String
+	}
 });
 
 const EmojiModel = model<EmojiDocument>('Emoji', EmojiSchema);

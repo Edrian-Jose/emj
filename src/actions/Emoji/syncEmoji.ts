@@ -15,7 +15,8 @@ export const getEmojiDocument = async (
 		if (!_emoji) {
 			_emoji = await EmojiModel.create({
 				guildId: guild.id,
-				emojiId: emoji.id
+				emojiId: emoji.id,
+				emojiType: 'Discord Emoji'
 			});
 		}
 		return [_emoji, emoji, guild];
