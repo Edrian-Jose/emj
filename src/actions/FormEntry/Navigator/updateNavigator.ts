@@ -23,7 +23,7 @@ const updateNavigator = async (interaction: MessageComponentInteraction, formId:
 
 			let c = message?.channel.isThread() ? message.channel.parent : message.channel;
 
-			if (!_formEntry.navigatorId) {
+			if (!_formEntry.navigatorId && c) {
 				_formEntry.navigatorId = message.id;
 				_formEntry.location = {
 					type: 'GUILD_TEXT',
@@ -35,15 +35,16 @@ const updateNavigator = async (interaction: MessageComponentInteraction, formId:
 				} catch (error) {
 					console.log(error);
 				}
-				
 			}
 
 			if (message.channel.isThread()) {
 				message.channel.setArchived(false);
 				(options as WebhookEditMessageOptions).threadId = message.channel.id;
 			}
-
-			await webhookEdit(c as TextChannel, message, options);
+			if (message && c) {
+				await webhookEdit(c as TextChannel, message, options);
+			}
+			
 		} else {
 			try {
 				const message = await channel.messages.fetch(_formEntry.navigatorId);

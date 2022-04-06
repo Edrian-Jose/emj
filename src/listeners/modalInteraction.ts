@@ -8,6 +8,9 @@ import type { ButtonInteraction } from 'discord.js';
 })
 export class UserEvent extends Listener {
 	public run(interaction: ButtonInteraction) {
-		handleModalSubmit(interaction);
+		try {
+			handleModalSubmit(interaction);
+		} catch (error) {}
+		
 	}
 }
