@@ -32,7 +32,7 @@ export class UserEvent extends Listener {
 					entityType: _event.entityType,
 					name: _event.name,
 					privacyLevel: _event.privacyLevel,
-					scheduledStartTime: _event.scheduledStartTimestamp,
+					scheduledStartTime: moment(_event.scheduledStartTimestamp).subtract(8, 'hours').valueOf(),
 					channel: _event.channelId,
 					description: _event.description,
 					scheduledEndTime: _event.scheduledEndTimestamp
