@@ -1,6 +1,7 @@
 import { MessageActionRow, MessageButton, TextChannel, VoiceBasedChannel } from 'discord.js';
 import room from '../../components/embeds/room';
 import type { IRoom, RoomDocument } from '../../schemas/Room';
+import RoomModel from '../../schemas/Room';
 import parseChannel from '../Channel/parseChannel';
 import getChannelWebhook from '../Channel/Webhook/getChannelWebhook';
 import { getGuildDocument } from '../Guild/syncGuild';
@@ -105,11 +106,13 @@ class Room implements IRoom {
 						if (this.controllerMessage) {
 							await webhook.deleteMessage(this.controllerMessage);
 						}
+
 						const controllerMessage = await webhook.send(msgOptions);
 						this._document.controllerMessage = controllerMessage.id;
 					} else if (this.controllerMessage) {
 						await webhook.editMessage(this.controllerMessage, msgOptions);
 					} else {
+						roomsChannel.permissionOverwrites.edit(this.guildId, { VIEW_CHANNEL: true });
 						const controllerMessage = await webhook.send(msgOptions);
 						this._document.controllerMessage = controllerMessage.id;
 					}
@@ -130,6 +133,11 @@ class Room implements IRoom {
 				if (webhook && member) {
 					await webhook.deleteMessage(this.controllerMessage);
 					await this._document.delete();
+				}
+
+				const _room = await RoomModel.findOne().exec();
+				if (!_room) {
+					roomsChannel.permissionOverwrites.edit(this.guildId, { VIEW_CHANNEL: false });
 				}
 			}
 		}
