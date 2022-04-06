@@ -9,7 +9,7 @@ import EmojiModel from '../schemas/Emoji';
 export class UserEvent extends Listener {
 	public async run(reaction: MessageReaction, user: User) {
 		const { emoji, message } = reaction;
-		const _emoji = await EmojiModel.findOne({ name: emoji.name });
+		const _emoji = await EmojiModel.findOne({ name: emoji.name }).exec();
 
 		if (_emoji && _emoji.thread) {
 			let [thread, parent] = await parseThread(_emoji.guildId, _emoji.thread.parent, _emoji.thread.id);
