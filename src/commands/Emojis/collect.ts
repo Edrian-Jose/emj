@@ -32,6 +32,17 @@ export class UserCommand extends Command {
 			} catch (error) {
 			} finally {
 				if (_emoji) {
+
+					if (_emoji.thread) {
+						_emoji.thread = undefined;
+						await _emoji.save();
+						const emoji = _emoji.emojiType === 'Discord Emoji' ? `<:${_emoji.identifier}>` : _emoji.name;
+						return temporaryReply(
+							message,
+							`Messages with ${emoji} reaction will now not be collected to ${channelMention(channel.id)}`,
+							true
+						);
+					}
 					_emoji.thread = {
 						parent: parent.id,
 						id: channel.id
