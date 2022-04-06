@@ -35,6 +35,7 @@ interface Guild {
 		threads: Snowflake;
 		stage: Snowflake;
 		feeds: Snowflake;
+		apps: Snowflake;
 	};
 }
 
@@ -109,7 +110,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		generator: String,
 		threads: String,
 		stage: String,
-		feeds: String
+		feeds: String,
+		apps: String
 	}
 });
 
