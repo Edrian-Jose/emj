@@ -48,7 +48,7 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 				type: 'EXTERNAL',
 				name: `🎉 HBD ___name-${member.user.id}! 🎉`,
 				guildId: member.guild.id,
-				description: `C4$huALL celebrates ___name-${member.user.id} Birthday Today. Send the celebrant a birthday message using the url provided in this event or greet him on our server`,
+				description: `C4$huALL celebrates ___name-${member.user.id} Birthday. Send the celebrant a birthday message using the url provided in this event or greet him on our server`,
 				scheduledStartTimestamp: birthday,
 				scheduledEndTimestamp: birthdayObject.add(1, 'day').valueOf(),
 				entityType: 'EXTERNAL',

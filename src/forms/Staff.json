@@ -1,0 +1,395 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "960780818870075412",
+	"type": "STEP",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "Staff Application Form (F-2)",
+	"description": "Create request to become a staff member of this server by filling out the form below",
+	"requiredRoles": ["960789447446765568"],
+	"rewardRoles": ["960789724023382016"],
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["960788501488623626"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "960788579829833728",
+		"guildId": "960780818870075412"
+	},
+	"verification": true,
+	"verifiers": [
+		{
+			"type": "USER",
+			"id": "949328284758462584"
+		},
+		{
+			"type": "ROLE",
+			"id": "960789882563862568"
+		}
+	],
+	"questions": [
+		{
+			"customId": "q1A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Command 1",
+			"placeholder": "Input the command for setting your custom badge to 🎉",
+			"required": true
+		},
+		{
+			"customId": "q2A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Command 2",
+			"placeholder": "You set your custom badge to 🎉  but the badge is not shown in your nickname. Which command can you use to update the badge in your nickname?",
+			"required": true,
+			"options": [
+				{
+					"label": "!badge assign 🎉",
+					"value": "false-1"
+				},
+				{
+					"label": "!badge refresh",
+					"value": "true-1"
+				},
+				{
+					"label": "!badge set 🎉",
+					"value": "true-2"
+				},
+				{
+					"label": "!badge role @everyone 🎉",
+					"value": "false-2"
+				}
+			]
+		},
+		{
+			"customId": "q3A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 3",
+			"placeholder": "What are the 2 roles that you must have to obtain a Ca$hual Role.",
+			"required": true,
+			"options": [
+				{
+					"label": "Official Member",
+					"value": "Official Member"
+				},
+				{
+					"label": "Active",
+					"value": "Active"
+				},
+				{
+					"label": "Warrior",
+					"value": "Warrior"
+				},
+				{
+					"label": "Hype",
+					"value": "Hype"
+				}
+			],
+			"minSelected": 2,
+			"maxSelected": 2
+		},
+		{
+			"customId": "q4A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 4",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make your created room `locked`?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q5A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 5",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make your created room `hidden`?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q6A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 6",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make your created room `unlocked` from being locked?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q7A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 7",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make your created room `public` from being hidden?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q8A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 8",
+			"placeholder": "There\u0027s A zone (or room) that you want to join but unfortunately it was locked. What emoji button will make you enter that room?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q9A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 9",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make a thread for your room created?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "q10A0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "SELECT",
+			"value": "Question 10",
+			"placeholder": "When you Join the Get in the Zone channel. A zone (or room) will be created and an interface for that room will be sent to #🛋️︱rooms. What emoji button will make an event for your room created?",
+			"required": true,
+			"options": [
+				{
+					"label": "🔒",
+					"value": "🔒"
+				},
+				{
+					"label": "➡️",
+					"value": "➡️"
+				},
+				{
+					"label": "👓",
+					"value": "👓"
+				},
+				{
+					"label": "👁️",
+					"value": "👁️"
+				},
+				{
+					"value": "✍️",
+					"label": "✍️"
+				},
+				{
+					"label": "#️⃣",
+					"value": "#️⃣"
+				},
+				{
+					"label": "🗓️",
+					"value": "🗓️"
+				}
+			]
+		},
+		{
+			"customId": "stafft&aA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "BOOLEAN",
+			"value": "Management Roles Description",
+			"options": [
+				{
+					"label": "Yes",
+					"value": "true"
+				},
+				{
+					"label": "No",
+					"value": "false"
+				}
+			],
+			"placeholder": "I have read and understand managements roles descriptions that are shown here here --> https://bit.ly/3JincD6",
+			"required": true
+		}
+	]
+}

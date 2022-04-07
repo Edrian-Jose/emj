@@ -6,10 +6,11 @@
 		"name": "Cashuals Official",
 		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
 	},
-	"title": "Create Event Form",
+	"type": "STEP",
+	"title": "Create Event Form (U-1)",
 	"description": "Step by step wizard for creating or scheduling event.",
-	"requiredRoles": ["950994824973127720"],
-	"rewardRoles": ["959697696518705162"],
+	"requiredRoles": ["960790527056437279"],
+	"rewardRoles": [],
 	"commands": {
 		"onSubmit": ["createEvent"],
 		"onCancel": ["defaultCancel"]
@@ -17,12 +18,12 @@
 	"destination": [
 		{
 			"type": "GUILD_CHANNEL",
-			"ids": ["951385025889304606"]
+			"ids": ["960788501488623626"]
 		}
 	],
 	"resultDestination": {
 		"type": "GUILD_CHANNEL",
-		"id": "950986292475355159"
+		"id": "960788579829833728"
 	},
 	"verification": true,
 	"verifiers": [
@@ -32,11 +33,13 @@
 		},
 		{
 			"type": "ROLE",
-			"id": "950985316922163210"
+			"id": "960789763022028830"
 		}
 	],
 	"questions": [
 		{
+			"customId": "eventNameA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "TEXT",
 			"value": "Event Name",
@@ -44,12 +47,16 @@
 			"required": true
 		},
 		{
+			"customId": "eventDescA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "TEXT",
 			"value": "Event Decription",
 			"placeholder": "Describe the event"
 		},
 		{
+			"customId": "eventStartA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "DATETIME",
 			"value": "Event Start Time",
@@ -57,64 +64,56 @@
 			"required": true
 		},
 		{
+			"customId": "eventEndA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "DATETIME",
 			"value": "Event End Time",
 			"placeholder": "When will the event will end"
 		},
 		{
-			"creatorId": "949328284758462584",
-			"type": "OPTION",
-			"value": "Privacy Level",
-			"options": [
-				{
-					"label": "Public",
-					"value": "PUBLIC"
-				},
-				{
-					"label": "Server Only",
-					"value": "GUILD_ONLY"
-				}
-			],
-			"placeholder": "Chhose one from the options",
-			"required": true
-		},
-		{
+			"customId": "eventRepeatA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "SELECT",
-			"value": "Event Setting",
-			"placeholder": "Where will the event will happen",
+			"value": "Repeat Cycle",
+			"placeholder": "Does the event repeats? If yes, select the repeat cycle below. If not, skip this question",
 			"options": [
 				{
-					"label": "Stage Channel",
-					"value": "STAGE_INSTANCE"
+					"label": "Weekly",
+					"value": "w"
 				},
 				{
-					"label": "Voice Channel",
-					"value": "VOICE"
+					"label": "Monthly",
+					"value": "M"
 				},
 				{
-					"label": "External Link",
-					"value": "EXTERNAL"
+					"label": "Quarterly",
+					"value": "Q"
 				},
 				{
-					"label": "None",
-					"value": "NONE"
+					"label": "Yearly",
+					"value": "y"
 				}
-			],
+			]
+		},
+		{
+			"customId": "eventLocationA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Event Location",
+			"placeholder": "Link, address, or anything that describes the location",
 			"required": true
 		},
 		{
+			"customId": "eventCustomIdA0",
+			"lastRevision": 1649143433,
 			"creatorId": "949328284758462584",
 			"type": "TEXT",
-			"value": "Event Channel ID",
-			"placeholder": "Skip this if the event setting is external or none"
-		},
-		{
-			"creatorId": "949328284758462584",
-			"type": "TEXT",
-			"value": "Event Metadata",
-			"placeholder": "Skip this if the event setting is stage channel or voice channel"
+			"value": "Custom ID",
+			"placeholder": "This custom id can be used to edit your already created event",
+			"required": true
 		}
 	]
 }
