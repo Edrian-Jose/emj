@@ -1,3 +1,4 @@
+import type { GuildScheduledEventCreateOptions } from 'discord.js';
 import type { PieceContext } from '@sapphire/framework';
 import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
 import moment from 'moment';
@@ -20,15 +21,28 @@ export class EventCreateTask extends ScheduledTask {
 		try {
 			for (const _event of _events) {
 				const [_guild, guild] = await getGuildDocument(_event.guildId);
-				const event = await guild.scheduledEvents.create({
+				const options: GuildScheduledEventCreateOptions = {
 					entityType: _event.entityType,
 					name: _event.name,
 					privacyLevel: _event.privacyLevel,
 					scheduledStartTime: moment(_event.scheduledStartTimestamp).subtract(8, 'hours').valueOf(),
-					channel: _event.channelId,
-					description: _event.description,
-					scheduledEndTime: _event.scheduledEndTimestamp
-				});
+					description: _event.description
+				};
+
+				if (_event.channelId && _event.entityType !== 'EXTERNAL') {
+					options.channel = _event.channelId;
+				}
+				if (_event.location && _event.entityType === 'EXTERNAL') {
+					options.entityMetadata = {
+						location: `${_event.location}`
+					};
+				}
+
+				if (_event.scheduledEndTimestamp) {
+					options.scheduledEndTime = _event.scheduledEndTimestamp;
+				}
+
+				const event = await guild.scheduledEvents.create(options);
 				_event.eventId = event.id;
 				_event.createdTimestamp = moment().valueOf();
 				await _event.save();
@@ -36,7 +50,6 @@ export class EventCreateTask extends ScheduledTask {
 		} catch (error) {
 			console.log(error);
 		}
-
 		this.container.logger.info(`${_events.length} events found`);
 	}
 }

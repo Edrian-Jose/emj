@@ -1,6 +1,7 @@
 import type { ListenerOptions, PieceContext } from '@sapphire/framework';
 import { Listener, Store } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colorette';
+import type { GuildScheduledEventCreateOptions } from 'discord.js';
 import moment from 'moment';
 import { getGuildDocument } from '../actions/Guild/syncGuild';
 import EventModel from '../schemas/Event';
@@ -25,18 +26,31 @@ export class UserEvent extends Listener {
 			createdTimestamp: { $exists: false },
 			scheduledStartTimestamp: { $lte: moment().add(3, 'days').valueOf() }
 		});
+
 		try {
 			for (const _event of _events) {
 				const [_guild, guild] = await getGuildDocument(_event.guildId);
-				const event = await guild.scheduledEvents.create({
+				const options: GuildScheduledEventCreateOptions = {
 					entityType: _event.entityType,
 					name: _event.name,
 					privacyLevel: _event.privacyLevel,
 					scheduledStartTime: moment(_event.scheduledStartTimestamp).subtract(8, 'hours').valueOf(),
-					channel: _event.channelId,
-					description: _event.description,
-					scheduledEndTime: _event.scheduledEndTimestamp
-				});
+					description: _event.description
+				};
+
+				if (_event.channelId && _event.entityType !== 'EXTERNAL') {
+					options.channel = _event.channelId;
+				}
+				if (_event.location && _event.entityType === 'EXTERNAL') {
+					options.entityMetadata = {
+						location: `${_event.location}`
+					};
+				}
+
+				if (_event.scheduledEndTimestamp) {
+					options.scheduledEndTime = _event.scheduledEndTimestamp;
+				}
+				const event = await guild.scheduledEvents.create(options);
 				_event.eventId = event.id;
 				_event.createdTimestamp = moment().valueOf();
 				await _event.save();
