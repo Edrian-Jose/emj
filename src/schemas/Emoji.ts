@@ -13,6 +13,7 @@ interface Emoji {
 	thread?: {
 		parent: Snowflake;
 		id: Snowflake;
+		threshold: number;
 	};
 }
 
@@ -38,7 +39,11 @@ const EmojiSchema = new Schema<EmojiDocument>({
 	roles: [String],
 	thread: {
 		parent: String,
-		id: String
+		id: String,
+		threshold: {
+			type: Number,
+			default: 1
+		}
 	}
 });
 
