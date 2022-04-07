@@ -26,7 +26,6 @@ export class UserEvent extends Listener {
 
 		if (thread) {
 			const _roles = await RoleModel.find({ 'thread.id': thread.id }).exec();
-
 			if (_roles.length) {
 				for (const [id] of addedMembers) {
 					const [member] = await parseMember(thread.guild, id);

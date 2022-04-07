@@ -16,7 +16,7 @@ export class EventCreateTask extends ScheduledTask {
 
 	public async run() {
 		const _events = await EventModel.find({
-			scheduledStartTimestamp: { $lte: moment().add(3, 'days').valueOf() }
+			scheduledStartTimestamp: { $lte: moment().add(12, 'hours').valueOf() }
 		});
 		try {
 			for (const _event of _events) {

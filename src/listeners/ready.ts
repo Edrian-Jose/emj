@@ -24,7 +24,7 @@ export class UserEvent extends Listener {
 		this.printStoreDebugInformation();
 
 		const _events = await EventModel.find({
-			scheduledStartTimestamp: { $lte: moment().add(3, 'days').valueOf() }
+			scheduledStartTimestamp: { $lte: moment().add(12, 'hours').valueOf() }
 		});
 
 		try {

@@ -1,6 +1,6 @@
 {
 	"creatorId": "949328284758462584",
-	"guildId": "950422297204899890",
+	"guildId": "960780818870075412",
 	"author": {
 		"userId": "949328284758462584",
 		"name": "Cashuals Official",
@@ -23,6 +23,7 @@
 	],
 	"resultDestination": {
 		"type": "GUILD_CHANNEL",
+		"guildId": "960780818870075412",
 		"id": "960788579829833728"
 	},
 	"verification": true,
@@ -73,12 +74,16 @@
 		},
 		{
 			"customId": "eventRepeatA0",
-			"lastRevision": 1649143433,
+			"lastRevision": 1649316398,
 			"creatorId": "949328284758462584",
 			"type": "SELECT",
 			"value": "Repeat Cycle",
 			"placeholder": "Does the event repeats? If yes, select the repeat cycle below. If not, skip this question",
 			"options": [
+				{
+					"label": "Daily",
+					"value": "d"
+				},
 				{
 					"label": "Weekly",
 					"value": "w"

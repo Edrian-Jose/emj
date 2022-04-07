@@ -62,6 +62,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					if (channel?.isText()) {
 						const thread = await channel.threads.fetch(_room.threadId);
 						if (thread) {
+							await thread.setArchived(false);
 							await thread.members.add(id);
 						}
 					}
@@ -140,6 +141,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					if (channel?.isText()) {
 						const thread = await channel.threads.fetch(_room.threadId);
 						if (thread) {
+							await thread.setArchived(false);
 							await thread.members.remove(id);
 						}
 					}

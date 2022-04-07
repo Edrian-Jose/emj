@@ -1,19 +1,33 @@
-import { channelMention } from '@discordjs/builders';
+import { getGuildDocument } from './../../actions/Guild/syncGuild';
+import { channelMention, roleMention } from '@discordjs/builders';
 import { registerUtilityChannel } from './../../actions/Guild/registerChannel';
 import { ApplyOptions } from '@sapphire/decorators';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import type { Args } from '@sapphire/framework';
-import { getGuildDocument } from '../../actions/Guild/syncGuild';
 import parseChannel from '../../actions/Channel/parseChannel';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
 	preconditions: ['AdminOnly'],
-	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads', 'stage', 'feeds', 'apps']
+	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads', 'stage', 'feeds', 'apps', 'probation']
 })
 export class UserCommand extends SubCommandPluginCommand {
+	public async probation(message: Message, args: Args) {
+		try {
+			const role = await args.pick('role');
+			let [_guild] = await getGuildDocument(role.guild);
+			if (_guild) {
+				_guild.roles.probation = role.id;
+				_guild = await _guild.save();
+				return temporaryReply(message, `${roleMention(_guild.roles.probation)} will now be set to members under probation`, true);
+			}
+		} catch (error) {
+			return temporaryReply(message, `Probation failed to setup`, true);
+		}
+	}
+
 	public async desk(message: Message) {
 		const _guild = await registerUtilityChannel(message, 'desk');
 

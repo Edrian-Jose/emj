@@ -8,6 +8,7 @@ interface Member {
 	guildId: Snowflake;
 	userId: Snowflake;
 	tag: string;
+	probationRoles?: Snowflake[];
 	nickname?: string;
 	badge?: {
 		assigned?: string;
@@ -34,6 +35,7 @@ const MemberSchema = new Schema<MemberDocument>({
 	userId: String,
 	tag: String,
 	nickname: String,
+	probationRoles: [String],
 	badge: {
 		assigned: String,
 		custom: String,
