@@ -15,7 +15,9 @@ export class UserEvent extends Listener {
 			if (!interaction.isSelectMenu()) return;
 
 			executeSelect(interaction);
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 		
 	}
 }

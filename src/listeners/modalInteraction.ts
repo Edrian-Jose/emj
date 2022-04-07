@@ -10,7 +10,9 @@ export class UserEvent extends Listener {
 	public run(interaction: ButtonInteraction) {
 		try {
 			handleModalSubmit(interaction);
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 		
 	}
 }

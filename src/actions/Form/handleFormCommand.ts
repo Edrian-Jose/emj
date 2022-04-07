@@ -1,5 +1,6 @@
 import type FormEntry from '../FormEntry/FormEntry';
 import basicAdmission from './Commands/basicAdmission';
+import createEvent from './Commands/createEvent';
 import defaultSubmit from './Commands/defaultSubmit';
 import executeQuestionCommand from './handlePromptCommand';
 import type Prompt from './Strategies/Prompt';
@@ -17,7 +18,8 @@ interface FormCommands {
 
 const customCommands: FormCommands = {
 	defaultSubmit,
-	basicAdmission
+	basicAdmission,
+	createEvent
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
