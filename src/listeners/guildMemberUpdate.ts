@@ -33,6 +33,7 @@ export class UserEvent extends Listener {
 			if (_role?.thread) {
 				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
 				if (thread) {
+					await thread.setArchived(false);
 					await thread.members.add(newMember.id);
 				}
 			}
@@ -54,6 +55,7 @@ export class UserEvent extends Listener {
 			if (_role?.thread) {
 				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
 				if (thread) {
+					await thread.setArchived(false);
 					await thread.members.remove(newMember.id);
 				}
 			}
