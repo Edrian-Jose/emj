@@ -13,6 +13,15 @@ const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	const newAnswers = [...answers];
 	newAnswers[2].value![0] = moment(parseInt(answers[2].value![0])).format('dddd, MMMM Do YYYY');
 	newAnswers[12].value![0] = `https://bit.ly/12123sa`;
+	if (newAnswers[5].value && newAnswers[5].value[0]) {
+		newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0]}`;
+	}
+	if (newAnswers[6].value && newAnswers[6].value[0]) {
+		newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0]}`;
+	}
+	if (newAnswers[7].value && newAnswers[7].value[0]) {
+		newAnswers[7].value[0] = `https://www.instagram.com/${newAnswers[7].value[0]}/`;
+	}
 	return newAnswers;
 };
 
@@ -46,7 +55,9 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 				location: `https://discord.com/users/${entry.ownerId}/`,
 				privacyLevel: 2,
 				creatorId: member.id,
-				repeat: 'year'
+				repeat: 'year',
+				eventId: undefined,
+				createdTimestamp: undefined
 			} as IEvent;
 
 			const bevent = await EventModel.findOne({ customId: `birthday-${member.id}` }).exec();

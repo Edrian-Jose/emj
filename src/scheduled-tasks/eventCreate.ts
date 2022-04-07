@@ -16,7 +16,6 @@ export class EventCreateTask extends ScheduledTask {
 
 	public async run() {
 		const _events = await EventModel.find({
-			createdTimestamp: { $exists: false },
 			scheduledStartTimestamp: { $lte: moment().add(3, 'days').valueOf() }
 		});
 		try {
@@ -26,7 +25,7 @@ export class EventCreateTask extends ScheduledTask {
 					entityType: _event.entityType,
 					name: await parsePlaceholder(`${_event.name}`),
 					privacyLevel: _event.privacyLevel,
-					scheduledStartTime: moment(_event.scheduledStartTimestamp).subtract(8, 'hours').valueOf(),
+					scheduledStartTime: moment(_event.scheduledStartTimestamp).valueOf(),
 					description: await parsePlaceholder(`${_event.description}`)
 				};
 
@@ -40,13 +39,21 @@ export class EventCreateTask extends ScheduledTask {
 				}
 
 				if (_event.scheduledEndTimestamp) {
-					options.scheduledEndTime = _event.scheduledEndTimestamp;
+					options.scheduledEndTime = moment(_event.scheduledEndTimestamp).valueOf();
 				}
 
-				const event = await guild.scheduledEvents.create(options);
-				_event.eventId = event.id;
-				_event.createdTimestamp = moment().valueOf();
-				await _event.save();
+				await guild.scheduledEvents.create(options);
+
+				if (_event.repeat) {
+					_event.scheduledStartTimestamp = moment(_event.scheduledStartTimestamp).add(1, _event.repeat).valueOf();
+					if (_event.scheduledEndTimestamp) {
+						_event.scheduledEndTimestamp = moment(_event.scheduledEndTimestamp).add(1, _event.repeat).valueOf();
+					}
+
+					await _event.save();
+				} else {
+					await _event.delete();
+				}
 			}
 		} catch (error) {
 			console.log(error);
