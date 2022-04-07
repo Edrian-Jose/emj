@@ -15,6 +15,7 @@ interface Event {
 	scheduledEndTimestamp?: number;
 	entityType: GuildScheduledEventEntityType;
 	channelId?: Snowflake;
+	location?: string;
 	privacyLevel: number;
 	creatorId: Snowflake;
 	createdTimestamp?: number;
@@ -48,6 +49,7 @@ const EventSchema = new Schema<EventDocument>({
 		default: 'VOICE'
 	},
 	channelId: String,
+	location: String,
 	privacyLevel: {
 		type: Number,
 		default: 2
