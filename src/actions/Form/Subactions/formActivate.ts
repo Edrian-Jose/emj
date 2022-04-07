@@ -1,6 +1,5 @@
 import type { ButtonInteraction, Message } from 'discord.js';
 import type { APIMessage } from 'discord.js/node_modules/discord-api-types';
-import randomHook from '../../../lib/randomHook';
 import MemberModel from '../../../schemas/Member';
 import RoleModel from '../../../schemas/Role';
 import parseChannel from '../../Channel/parseChannel';
@@ -32,10 +31,9 @@ const formActivate = async (_form: FormDocument, interaction: ButtonInteraction)
 				const [channel] = await parseChannel(guild, id);
 				if (channel?.isText()) {
 					const webhook = await getChannelWebhook(channel, true);
-					const randomWebhook = await randomHook();
 					const message = await webhook?.send({
-						username: randomWebhook.name,
-						avatarURL: randomWebhook.avatar,
+						username: form.author.name,
+						avatarURL: form.author.avatarURL,
 						embeds: [form.createEmbed()],
 						components: form.createComponents('INSTANCE')
 					});
