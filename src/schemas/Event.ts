@@ -1,4 +1,5 @@
 import type { GuildScheduledEventEntityType, Snowflake } from 'discord.js';
+import type moment from 'moment';
 import { Schema, model, Document } from 'mongoose';
 import type { RoomDocument } from './Room';
 
@@ -19,8 +20,10 @@ interface Event {
 	privacyLevel: number;
 	creatorId: Snowflake;
 	createdTimestamp?: number;
+	repeat?: moment.unitOfTime.DurationConstructor;
 }
 
+export interface IEvent extends Event {}
 interface EventBaseDocument extends Event, Document {
 	//add instance methods here
 }
@@ -55,7 +58,8 @@ const EventSchema = new Schema<EventDocument>({
 		default: 2
 	},
 	creatorId: String,
-	createdTimestamp: Number
+	createdTimestamp: Number,
+	repeat: String
 });
 
 const EventModel = model<EventDocument>('Event', EventSchema);

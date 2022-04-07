@@ -4,6 +4,7 @@ import { ScheduledTask } from '@sapphire/plugin-scheduled-tasks';
 import moment from 'moment';
 import { getGuildDocument } from '../actions/Guild/syncGuild';
 import EventModel from '../schemas/Event';
+import parsePlaceholder from '../actions/General/parsePlaceholder';
 
 export class EventCreateTask extends ScheduledTask {
 	public constructor(context: PieceContext) {
@@ -23,10 +24,10 @@ export class EventCreateTask extends ScheduledTask {
 				const [_guild, guild] = await getGuildDocument(_event.guildId);
 				const options: GuildScheduledEventCreateOptions = {
 					entityType: _event.entityType,
-					name: _event.name,
+					name: await parsePlaceholder(`${_event.name}`),
 					privacyLevel: _event.privacyLevel,
 					scheduledStartTime: moment(_event.scheduledStartTimestamp).subtract(8, 'hours').valueOf(),
-					description: _event.description
+					description: await parsePlaceholder(`${_event.description}`)
 				};
 
 				if (_event.channelId && _event.entityType !== 'EXTERNAL') {

@@ -16,7 +16,9 @@ export class UserEvent extends Listener {
 			if (!interaction.isButton()) return;
 
 			executeButton(interaction);
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 		
 	}
 }

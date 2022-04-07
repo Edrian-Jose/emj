@@ -1,6 +1,6 @@
 import type { EntryAnswer } from './../handleFormCommand';
 import moment from 'moment';
-import EventModel from '../../../schemas/Event';
+import EventModel, { IEvent } from '../../../schemas/Event';
 import type FormEntry from '../../FormEntry/FormEntry';
 import { getGuildDocument } from '../../Guild/syncGuild';
 import parseMember from '../../Member/parseMember';
@@ -36,17 +36,18 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 			}
 			const options = {
 				customId: `birthday-${member.id}`,
-				type: 'STAGE',
-				name: `🎉 Happy Birthday ${member.user.username}! 🎉`,
+				type: 'EXTERNAL',
+				name: `🎉 HBD ___name-${member.user.id}! 🎉`,
 				guildId: member.guild.id,
-				description: `${member.user.username} Birthday Party`,
+				description: `C4$huALL celebrates ___name-${member.user.id} Birthday Today. Send the celebrant a birthday message using the url provided in this event or greet him on our server`,
 				scheduledStartTimestamp: birthday,
 				scheduledEndTimestamp: birthdayObject.add(1, 'day').valueOf(),
-				entityType: 'STAGE_INSTANCE',
-				channelId: _guild.channels.stage,
+				entityType: 'EXTERNAL',
+				location: `https://discord.com/users/${entry.ownerId}/`,
 				privacyLevel: 2,
-				creatorId: member.id
-			};
+				creatorId: member.id,
+				repeat: 'year'
+			} as IEvent;
 
 			const bevent = await EventModel.findOne({ customId: `birthday-${member.id}` }).exec();
 			if (bevent) {
@@ -54,7 +55,6 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 			} else {
 				await EventModel.create(options);
 			}
-			
 
 			if (_guild && _guild.channels.feeds) {
 				const [feedsChannel] = await parseChannel(guild, _guild.channels.feeds);
