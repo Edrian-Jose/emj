@@ -1,6 +1,6 @@
 import { channelMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Command, CommandOptions } from '@sapphire/framework';
+import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message, ThreadChannel, TextChannel } from 'discord.js';
 const getEmojisFromString = require('get-emojis-from-string');
 import temporaryReply from '../../actions/Message/temporaryReply';
@@ -11,11 +11,17 @@ import EmojiModel from '../../schemas/Emoji';
 	description: 'Assign thread to a emoji'
 })
 export class UserCommand extends Command {
-	public async messageRun(message: Message) {
+	public async messageRun(message: Message, args: Args) {
 		const channel = message.channel as ThreadChannel;
 		const parent = channel.parent as TextChannel;
 		const badges = getEmojisFromString(message.content);
 		const badge = badges.length ? badges[0] : undefined;
+		let threshold = 1;
+		try {
+			threshold = await args.pick('integer');
+		} catch (error) {
+			return temporaryReply(message, `Bad threshold`, true);
+		}
 		if (badge && parent && channel) {
 			let _emoji = await EmojiModel.findOne({ guildId: parent.guildId, emojiType: badge.type, emojiId: badge.id }).exec();
 			try {
@@ -32,7 +38,6 @@ export class UserCommand extends Command {
 			} catch (error) {
 			} finally {
 				if (_emoji) {
-
 					if (_emoji.thread && _emoji.thread.id) {
 						_emoji.thread = undefined;
 						await _emoji.save();
@@ -45,7 +50,8 @@ export class UserCommand extends Command {
 					}
 					_emoji.thread = {
 						parent: parent.id,
-						id: channel.id
+						id: channel.id,
+						threshold
 					};
 					await _emoji.save();
 					const emoji = _emoji.emojiType === 'Discord Emoji' ? `<:${_emoji.identifier}>` : _emoji.name;

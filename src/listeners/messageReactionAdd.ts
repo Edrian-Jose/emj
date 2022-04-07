@@ -8,10 +8,10 @@ import EmojiModel from '../schemas/Emoji';
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
 	public async run(reaction: MessageReaction, user: User) {
-		const { emoji, message } = reaction;
+		const { emoji, message, count } = reaction;
 		const _emoji = await EmojiModel.findOne({ name: emoji.name }).exec();
 
-		if (_emoji && _emoji.thread) {
+		if (_emoji && _emoji.thread && _emoji.thread.threshold <= count) {
 			let [thread, parent] = await parseThread(_emoji.guildId, _emoji.thread.parent, _emoji.thread.id);
 			if (thread && parent) {
 				thread = await thread.setArchived(false);

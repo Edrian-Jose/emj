@@ -1,4 +1,4 @@
-import { italic } from '@discordjs/builders';
+import { italic, roleMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
@@ -10,7 +10,7 @@ const getEmojisFromString = require('get-emojis-from-string');
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup generator config',
 	preconditions: ['AdminOnly'],
-	subCommands: ['defaultName', 'emoji']
+	subCommands: ['defaultName', 'emoji', 'roles']
 })
 export class UserCommand extends SubCommandPluginCommand {
 	public async defaultName(message: Message, args: Args) {
@@ -49,6 +49,26 @@ export class UserCommand extends SubCommandPluginCommand {
 		} catch (error) {
 			console.log(error);
 			return temporaryReply(message, `Generator default emoji failed to setup`, true);
+		}
+	}
+
+	public async roles(message: Message, args: Args) {
+		try {
+			if (message.guild) {
+				const roles = await args.repeat('role');
+				let [_guild] = await getGuildDocument(message.guild);
+				if (_guild) {
+					_guild.generatorConfig.roles = roles.map((role) => role.id);
+					_guild = await _guild.save();
+					return temporaryReply(
+						message,
+						`Generator roles hierarchy [${_guild.generatorConfig.roles.map((id) => roleMention(id)).join(', ')}]`,
+						true
+					);
+				}
+			}
+		} catch (error) {
+			return temporaryReply(message, `Bad command format`, true);
 		}
 	}
 }
