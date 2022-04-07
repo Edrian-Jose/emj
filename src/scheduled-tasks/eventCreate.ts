@@ -9,7 +9,7 @@ import parsePlaceholder from '../actions/General/parsePlaceholder';
 export class EventCreateTask extends ScheduledTask {
 	public constructor(context: PieceContext) {
 		super(context, {
-			cron: '0 0 * * *',
+			cron: '*/10 * * * *',
 			name: 'EventCreate'
 		});
 	}
