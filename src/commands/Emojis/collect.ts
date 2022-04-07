@@ -33,7 +33,7 @@ export class UserCommand extends Command {
 			} finally {
 				if (_emoji) {
 
-					if (_emoji.thread) {
+					if (_emoji.thread && _emoji.thread.id) {
 						_emoji.thread = undefined;
 						await _emoji.save();
 						const emoji = _emoji.emojiType === 'Discord Emoji' ? `<:${_emoji.identifier}>` : _emoji.name;
