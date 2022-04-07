@@ -2,6 +2,7 @@ import type { VoiceState } from 'discord.js';
 import RoomModel from '../../schemas/Room';
 import parseChannel from '../Channel/parseChannel';
 import { getGuildDocument } from '../Guild/syncGuild';
+import parseMember from '../Member/parseMember';
 import Room from './Room';
 
 const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
@@ -36,6 +37,18 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 
 					await newState.setChannel(channel);
 					await _room.save();
+
+					const [parsedMember] = await parseMember(guild, id);
+					if (parsedMember) {
+						const cachedRoles = Array.from(parsedMember.roles.cache.keys());
+						let index = -1;
+						_guild.generatorConfig.roles.forEach((roleId, i) => {
+							if (cachedRoles.includes(roleId)) {
+								index = i;
+							}
+						});
+						await channel.setUserLimit(Math.pow(2, index + 2) + 1);
+					}
 				}
 			}
 

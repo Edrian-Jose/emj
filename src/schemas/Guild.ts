@@ -22,6 +22,7 @@ interface Guild {
 		index: number;
 		defaultEmoji: string;
 		defaultName: string;
+		roles: Snowflake[];
 	};
 	channels: {
 		desk: Snowflake;
@@ -100,7 +101,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		defaultName: {
 			type: String,
 			default: 'Room'
-		}
+		},
+		roles: [String]
 	},
 	channels: {
 		desk: String,
