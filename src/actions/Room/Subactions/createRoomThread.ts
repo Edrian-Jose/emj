@@ -25,6 +25,7 @@ const createRoomThread = async (room: Room, interaction: ButtonInteraction & any
 					}
 				}
 				if (thread) {
+					thread = await thread.setArchived(false);
 					thread = await thread.setName(threadName);
 					if (thread.id !== room.threadId) {
 						room._document.threadId = thread.id;

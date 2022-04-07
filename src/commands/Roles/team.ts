@@ -24,6 +24,7 @@ export class UserCommand extends Command {
 				};
 
 				_role = await _role.save();
+				await channel.setArchived(false);
 				for (const memberId of _role.members) {
 					const [member] = await parseMember(role.guild, memberId);
 					if (member) {

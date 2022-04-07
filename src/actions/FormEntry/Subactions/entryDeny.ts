@@ -34,6 +34,7 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 	const verifiers = entry.verifiers;
 	if (entry.form.resultDestination.type === 'GUILD_CHANNEL' && verifiers) {
 		const channel = interaction.channel as ThreadChannel;
+		await channel.setArchived(false);
 		removeVerifiers(channel, verifiers, entry.ownerId);
 	}
 
