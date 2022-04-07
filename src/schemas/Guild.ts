@@ -37,6 +37,9 @@ interface Guild {
 		feeds: Snowflake;
 		apps: Snowflake;
 	};
+	roles: {
+		probation: Snowflake;
+	};
 }
 
 interface GuildBaseDocument extends Guild, Document {
@@ -112,6 +115,9 @@ const GuildSchema = new Schema<GuildDocument>({
 		stage: String,
 		feeds: String,
 		apps: String
+	},
+	roles: {
+		probation: String
 	}
 });
 
