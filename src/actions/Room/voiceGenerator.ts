@@ -62,17 +62,25 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 
 			const _room = await RoomModel.findOne({ channelId: channel.id });
 			if (_room && !_room.cohost && _room.host !== id) {
-				_room.cohost = id;
-				const room = new Room(_room);
-				room.updatecontroller(channel);
+				try {
+					_room.cohost = id;
+					const room = new Room(_room);
+					room.updatecontroller(channel);
+				} catch (error) {
+					console.log(error);
+				}
 			}
 
 			if (_room && _room.channelId) {
-				const room = new Room(_room);
-				const [channel] = await parseChannel(guild, _room.channelId);
-				if (channel?.isVoice()) {
-					channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
-					room.updatecontroller(channel);
+				try {
+					const room = new Room(_room);
+					const [channel] = await parseChannel(guild, _room.channelId);
+					if (channel?.isVoice()) {
+						channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
+						room.updatecontroller(channel);
+					}
+				} catch (error) {
+					console.log(error);
 				}
 			}
 
@@ -86,7 +94,9 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 							await thread.members.add(id);
 						}
 					}
-				} catch (error) {}
+				} catch (error) {
+					console.log(error);
+				}
 			}
 		}
 
