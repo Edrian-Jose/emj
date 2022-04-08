@@ -1,0 +1,56 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "960780818870075412",
+	"type": "SINGLE",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "Report Member Form (F-6)",
+	"description": "Report anyone in this server or a member that left this server",
+	"requiredRoles": [],
+	"rewardRoles": [],
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["960788501488623626"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "960788579829833728",
+		"guildId": "960780818870075412"
+	},
+	"verification": true,
+	"verifiers": [
+		{
+			"type": "USER",
+			"id": "949328284758462584"
+		},
+		{
+			"type": "ROLE",
+			"id": "960789763022028830"
+		}
+	],
+	"questions": [
+		{
+			"customId": "reportNameA0",
+			"lastRevision": 1649392685,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Name",
+			"placeholder": "Who do you want to report? Username or nickname of the member you want to report.",
+			"required": true
+		},
+		{
+			"customId": "reportDetailsA0",
+			"lastRevision": 1649392685,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Details",
+			"placeholder": "What do you want to report? Explain the details or describe the situation",
+			"required": true
+		}
+	]
+}
