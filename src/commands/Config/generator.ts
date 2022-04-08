@@ -54,6 +54,13 @@ export class UserCommand extends SubCommandPluginCommand {
 							true
 						);
 					}
+				} else {
+					_guild.generatorConfig.names = [{
+						name,
+						emoji
+					}];
+					_guild = await _guild.save();
+					return temporaryReply(message, `${emoji}${_guild.seperators.channel}${name} has been _added_ from generator random names`, true);
 				}
 			}
 		} catch (error) {
