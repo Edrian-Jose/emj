@@ -12,7 +12,7 @@ import setMemberNickname from '../../Member/setNickname';
 const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	const newAnswers = [...answers];
 	newAnswers[2].value![0] = moment(parseInt(answers[2].value![0])).format('dddd, MMMM Do YYYY');
-	newAnswers[12].value![0] = `https://bit.ly/12123sa`;
+	newAnswers[12].value![0] = `https://bit.ly/3LSsOFQ`;
 	if (newAnswers[5].value && newAnswers[5].value[0]) {
 		newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0]}`;
 	}
