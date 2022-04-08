@@ -54,7 +54,8 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 								index = i;
 							}
 						});
-						await channel.setUserLimit(Math.pow(2, index + 2) + 1);
+						const limit = Math.pow(2, index + 2) + 1;
+						await channel.setUserLimit(limit < 100 ? limit : 99);
 					}
 				}
 			}
@@ -64,7 +65,6 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 				_room.cohost = id;
 				const room = new Room(_room);
 				room.updatecontroller(channel);
-				await _room.save();
 			}
 
 			if (_room && _room.channelId) {
