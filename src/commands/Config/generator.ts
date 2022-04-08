@@ -10,9 +10,64 @@ const getEmojisFromString = require('get-emojis-from-string');
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup generator config',
 	preconditions: ['AdminOnly'],
-	subCommands: ['defaultName', 'emoji', 'roles']
+	subCommands: ['defaultName', 'emoji', 'roles', 'addname']
 })
 export class UserCommand extends SubCommandPluginCommand {
+	public async addname(message: Message, args: Args) {
+		if (!message.guild) {
+			return;
+		}
+		let name: string;
+		let emoji: string;
+		try {
+			let [_guild] = await getGuildDocument(message.guild);
+			const emojiString = await args.pick('string');
+			const emojis = getEmojisFromString(emojiString, { onlyDefaultEmojis: true });
+			if (emojis && emojis.length) {
+				emoji = emojis[0].name.toString();
+			} else {
+				return temporaryReply(message, `Bad command format. No emoji found`, true);
+			}
+
+			name = await args.rest('string');
+			if (_guild) {
+				const { names } = _guild.generatorConfig;
+				if (names) {
+					const included = names.filter((_name) => _name.name == name && _name.emoji == emoji);
+					if (included && included.length) {
+						_guild.generatorConfig.names = names.filter((_name) => _name.name != name || _name.emoji != emoji);
+						_guild = await _guild.save();
+						return temporaryReply(
+							message,
+							`${emoji}${_guild.seperators.channel}${name} has been _removed_ from generator random names`,
+							true
+						);
+					} else {
+						_guild.generatorConfig.names?.push({
+							name,
+							emoji
+						});
+						_guild = await _guild.save();
+						return temporaryReply(
+							message,
+							`${emoji}${_guild.seperators.channel}${name} has been _added_ from generator random names`,
+							true
+						);
+					}
+				} else {
+					_guild.generatorConfig.names = [{
+						name,
+						emoji
+					}];
+					_guild = await _guild.save();
+					return temporaryReply(message, `${emoji}${_guild.seperators.channel}${name} has been _added_ from generator random names`, true);
+				}
+			}
+		} catch (error) {
+			console.log(error);
+			return temporaryReply(message, `Error occured. Bad command format.`, true);
+		}
+	}
 	public async defaultName(message: Message, args: Args) {
 		if (!message.guild) {
 			return;

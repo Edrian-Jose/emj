@@ -2,6 +2,10 @@ import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 import type { FormDocument } from './Form';
 
+export interface GeneratorName {
+	name: string;
+	emoji: string;
+}
 interface Guild {
 	guildId: Snowflake;
 	name: string;
@@ -23,6 +27,7 @@ interface Guild {
 		defaultEmoji: string;
 		defaultName: string;
 		roles: Snowflake[];
+		names?: GeneratorName[];
 	};
 	channels: {
 		desk: Snowflake;
@@ -102,7 +107,13 @@ const GuildSchema = new Schema<GuildDocument>({
 			type: String,
 			default: 'Room'
 		},
-		roles: [String]
+		roles: [String],
+		names: [
+			{
+				name: String,
+				emoji: String
+			}
+		]
 	},
 	channels: {
 		desk: String,

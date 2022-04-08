@@ -15,9 +15,16 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 			if (_guild.channels.generator && _guild.channels.generator === channel.id) {
 				const [generatorChannel] = await parseChannel(guild, _guild.channels.generator);
 				const { index, defaultName, defaultEmoji } = _guild.generatorConfig;
-				const name = `${defaultName}`;
+				let name = `${defaultName}`;
+				let emoji = `${defaultEmoji}`;
+
+				if (_guild.generatorConfig.names && _guild.generatorConfig.names.length) {
+					const generatorName = _guild.generatorConfig.names[Math.floor(Math.random() * _guild.generatorConfig.names.length)];
+					name = generatorName.name;
+					emoji = generatorName.emoji;
+				}
 				if (generatorChannel?.parent?.id) {
-					const channel = await guild.channels.create(`${defaultEmoji}${_guild.seperators.channel}${name}`, {
+					const channel = await guild.channels.create(`${emoji}${_guild.seperators.channel}${name}`, {
 						parent: generatorChannel?.parent?.id,
 						type: 'GUILD_VOICE'
 					});

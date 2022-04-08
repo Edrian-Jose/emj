@@ -73,8 +73,10 @@
 - Staff Application (F-2)
 - Manager Application (F-3)
 - Moderator Application (F-4)
-- A Application (F-5)
-- Ca$hual Application (F-6)
+- Application for Leave (F-5)
+- Report Member Form (F-6)
+- Group Conversation Request Form (F-7)
+- Membership Agreement Form (F-8)
 
 
 ## **Admin**
