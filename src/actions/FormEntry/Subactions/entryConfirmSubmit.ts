@@ -79,6 +79,7 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 		entry._document.applicationId = message?.id;
 	}
 	entry._document.verifiers = userIds;
+	entry._document.status = 'PENDING';
 	await entry._document.save();
 };
 

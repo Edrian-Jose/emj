@@ -3,7 +3,9 @@ import type { Snowflake } from 'discord.js';
 import { Schema, model, Document, Model } from 'mongoose';
 import type { FormDocument } from './Form';
 
+export type VerificationStatus = 'UNKNOWN' | 'PENDING' | 'DENIED' | 'APPROVED';
 interface _FormEntry {
+	status: VerificationStatus;
 	location: {
 		type: 'DM' | 'GUILD_TEXT';
 		guildId?: Snowflake;
@@ -60,6 +62,11 @@ export interface FormEntryPopulatedDocument extends FormEntryDocument {
 }
 
 const FormEntrySchema = new Schema<FormEntryDocument>({
+	status: {
+		type: String,
+		enum: ['UNKNOWN', 'PENDING', 'DENIED', 'APPROVED'],
+		default: 'UNKNOWN'
+	},
 	location: {
 		type: {
 			type: String

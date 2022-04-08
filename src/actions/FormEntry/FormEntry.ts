@@ -2,7 +2,7 @@ import { MessageActionRow, MessageButton, MessageSelectMenu, Snowflake } from 'd
 import navigator from '../../components/embeds/navigator';
 import stepModal from '../../components/modals/stepModal';
 import type { FormDocument } from '../../schemas/Form';
-import type { FormEntry as IFormEntry, FormEntryDocument } from '../../schemas/FormEntry';
+import type { FormEntry as IFormEntry, FormEntryDocument, VerificationStatus } from '../../schemas/FormEntry';
 import Form from '../Form/Strategies/Form';
 import Prompt from '../Form/Strategies/Prompt';
 
@@ -35,10 +35,13 @@ class FormEntry implements IFormEntry {
 	verifiers?: Snowflake[];
 	applicationId?: Snowflake;
 	answers: { question: Prompt; answer?: { label: string; value: string }[] }[];
+	status: VerificationStatus;
+	commands?: { onSubmit?: string | undefined; onCancel?: string | undefined } | undefined;
 
 	public constructor(entry: FormEntryDocument) {
 		this._document = entry;
 		this._id = entry._id;
+		this.status = entry.status;
 		this.index = entry.index;
 		this.location = entry.location;
 		this.form = new Form(entry.form);

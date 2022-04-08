@@ -15,6 +15,7 @@ export const formInstantiate = async (user: User, _form: FormDocument, answers?:
 	}
 
 	_formEntry = await FormEntryModel.create({
+		status: 'UNKNOWN',
 		ownerId: user.id,
 		form: _form._id,
 		index: 0,

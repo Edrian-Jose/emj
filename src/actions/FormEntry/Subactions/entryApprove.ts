@@ -21,8 +21,9 @@ const entryApprove = async (entry: FormEntry, interaction: ButtonInteraction) =>
 		});
 		return;
 	}
-
 	entry._document.applicationId = undefined;
+	entry._document.status = 'APPROVED';
+	entry.status = 'APPROVED';
 	await entry._document.save();
 	await interaction.followUp({
 		content: `Approved successfully.`,

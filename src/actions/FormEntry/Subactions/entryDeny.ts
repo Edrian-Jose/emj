@@ -12,11 +12,11 @@ import type FormEntry from '../FormEntry';
 
 export const removeVerifiers = (channel: ThreadChannel, verifiers: string[], ownerId: Snowflake) => {
 	verifiers.forEach(async (id) => {
-		const ownerEntries = await FormEntryModel.find({ verifiers: { $all: [id] }, ownerId }).exec();
+		const ownerEntries = await FormEntryModel.find({ status: 'PENDING', verifiers: { $all: [id] }, ownerId }).exec();
 		if (ownerEntries.length <= 1) {
 			await channel.members.remove(id);
 		}
-		const entries = await FormEntryModel.find({ verifiers: { $all: [id] } }).exec();
+		const entries = await FormEntryModel.find({ verifiers: { $all: [id] }, status: 'PENDING' }).exec();
 		if (entries.length <= 1) {
 			try {
 				await channel.parent?.permissionOverwrites.delete(id);
@@ -32,11 +32,6 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 	const reason: string | undefined = interaction.getTextInputValue(`reason`);
 	const recommendation: string | undefined = interaction.getTextInputValue(`recommendation`);
 	const verifiers = entry.verifiers;
-	if (entry.form.resultDestination.type === 'GUILD_CHANNEL' && verifiers) {
-		const channel = interaction.channel as ThreadChannel;
-		await channel.setArchived(false);
-		removeVerifiers(channel, verifiers, entry.ownerId);
-	}
 
 	const rewardRoles = entry.form.rewardRoles;
 	rewardRoles.forEach(async (roleId) => {
@@ -63,6 +58,8 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 	}
 
 	entry._document.applicationId = undefined;
+	entry._document.status = 'DENIED';
+	entry.status = 'DENIED';
 	await entry._document.save();
 	await interaction.followUp({
 		content: `Denied successfully.`,
@@ -112,6 +109,12 @@ const entryDeny = async (entry: FormEntry, interaction: ButtonInteraction | any)
 		} catch (error) {
 			console.log(error);
 		}
+	}
+
+	if (entry.form.resultDestination.type === 'GUILD_CHANNEL' && verifiers) {
+		const channel = interaction.channel as ThreadChannel;
+		await channel.setArchived(false);
+		removeVerifiers(channel, verifiers, entry.ownerId);
 	}
 };
 
