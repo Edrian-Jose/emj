@@ -33,12 +33,19 @@ export class UserEvent extends Listener {
 						const cacheRoles = Array.from(member.roles.cache.keys());
 
 						let IsAllowed: boolean = false;
-						for (const _role of _roles) {
-							IsAllowed = IsAllowed || cacheRoles.includes(_role.roleId);
+						try {
+							for (const _role of _roles) {
+								IsAllowed = IsAllowed || cacheRoles.includes(_role.roleId);
+							}
+						} catch (error) {
+							console.log(error);
+						} finally {
+							if (!IsAllowed) {
+								thread.members.remove(id);
+							}
 						}
-						if (!IsAllowed) {
-							thread.members.remove(id);
-						}
+						
+						
 					}
 				}
 			}
