@@ -92,8 +92,11 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					console.log(error);
 				}
 			}
-			const room = new Room(_room);
-			room.updatecontroller(channel);
+			if (_room) {
+				const room = new Room(_room);
+				room.updatecontroller(channel);
+			}
+			
 		}
 
 		if (
