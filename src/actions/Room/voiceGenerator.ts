@@ -133,11 +133,11 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					} catch (error) {}
 				}
 			}
-		} else if (oldChannel && channel && oldChannel.id !== channel.id) {
+		} else if (oldChannel) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
-
+			let oldHost: string | null = null;
 			if (_room && _room.host === id) {
-				const oldHost = _room?.host;
+				oldHost = _room?.host;
 				if (_room.cohost) {
 					const otherMembers = oldChannel.members.filter((member) => member.id !== _room.cohost && member.id !== _room.host);
 					_room.host = _room.cohost;
@@ -152,17 +152,15 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						}
 					}
 				}
-				const room = new Room(_room);
-				room.updatecontroller(oldChannel, oldHost);
-				await _room.save();
 			}
 
 			if (_room && _room.cohost === id) {
 				const otherMembers = oldChannel.members.filter((member) => member.id !== _room.cohost && member.id !== _room.host);
 				_room.cohost = otherMembers.firstKey();
+			}
+			if (_room) {
 				const room = new Room(_room);
-				room.updatecontroller(oldChannel);
-				await _room.save();
+				room.updatecontroller(oldChannel, oldHost ? oldHost : undefined);
 			}
 
 			if (_room && _room.channelId) {
