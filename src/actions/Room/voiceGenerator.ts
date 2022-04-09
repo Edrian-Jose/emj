@@ -11,7 +11,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 	const [_guild] = await getGuildDocument(guild);
 
 	if (_guild) {
-		if (channel) {
+		if (channel && !oldChannel) {
 			if (_guild.channels.generator && _guild.channels.generator === channel.id) {
 				const [generatorChannel] = await parseChannel(guild, _guild.channels.generator);
 				const { index, defaultName, defaultEmoji } = _guild.generatorConfig;
@@ -58,49 +58,53 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						await channel.setUserLimit(limit < 100 ? limit : 99);
 					}
 				}
-			}
-
-			const _room = await RoomModel.findOne({ channelId: channel.id });
-			if (_room && !_room.cohost && _room.host !== id) {
-				try {
-					_room.cohost = id;
-					const room = new Room(_room);
-					room.updatecontroller(channel);
-				} catch (error) {
-					console.log(error);
-				}
-			}
-
-			if (_room && _room.channelId) {
-				try {
-					const room = new Room(_room);
-					const [channel] = await parseChannel(guild, _room.channelId);
-					if (channel?.isVoice()) {
-						channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
-						room.updatecontroller(channel);
+			} else {
+				const _room = await RoomModel.findOne({ channelId: channel.id });
+				if (_room && !_room.cohost && _room.host !== id) {
+					try {
+						_room.cohost = id;
+					} catch (error) {
+						console.log(error);
 					}
-				} catch (error) {
-					console.log(error);
 				}
-			}
 
-			if (_room && _room.threadId) {
-				try {
-					const [channel] = await parseChannel(guild, _guild.channels.threads);
-					if (channel?.isText()) {
-						const thread = await channel.threads.fetch(_room.threadId);
-						if (thread) {
-							await thread.setArchived(false);
-							await thread.members.add(id);
+				if (_room && _room.channelId) {
+					try {
+						const room = new Room(_room);
+						const [channel] = await parseChannel(guild, _room.channelId);
+						if (channel?.isVoice()) {
+							channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
+							room.updatecontroller(channel);
 						}
+					} catch (error) {
+						console.log(error);
 					}
-				} catch (error) {
-					console.log(error);
+				}
+
+				if (_room && _room.threadId) {
+					try {
+						const [channel] = await parseChannel(guild, _guild.channels.threads);
+						if (channel?.isText()) {
+							const thread = await channel.threads.fetch(_room.threadId);
+							if (thread) {
+								await thread.setArchived(false);
+								await thread.members.add(id);
+							}
+						}
+					} catch (error) {
+						console.log(error);
+					}
 				}
 			}
 		}
 
-		if (oldChannel && oldChannel.id !== _guild.channels.generator && oldChannel.id !== _guild.channels.stage && oldChannel?.members.size < 1) {
+		if (
+			!channel &&
+			oldChannel &&
+			oldChannel.id !== _guild.channels.generator &&
+			oldChannel.id !== _guild.channels.stage &&
+			oldChannel?.members.size < 1
+		) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
 			if (!_room?.createdByEvent || Date.now() - (_room?.createdTimestamp ?? 0) > 1800000) {
 				if (_room) {
@@ -126,7 +130,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					} catch (error) {}
 				}
 			}
-		} else if (oldChannel) {
+		} else if (oldChannel && channel && oldChannel.id !== channel.id) {
 			const _room = await RoomModel.findOne({ channelId: oldChannel.id });
 
 			if (_room && _room.host === id) {
