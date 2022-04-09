@@ -69,11 +69,9 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 
 			if (_room && _room.channelId) {
 				try {
-					const room = new Room(_room);
 					const [channel] = await parseChannel(guild, _room.channelId);
 					if (channel?.isVoice()) {
 						channel.permissionOverwrites.edit(id, { VIEW_CHANNEL: true, CONNECT: true });
-						room.updatecontroller(channel);
 					}
 				} catch (error) {
 					console.log(error);
@@ -94,6 +92,8 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 					console.log(error);
 				}
 			}
+			const room = new Room(_room);
+			room.updatecontroller(channel);
 		}
 
 		if (
