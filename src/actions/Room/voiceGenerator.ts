@@ -10,6 +10,9 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 	const { guild, channel, id } = newState;
 	const [_guild] = await getGuildDocument(guild);
 
+	if (channel && oldChannel && oldChannel.id === channel.id) {
+		return;
+	}
 	if (_guild) {
 		if (channel && _guild.channels.generator && _guild.channels.generator === channel.id) {
 			const [generatorChannel] = await parseChannel(guild, _guild.channels.generator);
@@ -96,7 +99,6 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 				const room = new Room(_room);
 				room.updatecontroller(channel);
 			}
-			
 		}
 
 		if (
