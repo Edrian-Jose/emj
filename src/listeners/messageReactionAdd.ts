@@ -22,8 +22,8 @@ export class UserEvent extends Listener {
 						content: message.content ? message.content : 'Forwarded Message',
 						embeds: message.embeds,
 						components: message.components,
-						username: user.username,
-						avatarURL: user.displayAvatarURL()
+						username: message.author ? message.author?.username : user.username,
+						avatarURL: message.author ? message.author.displayAvatarURL() : user.displayAvatarURL()
 					});
 				}
 
