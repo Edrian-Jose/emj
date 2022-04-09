@@ -8,11 +8,13 @@ import syncMember from '../actions/Member/syncMember';
 import RoleModel from '../schemas/Role';
 import refreshBadge from '../actions/Member/refreshBadge';
 import parseThread from '../actions/Thread/parseThread';
+import parseMember from '../actions/Member/parseMember';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
 	public async run(oldMember: GuildMember, newMember: GuildMember) {
-		let syncingMember: GuildMember = newMember;
+		const [tempMember] = await parseMember(newMember.guild, newMember);
+		let syncingMember: GuildMember = tempMember ? tempMember : newMember;
 		const oldRoles = Array.from(oldMember.roles.cache.keys());
 		const newRoles = Array.from(newMember.roles.cache.keys());
 		const rolesAdded = newRoles.filter((roleId) => !oldRoles.includes(roleId));

@@ -14,13 +14,31 @@ const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	newAnswers[2].value![0] = moment(parseInt(answers[2].value![0])).format('dddd, MMMM Do YYYY');
 	newAnswers[12].value![0] = `https://bit.ly/3LSsOFQ`;
 	if (newAnswers[5].value && newAnswers[5].value[0]) {
-		newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0]}`;
+		if (!newAnswers[5].value[0].includes(' ')) {
+			if (newAnswers[5].value[0].substring(0, 1) === '@') {
+				newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0].substring(1, newAnswers[5].value[0].length - 1)}`;
+			} else {
+				newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0]}`;
+			}
+		}
 	}
 	if (newAnswers[6].value && newAnswers[6].value[0]) {
-		newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0]}`;
+		if (!newAnswers[6].value[0].includes(' ')) {
+			if (newAnswers[6].value[0].substring(0, 1) === '@') {
+				newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0].substring(1, newAnswers[6].value[0].length - 1)}`;
+			} else {
+				newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0]}`;
+			}
+		}
 	}
 	if (newAnswers[7].value && newAnswers[7].value[0]) {
-		newAnswers[7].value[0] = `https://www.instagram.com/${newAnswers[7].value[0]}/`;
+		if (!newAnswers[7].value[0].includes(' ')) {
+			if (newAnswers[7].value[0].substring(0, 1) === '@') {
+				newAnswers[7].value[0] = `https://www.instagram.com/@${newAnswers[7].value[0].substring(1, newAnswers[7].value[0].length - 1)}`;
+			} else {
+				newAnswers[7].value[0] = `https://www.instagram.com/@${newAnswers[7].value[0]}`;
+			}
+		}
 	}
 	return newAnswers;
 };
