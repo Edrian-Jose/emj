@@ -11,7 +11,7 @@ export class UserEvent extends Listener {
 		const { emoji, message, count } = reaction;
 		const _emoji = await EmojiModel.findOne({ name: emoji.name }).exec();
 
-		if (_emoji && _emoji.thread && _emoji.thread.threshold <= count) {
+		if (_emoji && _emoji.thread && _emoji.thread.threshold === count) {
 			let [thread, parent] = await parseThread(_emoji.guildId, _emoji.thread.parent, _emoji.thread.id);
 			if (thread && parent) {
 				thread = await thread.setArchived(false);
