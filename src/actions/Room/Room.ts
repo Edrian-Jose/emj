@@ -116,14 +116,15 @@ class Room implements IRoom {
 						const controllerMessage = await webhook.send(msgOptions);
 						this._document.controllerMessage = controllerMessage.id;
 					}
-          try {
-            await this._document.save();
-          } catch (error) {
-            console.log(error);
-          }
-					
+					try {
+						return await this._document.save();
+					} catch (error) {
+						console.log(error);
+					}
+				}
 			}
 		}
+		return null;
 	}
 
 	public async deleteController() {
