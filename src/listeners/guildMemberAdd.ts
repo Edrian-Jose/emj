@@ -18,7 +18,9 @@ export class UserEvent extends Listener {
 		const [_guild, guild] = await getGuildDocument(member.guild);
 
 		if (_member && _member.nickname) {
-			member = await member.setNickname(_member.nickname);
+			if (_member.manageable) {
+				member = await member.setNickname(_member.nickname);
+			}
 		}
 		if (_member && _member.roles && _member.roles.length) {
 			member = await member.roles.add(_member.roles.map((role) => role.roleId));

@@ -14,10 +14,11 @@ const setMemberNickname = async (member: GuildMember, nickname: string, memberDo
 				nick.push(badge);
 			}
 		}
+		if (_guild && member.manageable && _member.manageable) {
+			await member.setNickname(nick.join(_guild.seperators.nickname));
+		}
 	}
-	if (_guild && member.manageable) {
-		await member.setNickname(nick.join(_guild.seperators.nickname));
-	}
+	
 };
 
 export default setMemberNickname;

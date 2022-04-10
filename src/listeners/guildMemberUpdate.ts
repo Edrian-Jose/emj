@@ -9,6 +9,7 @@ import RoleModel from '../schemas/Role';
 import refreshBadge from '../actions/Member/refreshBadge';
 import parseThread from '../actions/Thread/parseThread';
 import parseMember from '../actions/Member/parseMember';
+import { roleMention, userMention } from '@discordjs/builders';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
@@ -36,7 +37,7 @@ export class UserEvent extends Listener {
 				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
 				if (thread) {
 					await thread.setArchived(false);
-					await thread.members.add(newMember.id);
+					await thread.send(`Welcome ${userMention(newMember.id)} to ${roleMention(_role.roleId)} teams chat`);
 				}
 			}
 		}

@@ -11,9 +11,40 @@ import parseChannel from '../../actions/Channel/parseChannel';
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
 	preconditions: ['AdminOnly'],
-	subCommands: ['desk', 'applications', 'forms', 'welcome', 'teams', 'rooms', 'generator', 'threads', 'stage', 'feeds', 'apps', 'probation']
+	subCommands: [
+		'desk',
+		'applications',
+		'forms',
+		'welcome',
+		'teams',
+		'rooms',
+		'generator',
+		'threads',
+		'stage',
+		'feeds',
+		'apps',
+		'probation',
+		'unmanageable'
+	]
 })
 export class UserCommand extends SubCommandPluginCommand {
+	public async unmanageable(message: Message, args: Args) {
+		try {
+			const role = await args.pick('role');
+			let [_guild] = await getGuildDocument(role.guild);
+			if (_guild) {
+				_guild.roles.unmanageable = role.id;
+				_guild = await _guild.save();
+				return temporaryReply(
+					message,
+					`${roleMention(_guild.roles.unmanageable)} will now be set to members who dont want to be manageable`,
+					true
+				);
+			}
+		} catch (error) {
+			return temporaryReply(message, `Manageable failed to setup`, true);
+		}
+	}
 	public async probation(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');

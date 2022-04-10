@@ -104,7 +104,6 @@ export class UserCommand extends SubCommandPluginCommand {
 				return temporaryReply(message, `Badge ${badge} is set to Role ${roleMention(_role.roleId)}`, true);
 			}
 			return temporaryReply(message, `Role Badge cleared for Role ${roleMention(_role.roleId)}`, true);
-			
 		}
 	}
 }

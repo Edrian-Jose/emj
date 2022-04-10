@@ -134,15 +134,21 @@ class Room implements IRoom {
 			if (roomsChannel) {
 				const webhook = await getChannelWebhook(roomsChannel, true);
 				const [member] = await parseMember(guild, this.host);
-				if (webhook && member) {
-					await webhook.deleteMessage(this.controllerMessage);
-					await this._document.delete();
+				try {
+					if (webhook && member) {
+						await webhook.deleteMessage(this.controllerMessage);
+						await this._document.delete();
+					}
+				} catch (error) {
+					console.log(error);
+				} finally {
+					const _room = await RoomModel.findOne().exec();
+					if (!_room) {
+						roomsChannel.permissionOverwrites.edit(this.guildId, { VIEW_CHANNEL: false });
+					}
 				}
-
-				const _room = await RoomModel.findOne().exec();
-				if (!_room) {
-					roomsChannel.permissionOverwrites.edit(this.guildId, { VIEW_CHANNEL: false });
-				}
+				
+				
 			}
 		}
 	}
