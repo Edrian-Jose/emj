@@ -38,9 +38,6 @@ export class UserEvent extends Listener {
 				if (thread) {
 					await thread.setArchived(false);
 					const message = await thread.send(`Welcome ${userMention(newMember.id)} to ${roleMention(_role.roleId)} teams chat`);
-					if (message.deletable) {
-						await message.delete();
-					}
 				}
 			}
 		}
