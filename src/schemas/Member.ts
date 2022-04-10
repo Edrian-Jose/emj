@@ -15,6 +15,7 @@ interface Member {
 		custom?: string;
 		role?: string;
 	};
+	manageable: boolean;
 }
 
 interface MemberBaseDocument extends Member, Document {
@@ -46,7 +47,11 @@ const MemberSchema = new Schema<MemberDocument>({
 			type: Schema.Types.ObjectId,
 			ref: 'Role'
 		}
-	]
+	],
+	manageable: {
+		type: Boolean,
+		default: true
+	}
 });
 
 export interface IMemberModel extends Model<MemberDocument> {

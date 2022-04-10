@@ -45,6 +45,7 @@ interface Guild {
 	};
 	roles: {
 		probation: Snowflake;
+		unmanageable: Snowflake;
 	};
 }
 
@@ -130,7 +131,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		apps: String
 	},
 	roles: {
-		probation: String
+		probation: String,
+		unmanageable: String
 	}
 });
 
