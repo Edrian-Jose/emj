@@ -37,7 +37,7 @@ export class UserEvent extends Listener {
 				const [thread] = await parseThread(newMember.guild, _role.thread.parent, _role.thread.id);
 				if (thread) {
 					await thread.setArchived(false);
-					const message = await thread.send(`Welcome ${userMention(newMember.id)} to ${roleMention(_role.roleId)} teams chat`);
+					await thread.send(`Welcome ${userMention(newMember.id)} to ${roleMention(_role.roleId)} teams chat`);
 				}
 			}
 		}
