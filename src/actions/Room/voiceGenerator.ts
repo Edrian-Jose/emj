@@ -56,7 +56,7 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 							index = i;
 						}
 					});
-					const limit = Math.pow(2, index + 2) + 1;
+					const limit = Math.pow(2, index + 1) + 1;
 					await channel.setUserLimit(limit < 100 ? limit : 99);
 				}
 			}
