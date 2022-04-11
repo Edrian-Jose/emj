@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 import { getGuildDocument } from '../../actions/Guild/syncGuild';
+import setMemberNickname from '../../actions/Member/setNickname';
 import { getMemberDocument } from '../../actions/Member/syncMember';
 import temporaryReply from '../../actions/Message/temporaryReply';
 
@@ -21,7 +22,8 @@ export class UserCommand extends Command {
 				const _newMember = await _member.save();
 				if (_guild) {
 					if (_newMember.manageable) {
-						await member.roles.remove(_guild.roles.unmanageable);
+						const newMember = await member.roles.remove(_guild.roles.unmanageable);
+						setMemberNickname(newMember, _member.nickname ?? newMember.user.username, _newMember);
 					} else {
 						await member.roles.add(_guild.roles.unmanageable);
 					}

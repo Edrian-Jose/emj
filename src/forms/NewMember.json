@@ -1,16 +1,17 @@
 {
 	"creatorId": "949328284758462584",
-	"guildId": "960780818870075412",
+	"guildId": "866667237548883999",
+	"alias": "member",
 	"type": "STEP",
 	"author": {
 		"userId": "949328284758462584",
 		"name": "Cashuals Official",
 		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
 	},
-	"title": "C4$huALL Membership Form",
+	"title": "C4$huALL Membership Form (F-0)",
 	"description": "_Only for new members_. In answering the form you must understand that the information you provided will be publicly available in the community and aware of the risk of your information being publicly available across the internet. Don't share any sensitive or critical information",
-	"requiredRoles": ["960789031329861632"],
-	"rewardRoles": ["960789447446765568"],
+	"requiredRoles": ["961852161296330753"],
+	"rewardRoles": ["961852379228176424"],
 	"commands": {
 		"onSubmit": ["basicAdmission"],
 		"onCancel": ["defaultCancel"]
@@ -18,13 +19,13 @@
 	"destination": [
 		{
 			"type": "GUILD_CHANNEL",
-			"ids": ["960788501488623626"]
+			"ids": ["961851266949062676"]
 		}
 	],
 	"resultDestination": {
 		"type": "GUILD_CHANNEL",
-		"id": "960788579829833728",
-		"guildId": "960780818870075412"
+		"id": "961851311547105300",
+		"guildId": "866667237548883999"
 	},
 	"verification": true,
 	"verifiers": [
@@ -34,7 +35,7 @@
 		},
 		{
 			"type": "ROLE",
-			"id": "960789763022028830"
+			"id": "961852677023760434"
 		}
 	],
 	"questions": [

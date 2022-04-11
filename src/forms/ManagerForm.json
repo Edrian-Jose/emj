@@ -1,6 +1,7 @@
 {
 	"creatorId": "949328284758462584",
-	"guildId": "960780818870075412",
+	"guildId": "866667237548883999",
+	"alias": "manager",
 	"type": "STEP",
 	"author": {
 		"userId": "949328284758462584",
@@ -9,18 +10,18 @@
 	},
 	"title": "Manager Application Form (F-3)",
 	"description": "Create request to become a manager of this server by filling out a form",
-	"requiredRoles": ["960789447446765568"],
-	"rewardRoles": ["960789763022028830"],
+	"requiredRoles": ["961854721868574740"],
+	"rewardRoles": ["961852677023760434"],
 	"destination": [
 		{
 			"type": "GUILD_CHANNEL",
-			"ids": ["960788501488623626"]
+			"ids": ["961851266949062676"]
 		}
 	],
 	"resultDestination": {
 		"type": "GUILD_CHANNEL",
-		"id": "960788579829833728",
-		"guildId": "960780818870075412"
+		"id": "961851311547105300",
+		"guildId": "866667237548883999"
 	},
 	"verification": true,
 	"verifiers": [
@@ -30,7 +31,7 @@
 		},
 		{
 			"type": "ROLE",
-			"id": "960789882563862568"
+			"id": "961855025934663741"
 		}
 	],
 	"questions": [

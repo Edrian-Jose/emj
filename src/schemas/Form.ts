@@ -9,6 +9,7 @@ export type FormVerifierType = 'USER' | 'ROLE';
 
 interface _Form {
 	creatorId: Snowflake;
+	alias: string;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -69,6 +70,7 @@ export interface FormPopulatedDocument extends FormBaseDocument {
 
 const FormSchema = new Schema<FormDocument>({
 	creatorId: String,
+	alias: String,
 	author: {
 		userId: String,
 		name: String,
