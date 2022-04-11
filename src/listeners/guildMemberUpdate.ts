@@ -22,6 +22,7 @@ export class UserEvent extends Listener {
 		const rolesRemoved = oldRoles.filter((roleId) => !newRoles.includes(roleId));
 		const forAddition: string[] = [];
 		const forRemoval: string[] = [];
+
 		for (const roleAdded of rolesAdded) {
 			const _assigningRoles = await RoleModel.find({ and: { $all: [roleAdded] }, roleId: { $not: { $in: newRoles } } }).exec();
 			for (const _role of _assigningRoles) {

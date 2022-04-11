@@ -38,9 +38,15 @@ const syncMember = async (
 			const index = member.nickname.lastIndexOf(_guild.seperators.nickname);
 			if (index > 0) {
 				const nick = member.nickname.substring(0, index);
-				_member.nickname = nick;
+				if (_member.manageable) {
+					_member.nickname = nick;
+				}
+				
 			} else {
-				_member.nickname = member.nickname;
+				if (_member.manageable) {
+					_member.nickname = member.nickname;
+				}
+				
 			}
 		}
 		_member.tag = member.user.tag;
