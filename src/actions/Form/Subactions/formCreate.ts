@@ -1,5 +1,5 @@
 import { channelMention } from '@discordjs/builders';
-import { ButtonInteraction, GuildMember, Message, ThreadChannel, User } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, GuildMember, Message, ThreadChannel, User } from 'discord.js';
 import type { FormDocument } from '../../../schemas/Form';
 import FormEntryModel, { FormEntryDocument } from '../../../schemas/FormEntry';
 import MemberModel from '../../../schemas/Member';
@@ -42,9 +42,9 @@ export const formInstantiate = async (user: User, _form: FormDocument, answers?:
 	return _formEntry;
 };
 
-const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) => {
+const formCreate = async (_form: FormDocument, interaction: ButtonInteraction | CommandInteraction) => {
 	const { user, guild, member } = interaction;
-	
+
 	if (user) {
 		if (member && guild && _form.requiredRoles) {
 			const _member = await MemberModel.getAll(user.id, guild.id);
@@ -101,7 +101,7 @@ const formCreate = async (_form: FormDocument, interaction: ButtonInteraction) =
 					} catch (error) {
 						console.log(error);
 					}
-					
+
 					await interaction.followUp({
 						content: `Form already sent to your desk, ${channelMention(navigatorMessage.channelId)}`,
 						ephemeral: true
