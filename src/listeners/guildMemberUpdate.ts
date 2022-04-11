@@ -2,7 +2,7 @@ import { getRoleDocument } from './../actions/Role/syncRole';
 import { getBadge } from './../actions/Member/assignBadge';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
-import type { GuildMember } from 'discord.js';
+import type { GuildMember, TextChannel } from 'discord.js';
 const getEmojisFromString = require('get-emojis-from-string');
 import syncMember from '../actions/Member/syncMember';
 import RoleModel from '../schemas/Role';
@@ -10,6 +10,10 @@ import refreshBadge from '../actions/Member/refreshBadge';
 import parseThread from '../actions/Thread/parseThread';
 import parseMember from '../actions/Member/parseMember';
 import { roleMention, userMention } from '@discordjs/builders';
+import { getGuildDocument } from '../actions/Guild/syncGuild';
+import parseChannel from '../actions/Channel/parseChannel';
+import getChannelWebhook from '../actions/Channel/Webhook/getChannelWebhook';
+import changeNickname from '../components/embeds/changeNickname';
 
 @ApplyOptions<ListenerOptions>({})
 export class UserEvent extends Listener {
@@ -71,6 +75,26 @@ export class UserEvent extends Listener {
 			await newMember.roles.remove(forRemoval);
 		} else {
 			const [_member] = await syncMember(oldMember.guild, syncingMember);
+			if (_member && !_member.manageable && oldMember.nickname !== newMember.nickname) {
+				const [_guild, guild] = await getGuildDocument(newMember.guild);
+				if (_guild && _guild.channels.feeds) {
+					const [channel] = await parseChannel(guild, _guild.channels.feeds);
+					const webhook = await getChannelWebhook(channel as TextChannel, true);
+					if (webhook) {
+						await webhook.send({
+							content: `@everyone`,
+							username: `${_member.nickname ?? newMember.user.username}`,
+							avatarURL: newMember.displayAvatarURL(),
+							embeds: [changeNickname(newMember, oldMember.nickname ? oldMember.nickname : `None`)]
+						});
+					} else {
+						(channel as TextChannel).send({
+							content: `@everyone`,
+							embeds: [changeNickname(newMember, oldMember.nickname ? oldMember.nickname : `None`)]
+						});
+					}
+				}
+			}
 			if (newMember.nickname && _member) {
 				const badges = getEmojisFromString(newMember.nickname, { onlyDefaultEmojis: true });
 				const dbBadge = getBadge(_member);
