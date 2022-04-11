@@ -1,4 +1,5 @@
 import type { SelectMenuInteraction } from 'discord.js';
+import handleSelectColor from './handleSelectColor';
 import handleSelectInput from './handleSelectInput';
 
 interface Interactions {
@@ -6,7 +7,8 @@ interface Interactions {
 }
 
 const customInteractions: Interactions = {
-	select: handleSelectInput
+	select: handleSelectInput,
+	color: handleSelectColor
 };
 const interactions: Interactions = {};
 

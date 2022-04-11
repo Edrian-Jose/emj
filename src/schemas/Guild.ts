@@ -29,6 +29,7 @@ interface Guild {
 		roles: Snowflake[];
 		names?: GeneratorName[];
 	};
+	colorRoles?: Snowflake[];
 	channels: {
 		desk: Snowflake;
 		inquiries: Snowflake;
@@ -95,6 +96,7 @@ const GuildSchema = new Schema<GuildDocument>({
 		channelCategory: [String],
 		threadParent: [String]
 	},
+	colorRoles: [String],
 	generatorConfig: {
 		index: {
 			type: Number,

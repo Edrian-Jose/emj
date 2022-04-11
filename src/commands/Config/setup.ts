@@ -23,11 +23,27 @@ import parseChannel from '../../actions/Channel/parseChannel';
 		'stage',
 		'feeds',
 		'apps',
+		'colors',
 		'probation',
 		'unmanageable'
 	]
 })
 export class UserCommand extends SubCommandPluginCommand {
+	public async colors(message: Message, args: Args) {
+		try {
+			if (message.guild) {
+				const roles = await args.repeat('role');
+				let [_guild] = await getGuildDocument(message.guild);
+				if (_guild) {
+					_guild.colorRoles = roles.map((role) => role.id);
+					_guild = await _guild.save();
+					return temporaryReply(message, `Color roles set to [${_guild.colorRoles!.map((id) => roleMention(id)).join(', ')}]`, true);
+				}
+			}
+		} catch (error) {
+			return temporaryReply(message, `Bad command format`, true);
+		}
+	}
 	public async unmanageable(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
