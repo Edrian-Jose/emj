@@ -1,6 +1,7 @@
 {
 	"creatorId": "949328284758462584",
-	"guildId": "960780818870075412",
+	"guildId": "866667237548883999",
+	"alias": "event",
 	"author": {
 		"userId": "949328284758462584",
 		"name": "Cashuals Official",
@@ -9,7 +10,7 @@
 	"type": "STEP",
 	"title": "Create Event Form (U-1)",
 	"description": "Step by step wizard for creating or scheduling event.",
-	"requiredRoles": ["960790527056437279"],
+	"requiredRoles": ["961852379228176424"],
 	"rewardRoles": [],
 	"commands": {
 		"onSubmit": ["createEvent"],
@@ -18,13 +19,13 @@
 	"destination": [
 		{
 			"type": "GUILD_CHANNEL",
-			"ids": ["960788501488623626"]
+			"ids": ["961851266949062676"]
 		}
 	],
 	"resultDestination": {
 		"type": "GUILD_CHANNEL",
-		"guildId": "960780818870075412",
-		"id": "960788579829833728"
+		"id": "961851311547105300",
+		"guildId": "866667237548883999"
 	},
 	"verification": true,
 	"verifiers": [
@@ -34,7 +35,7 @@
 		},
 		{
 			"type": "ROLE",
-			"id": "960789763022028830"
+			"id": "961852677023760434"
 		}
 	],
 	"questions": [

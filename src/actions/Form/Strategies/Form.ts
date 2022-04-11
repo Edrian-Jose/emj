@@ -10,6 +10,7 @@ class Form implements IForm {
 	_id: string;
 	_document: FormDocument;
 	creatorId: Snowflake;
+	alias: string;
 	author: {
 		userId: Snowflake;
 		name: string;
@@ -51,6 +52,7 @@ class Form implements IForm {
 		this._id = document._id;
 		this._document = document;
 		this.creatorId = document.creatorId;
+		this.alias = document.alias;
 		this.author = document.author;
 		this.title = document.title;
 		this.type = document.type;
