@@ -5,8 +5,7 @@ import moment from 'moment';
 import { getGuildDocument } from '../actions/Guild/syncGuild';
 import EventModel from '../schemas/Event';
 import parsePlaceholder from '../actions/General/parsePlaceholder';
-import getSpreadsheetDocument from '../lib/getDoc';
-import createSpecialEntry from '../actions/FormEntry/createSpecialEntry';
+import getSpecialAdmissions from '../actions/Form/getSpecialAdmission';
 
 export class EventCreateTask extends ScheduledTask {
 	public constructor(context: PieceContext) {
@@ -21,31 +20,7 @@ export class EventCreateTask extends ScheduledTask {
 			scheduledStartTimestamp: { $lte: moment().add(12, 'hours').valueOf() }
 		});
 
-		const sheet = await getSpreadsheetDocument('133Db5Kt86vyekezAT0EdYjADwhRYUvsf0S1fsM50SwU', 0);
-		let stop = false;
-		let index = 0;
-		let totalFound = 0;
-		const limit = 20;
-		while (!stop) {
-			const rows = await sheet.getRows({ limit, offset: index });
-			let found = 0;
-			for (const row of rows) {
-				if (isNaN(row['Timestamp'])) {
-					found++;
-					const [, , id, ...data] = row._rawData;
-					await row.delete();
-					await createSpecialEntry('62503ecfa709bfd87f682892', id, data);
-				}
-			}
-			totalFound += found;
-			if (!found) {
-				stop = true;
-				this.container.logger.info(`${totalFound} entries performed`);
-			} else {
-				index += limit;
-			}
-		}
-
+		await getSpecialAdmissions();
 		try {
 			for (const _event of _events) {
 				const [_guild, guild] = await getGuildDocument(_event.guildId);
