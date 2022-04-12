@@ -1,7 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener, ListenerOptions } from '@sapphire/framework';
-import { MessageEmbed, MessageReaction, User } from 'discord.js';
+import { MessageEmbed, MessageEmbedOptions, MessageReaction, User } from 'discord.js';
 import moment from 'moment';
 import getChannelWebhook from '../actions/Channel/Webhook/getChannelWebhook';
 import parseThread from '../actions/Thread/parseThread';
@@ -23,14 +23,20 @@ export class UserEvent extends Listener {
 					let newContent = message.content ? message.content : 'Empty Message';
 					const newEmbeds = message.embeds;
 					if (!message.attachments.size && !message.embeds.length && !message.components.length && message.content) {
-						newEmbeds.push(
-							new MessageEmbed({
-								title: message.content,
-								timestamp: moment().valueOf(),
-								color: randomColor(),
-								url: message.url
-							})
-						);
+						const options = {
+							timestamp: moment().valueOf(),
+							color: randomColor(),
+							url: message.url
+						} as MessageEmbedOptions;
+
+						if (message.content.length < 256) {
+							options.title = message.content;
+						} else {
+							options.title = `Jump to the original message`;
+							options.description = message.content;
+						}
+
+						newEmbeds.push(new MessageEmbed(options));
 						newContent = reactors.length > 5 ? '@everyone' : reactors.map((id) => userMention(id)).join(' ');
 					}
 					await webhook?.send({
