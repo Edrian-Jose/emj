@@ -13,7 +13,7 @@
 	"requiredRoles": ["961852161296330753"],
 	"rewardRoles": ["961852379228176424"],
 	"commands": {
-		"onSubmit": ["basicAdmission"],
+		"onSubmit": ["basicAdmission", "saveToSheet"],
 		"onCancel": ["defaultCancel"]
 	},
 	"destination": [
@@ -169,7 +169,7 @@
 			"options": [
 				{
 					"label": "Yes",
-					"value": "true"
+					"value": "https://bit.ly/3LSsOFQ"
 				},
 				{
 					"label": "No",

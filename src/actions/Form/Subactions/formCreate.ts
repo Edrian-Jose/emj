@@ -26,7 +26,7 @@ export const formInstantiate = async (user: User, _form: FormDocument, answers?:
 		{
 			path: 'answers',
 			populate: {
-				path: 'questions',
+				path: 'question',
 				model: 'Question'
 			}
 		},

@@ -361,6 +361,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/google-spreadsheet@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@types/google-spreadsheet@npm:3.2.0"
+  checksum: a9f7930ebe5e73d9b0158081fdc4b1523fc7db710ef36756e674781ba535a7564fc66a5c7784dbdcfd77ec199c0e6778823631791a02b996a91fa52e5f51f6a1
+  languageName: node
+  linkType: hard
+
 "@types/node-fetch@npm:2.6.1, @types/node-fetch@npm:^2.5.12":
   version: 2.6.1
   resolution: "@types/node-fetch@npm:2.6.1"
@@ -974,6 +981,7 @@ __metadata:
     "@sapphire/type": ^2.1.2
     "@sapphire/utilities": ^3.2.1
     "@types/bcrypt": ^5
+    "@types/google-spreadsheet": ^3.2.0
     "@types/node": ^17.0.10
     "@types/ws": ^8.2.2
     bcrypt: ^5.0.1

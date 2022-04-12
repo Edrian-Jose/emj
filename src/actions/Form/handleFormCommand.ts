@@ -2,6 +2,7 @@ import type FormEntry from '../FormEntry/FormEntry';
 import basicAdmission from './Commands/basicAdmission';
 import createEvent from './Commands/createEvent';
 import defaultSubmit from './Commands/defaultSubmit';
+import saveToSheet from './Commands/saveToSheets';
 import executeQuestionCommand from './handlePromptCommand';
 import type Prompt from './Strategies/Prompt';
 
@@ -19,7 +20,8 @@ interface FormCommands {
 const customCommands: FormCommands = {
 	defaultSubmit,
 	basicAdmission,
-	createEvent
+	createEvent,
+	saveToSheet
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {

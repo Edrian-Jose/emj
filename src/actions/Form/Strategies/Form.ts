@@ -16,6 +16,7 @@ class Form implements IForm {
 		name: string;
 		avatarURL: string;
 	};
+	sheet?: { id: string; index: number };
 	title: string;
 	type: FormType;
 	description?: string;
@@ -54,6 +55,7 @@ class Form implements IForm {
 		this.creatorId = document.creatorId;
 		this.alias = document.alias;
 		this.author = document.author;
+		this.sheet = document.sheet;
 		this.title = document.title;
 		this.type = document.type;
 		this.description = document.description;
