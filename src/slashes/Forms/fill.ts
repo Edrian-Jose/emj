@@ -7,10 +7,10 @@ import FormModel, { FormDocument } from '../../schemas/Form';
 export const data = new SlashCommandBuilder()
 	.setName('fill')
 	.setDescription('Fill-out a form by using this command')
-	.addStringOption((option) => option.setName('id').setDescription('the id or the alias of the form'));
+	.addStringOption((option) => option.setName('id').setDescription('the id or the alias of the form').setRequired(true));
 
 export const execute = async (interaction: CommandInteraction) => {
-	const aliasOrId = interaction.options.getString('id');
+	const aliasOrId = interaction.options.getString('id', true);
 	let _form: FormDocument | null = null;
 	if (mongoose.isValidObjectId(aliasOrId)) {
 		_form = await FormModel.findById(aliasOrId).populate('questions').exec();
