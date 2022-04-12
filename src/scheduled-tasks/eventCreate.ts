@@ -41,6 +41,8 @@ export class EventCreateTask extends ScheduledTask {
 			if (!found) {
 				stop = true;
 				this.container.logger.info(`${totalFound} entries performed`);
+			} else {
+				index += limit;
 			}
 		}
 
