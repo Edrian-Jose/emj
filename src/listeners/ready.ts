@@ -48,6 +48,8 @@ export class UserEvent extends Listener {
 			if (!found) {
 				stop = true;
 				this.container.logger.info(`${totalFound} entries performed`);
+			} else {
+				index += limit;
 			}
 		}
 
