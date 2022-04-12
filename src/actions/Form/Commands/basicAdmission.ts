@@ -9,6 +9,7 @@ import answersForm from '../../../components/embeds/answersForm';
 import { userMention } from '@discordjs/builders';
 import setMemberNickname from '../../Member/setNickname';
 
+
 const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	const newAnswers = [...answers];
 	newAnswers[2].value![0] = moment(parseInt(answers[2].value![0])).format('dddd, MMMM Do YYYY');
@@ -16,7 +17,7 @@ const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	if (newAnswers[5].value && newAnswers[5].value[0]) {
 		if (!newAnswers[5].value[0].trim().includes(' ')) {
 			if (newAnswers[5].value[0].substring(0, 1) === '@') {
-				newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0].trim().substring(1, newAnswers[5].value[0].length - 1)}`;
+				newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0].trim().substring(1)}`;
 			} else {
 				newAnswers[5].value[0] = `https://twitter.com/${newAnswers[5].value[0].trim()}`;
 			}
@@ -25,7 +26,7 @@ const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 	if (newAnswers[6].value && newAnswers[6].value[0]) {
 		if (!newAnswers[6].value[0].trim().includes(' ')) {
 			if (newAnswers[6].value[0].substring(0, 1) === '@') {
-				newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0].trim().substring(1, newAnswers[6].value[0].length - 1)}`;
+				newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0].trim().substring(1)}`;
 			} else {
 				newAnswers[6].value[0] = `https://www.tiktok.com/@${newAnswers[6].value[0].trim()}`;
 			}
@@ -45,7 +46,6 @@ const transformValues = (answers: EntryAnswer[]): EntryAnswer[] => {
 
 const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> => {
 	//
-
 	if (entry.location.guildId) {
 		const [_guild, guild] = await getGuildDocument(entry.location.guildId);
 		let [member] = await parseMember(entry.location.guildId, entry.ownerId);
@@ -56,7 +56,7 @@ const basicAdmission = async (entry: FormEntry, ...answers: EntryAnswer[]): Prom
 			birthdayObject = birthdayObject.add(1, 'year');
 			birthday = birthdayObject.valueOf();
 		}
-		if (member && _guild && _guild.channels.stage) {
+		if (member && _guild) {
 			await setMemberNickname(member, nickname ?? member.user.username);
 			if (_guild.join.roles) {
 				await member.roles.remove(_guild.join.roles);

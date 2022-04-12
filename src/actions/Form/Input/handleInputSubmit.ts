@@ -8,8 +8,6 @@ import moment from 'moment';
 
 export const validateType = (question: QuestionDocument, input: string): boolean => {
 	switch (question.type) {
-		case 'BOOLEAN':
-			return ['true', 'false'].includes(input);
 		case 'NUMBER':
 			if (typeof input != 'string') return false;
 			return !isNaN(parseFloat(input));

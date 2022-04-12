@@ -15,6 +15,10 @@ interface _Form {
 		name: string;
 		avatarURL: string;
 	};
+	sheet?: {
+		id: string;
+		index: number;
+	};
 	title: string;
 	type: FormType;
 	description?: string;
@@ -35,6 +39,7 @@ interface _Form {
 		id: Snowflake;
 		guildId?: Snowflake;
 	};
+
 	instances: [
 		{
 			type: FormDestinationType;
@@ -75,6 +80,10 @@ const FormSchema = new Schema<FormDocument>({
 		userId: String,
 		name: String,
 		avatarURL: String
+	},
+	sheet: {
+		id: String,
+		index: Number
 	},
 	title: String,
 	type: {
