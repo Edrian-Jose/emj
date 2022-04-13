@@ -47,6 +47,9 @@ interface Guild {
 	roles: {
 		probation: Snowflake;
 		unmanageable: Snowflake;
+		manager: Snowflake;
+		moderator: Snowflake;
+		admin: Snowflake;
 	};
 }
 
@@ -134,7 +137,10 @@ const GuildSchema = new Schema<GuildDocument>({
 	},
 	roles: {
 		probation: String,
-		unmanageable: String
+		unmanageable: String,
+		manager: String,
+		moderator: String,
+		admin: String
 	}
 });
 

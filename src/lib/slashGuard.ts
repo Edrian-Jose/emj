@@ -11,11 +11,11 @@ export class GuardResult {
 }
 
 export interface GuardFunction {
-	(source: Message | CommandInteraction): GuardResult;
+	(source: Message | CommandInteraction): GuardResult | Promise<GuardResult>;
 }
 
 const IsAllowed = async (source: CommandInteraction, precondition: GuardFunction) => {
-	const result = precondition(source);
+	const result = await precondition(source);
 	if (!result.success) {
 		await source.reply({ content: result.error, ephemeral: true });
 	}
@@ -23,7 +23,7 @@ const IsAllowed = async (source: CommandInteraction, precondition: GuardFunction
 };
 
 export const IsCommandAllowed = async (source: Message, precondition: GuardFunction) => {
-	const result = precondition(source);
+	const result = await precondition(source);
 	if (!result.success) {
 		await temporaryReply(source, result.error ?? '', true);
 	}
