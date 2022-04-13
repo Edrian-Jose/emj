@@ -3,6 +3,7 @@ import type { Guild } from 'discord.js';
 import type { RoleDocument } from '../../schemas/Role';
 import RoleModel from '../../schemas/Role';
 import parseMember from '../Member/parseMember';
+import { getRoleDocument } from './syncRole';
 
 const auditANDRoles = async () => {
 	let _roles: (RoleDocument & { _id: any })[] = [];
@@ -29,6 +30,27 @@ const auditANDRoles = async () => {
 
 					if (!isValid) {
 						await member.roles.remove(_role.roleId);
+					}
+				}
+			}
+			if (_role.and) {
+				const [firstRoleId] = _role.and;
+				const [_firstRole] = await getRoleDocument(_role.guildId, firstRoleId);
+				if (_firstRole) {
+					for (const id of _firstRole.members) {
+						const [member] = await parseMember(guild ? guild : _role.guildId, id);
+						if (member) {
+							let isValid = true;
+							const roles = Array.from(member.roles.cache.keys());
+
+							for (const roleId of _role.and) {
+								isValid = isValid && roles.includes(roleId);
+							}
+
+							if (isValid && !roles.includes(_role.roleId)) {
+								await member.roles.add(_role.roleId);
+							}
+						}
 					}
 				}
 			}
