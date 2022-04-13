@@ -23,6 +23,7 @@ import parseChannel from '../../actions/Channel/parseChannel';
 		'stage',
 		'feeds',
 		'apps',
+		'logs',
 		'colors',
 		'probation',
 		'unmanageable',
@@ -127,6 +128,14 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Desk channel set to ${channelMention(_guild.channels.desk)}`, true);
 		}
 		return temporaryReply(message, `Desk channel failed to setup`, true);
+	}
+	public async logs(message: Message) {
+		const _guild = await registerUtilityChannel(message, 'logs');
+
+		if (_guild && _guild.channels.desk) {
+			return temporaryReply(message, `Logs channel set to ${channelMention(_guild.channels.logs)}`, true);
+		}
+		return temporaryReply(message, `Logs channel failed to setup`, true);
 	}
 
 	public async applications(message: Message) {

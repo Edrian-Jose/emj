@@ -1,7 +1,18 @@
 import type { CommandInteraction, Message } from 'discord.js';
 import { getGuildDocument } from './syncGuild';
 
-export type UtilityChannelTypes = 'desk' | 'inquiries' | 'applications' | 'forms' | 'welcome' | 'teams' | 'rooms' | 'threads' | 'feeds' | 'apps';
+export type UtilityChannelTypes =
+	| 'desk'
+	| 'inquiries'
+	| 'applications'
+	| 'forms'
+	| 'welcome'
+	| 'teams'
+	| 'rooms'
+	| 'threads'
+	| 'feeds'
+	| 'apps'
+	| 'logs';
 export const registerUtilityChannel = async (source: Message | CommandInteraction, utility: UtilityChannelTypes) => {
 	const { channel, guild } = source;
 	if (guild) {
