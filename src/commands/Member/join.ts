@@ -8,6 +8,7 @@ import temporaryReply from '../../actions/Message/temporaryReply';
 import FormModel, { FormDocument } from '../../schemas/Form';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
+	preconditions: ['AdminOnly'],
 	subCommands: ['roles', 'form']
 })
 export class UserCommand extends SubCommandPluginCommand {
