@@ -6,7 +6,7 @@ const getEmojisFromString = require('get-emojis-from-string');
 import temporaryReply from '../../actions/Message/temporaryReply';
 
 @ApplyOptions<CommandOptions>({
-	preconditions: ['AdminOnly'],
+	preconditions: ['ManagerOnly'],
 	description: 'Get the emoji link of the emoji'
 })
 export class UserCommand extends Command {

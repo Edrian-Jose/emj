@@ -5,6 +5,7 @@ import temporaryReply from '../../actions/Message/temporaryReply';
 import EmojiModel from '../../schemas/Emoji';
 
 @ApplyOptions<CommandOptions>({
+	preconditions: ['ManagerOnly'],
 	description: 'Create an emoji'
 })
 export class UserCommand extends Command {
