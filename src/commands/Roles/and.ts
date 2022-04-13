@@ -2,6 +2,7 @@ import { roleMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
 
@@ -20,6 +21,14 @@ export class UserCommand extends Command {
 			if (_role) {
 				_role.and = conditionRoles;
 				await _role.save();
+				await log(
+					guild,
+					`${message.author.username} use !and`,
+					`${roleMention(assigningRole)} will be assigned when all of the roles [${conditionRoles
+						.map((role) => roleMention(role))
+						.join(', ')}] are present`,
+					message.author.id
+				);
 				return temporaryReply(
 					message,
 					`${roleMention(assigningRole)} will be assigned when all of the roles [${conditionRoles

@@ -7,6 +7,7 @@ import type { Message } from 'discord.js';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import type { Args } from '@sapphire/framework';
 import parseChannel from '../../actions/Channel/parseChannel';
+import log from '../../actions/General/log';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
@@ -23,6 +24,7 @@ import parseChannel from '../../actions/Channel/parseChannel';
 		'stage',
 		'feeds',
 		'apps',
+		'logs',
 		'colors',
 		'probation',
 		'unmanageable',
@@ -36,10 +38,16 @@ export class UserCommand extends SubCommandPluginCommand {
 		try {
 			if (message.guild) {
 				const roles = await args.repeat('role');
-				let [_guild] = await getGuildDocument(message.guild);
+				let [_guild, guild] = await getGuildDocument(message.guild);
 				if (_guild) {
 					_guild.colorRoles = roles.map((role) => role.id);
 					_guild = await _guild.save();
+					await log(
+						guild,
+						`${message.author.username} use !setup colors`,
+						`Color roles set to [${_guild.colorRoles!.map((id) => roleMention(id)).join(', ')}]`,
+						message.author.id
+					);
 					return temporaryReply(message, `Color roles set to [${_guild.colorRoles!.map((id) => roleMention(id)).join(', ')}]`, true);
 				}
 			}
@@ -51,10 +59,16 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async manager(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
-			let [_guild] = await getGuildDocument(role.guild);
+			let [_guild, guild] = await getGuildDocument(role.guild);
 			if (_guild) {
 				_guild.roles.manager = role.id;
 				_guild = await _guild.save();
+				await log(
+					guild,
+					`${message.author.username} use !setup manager`,
+					`${roleMention(_guild.roles.manager)} will be the manager role for this server`,
+					message.author.id
+				);
 				return temporaryReply(message, `${roleMention(_guild.roles.manager)} will be the manager role for this server`, true);
 			}
 		} catch (error) {
@@ -64,10 +78,16 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async moderator(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
-			let [_guild] = await getGuildDocument(role.guild);
+			let [_guild, guild] = await getGuildDocument(role.guild);
 			if (_guild) {
 				_guild.roles.moderator = role.id;
 				_guild = await _guild.save();
+				await log(
+					guild,
+					`${message.author.username} use !setup moderator`,
+					`${roleMention(_guild.roles.moderator)} will be the moderator role for this server`,
+					message.author.id
+				);
 				return temporaryReply(message, `${roleMention(_guild.roles.moderator)} will be the moderator role for this server`, true);
 			}
 		} catch (error) {
@@ -78,10 +98,16 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async admin(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
-			let [_guild] = await getGuildDocument(role.guild);
+			let [_guild, guild] = await getGuildDocument(role.guild);
 			if (_guild) {
 				_guild.roles.admin = role.id;
 				_guild = await _guild.save();
+				await log(
+					guild,
+					`${message.author.username} use !setup admin`,
+					`${roleMention(_guild.roles.admin)} will be the admin role for this server`,
+					message.author.id
+				);
 				return temporaryReply(message, `${roleMention(_guild.roles.admin)} will be the admin role for this server`, true);
 			}
 		} catch (error) {
@@ -92,10 +118,16 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async unmanageable(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
-			let [_guild] = await getGuildDocument(role.guild);
+			let [_guild, guild] = await getGuildDocument(role.guild);
 			if (_guild) {
 				_guild.roles.unmanageable = role.id;
 				_guild = await _guild.save();
+				await log(
+					guild,
+					`${message.author.username} use !setup unamanageable`,
+					`${roleMention(_guild.roles.unmanageable)} will now be set to members who dont want to be manageable`,
+					message.author.id
+				);
 				return temporaryReply(
 					message,
 					`${roleMention(_guild.roles.unmanageable)} will now be set to members who dont want to be manageable`,
@@ -109,10 +141,16 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async probation(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
-			let [_guild] = await getGuildDocument(role.guild);
+			let [_guild, guild] = await getGuildDocument(role.guild);
 			if (_guild) {
 				_guild.roles.probation = role.id;
 				_guild = await _guild.save();
+				await log(
+					guild,
+					`${message.author.username} use !setup probation`,
+					`${roleMention(_guild.roles.probation)} will now be set to members under probation`,
+					message.author.id
+				);
 				return temporaryReply(message, `${roleMention(_guild.roles.probation)} will now be set to members under probation`, true);
 			}
 		} catch (error) {
@@ -127,6 +165,14 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Desk channel set to ${channelMention(_guild.channels.desk)}`, true);
 		}
 		return temporaryReply(message, `Desk channel failed to setup`, true);
+	}
+	public async logs(message: Message) {
+		const _guild = await registerUtilityChannel(message, 'logs');
+
+		if (_guild && _guild.channels.desk) {
+			return temporaryReply(message, `Logs channel set to ${channelMention(_guild.channels.logs)}`, true);
+		}
+		return temporaryReply(message, `Logs channel failed to setup`, true);
 	}
 
 	public async applications(message: Message) {
@@ -206,7 +252,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		}
 		let channelId: string;
 		try {
-			let [_guild] = await getGuildDocument(message.guild);
+			let [_guild, guild] = await getGuildDocument(message.guild);
 			channelId = await args.pick('string');
 
 			const [channel] = await parseChannel(message.guild, channelId);
@@ -215,6 +261,12 @@ export class UserCommand extends SubCommandPluginCommand {
 				_guild = await _guild.save();
 
 				if (_guild.channels.stage) {
+					await log(
+						guild,
+						`${message.author.username} use !setup stage`,
+						`Stage channel set to ${channelMention(_guild.channels.stage)}`,
+						message.author.id
+					);
 					return temporaryReply(message, `Stage channel set to ${channelMention(_guild.channels.stage)}`, true);
 				}
 			}
@@ -229,7 +281,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		}
 		let channelId: string;
 		try {
-			let [_guild] = await getGuildDocument(message.guild);
+			let [_guild, guild] = await getGuildDocument(message.guild);
 			channelId = await args.pick('string');
 
 			const [channel] = await parseChannel(message.guild, channelId);
@@ -238,6 +290,12 @@ export class UserCommand extends SubCommandPluginCommand {
 				_guild = await _guild.save();
 
 				if (_guild.channels.generator) {
+					await log(
+						guild,
+						`${message.author.username} use !setup generator`,
+						`Generator channel set to ${channelMention(_guild.channels.generator)}`,
+						message.author.id
+					);
 					return temporaryReply(message, `Generator channel set to ${channelMention(_guild.channels.generator)}`, true);
 				}
 			}

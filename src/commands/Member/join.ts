@@ -3,6 +3,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import { getGuildDocument } from '../../actions/Guild/syncGuild';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import FormModel, { FormDocument } from '../../schemas/Form';
@@ -22,6 +23,12 @@ export class UserCommand extends SubCommandPluginCommand {
 		if (_guild) {
 			_guild.join.roles = roles;
 			await _guild.save();
+			await log(
+				message.guild,
+				`${message.author.username} use !join roles`,
+				`${roles.map((role) => roleMention(role)).join(', ')} will be assigned to new members when they first join to this server`,
+				message.author.id
+			);
 			return temporaryReply(
 				message,
 				`${roles.map((role) => roleMention(role)).join(', ')} will be assigned to new members when they first join to this server`,
@@ -46,6 +53,12 @@ export class UserCommand extends SubCommandPluginCommand {
 		if (_guild && _form) {
 			_guild.join.form = _form._id;
 			await _guild.save();
+			await log(
+				message.guild,
+				`${message.author.username} use !join form`,
+				`${_form.title} successfully set to this server's admission form`,
+				message.author.id
+			);
 			return temporaryReply(message, `${_form.title} successfully set to this server's admission form`, true);
 		} else if (!_form) {
 			return temporaryReply(message, `Form not found`, true);

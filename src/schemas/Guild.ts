@@ -43,6 +43,7 @@ interface Guild {
 		stage: Snowflake;
 		feeds: Snowflake;
 		apps: Snowflake;
+		logs: Snowflake;
 	};
 	roles: {
 		probation: Snowflake;
@@ -133,7 +134,8 @@ const GuildSchema = new Schema<GuildDocument>({
 		threads: String,
 		stage: String,
 		feeds: String,
-		apps: String
+		apps: String,
+		logs: String
 	},
 	roles: {
 		probation: String,

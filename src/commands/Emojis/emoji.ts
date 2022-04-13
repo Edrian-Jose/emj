@@ -1,6 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import EmojiModel from '../../schemas/Emoji';
 
@@ -28,7 +29,12 @@ export class UserCommand extends Command {
 						_emoji.roles = roles.map((role) => role.id);
 					}
 					await _emoji.save();
-
+					await log(
+						guild,
+						`${message.author.username} use !emoji`,
+						`Emoji <:${_emoji.identifier}> updated ${roles.length ? 'for the roles' : ''} ${roles.join(', ')}`,
+						message.author.id
+					);
 					return temporaryReply(
 						message,
 						`Emoji <:${_emoji.identifier}> updated ${roles.length ? 'for the roles' : ''} ${roles.join(', ')}`,
@@ -48,7 +54,12 @@ export class UserCommand extends Command {
 								url: emoji.url,
 								roles: Array.from(emoji.roles.cache.keys())
 							});
-
+							await log(
+								guild,
+								`${message.author.username} use !emoji`,
+								`Emoji <:${_emoji.identifier}> created ${roles.length ? 'for the roles' : ''} ${roles.join(', ')}`,
+								message.author.id
+							);
 							return temporaryReply(
 								message,
 								`Emoji <:${_emoji.identifier}> created ${roles.length ? 'for the roles' : ''} ${roles.join(', ')}`,
