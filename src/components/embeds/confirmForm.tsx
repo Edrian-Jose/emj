@@ -9,7 +9,7 @@ export default function confirmForm(entry: FormEntry, form: Form) {
 	const fields = entry.answers.map((answer) => {
 		return (
 			<field name={answer.question.value}>
-				{answer.answer?.length ? answer.answer?.map((answer) => answer.label).join(', ') : italic('Skipped')}
+				{`${answer.answer?.length ? answer.answer?.map((answer) => answer.label).join(', ') : italic('Skipped')}`}
 			</field>
 		);
 	});
