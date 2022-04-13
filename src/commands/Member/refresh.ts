@@ -2,6 +2,7 @@ import { roleMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import parseMember from '../../actions/Member/parseMember';
 import refreshBadge from '../../actions/Member/refreshBadge';
 import temporaryMessage from '../../actions/Message/temporaryMessage';
@@ -33,6 +34,12 @@ export class UserCommand extends Command {
 
 					if (forAddition.length) {
 						await member.roles.add(forAddition);
+						await log(
+							guild,
+							`${message.author.username} use !refresh`,
+							`Role(s) ${forAddition.map((roleId) => roleMention(roleId)).join(', ')} has been given to you`,
+							message.author.id
+						);
 						temporaryMessage(
 							message.channel,
 							`Role(s) ${forAddition.map((roleId) => roleMention(roleId)).join(', ')} has been given to you`

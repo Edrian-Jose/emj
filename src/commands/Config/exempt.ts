@@ -6,6 +6,7 @@ import type { Args } from '@sapphire/framework';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { channelMention } from '@discordjs/builders';
 import type { GuildBasedChannelTypes } from '@sapphire/discord.js-utilities';
+import log from '../../actions/General/log';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Exempt syncing to channels inside a category, or threads inside a channel',
@@ -24,13 +25,19 @@ export class UserCommand extends SubCommandPluginCommand {
 			return await temporaryReply(message, `Please mention a channel`, true);
 		}
 
-		const [_guild] = await getGuildDocument(message.guild);
+		const [_guild, guild] = await getGuildDocument(message.guild);
 		if (_guild && channel.parent instanceof CategoryChannel) {
 			if (_guild.exempted) {
 				if (_guild.exempted.channelCategory) {
 					if (_guild.exempted.channelCategory.includes(channel.parent.id)) {
 						_guild.exempted.channelCategory = _guild.exempted.channelCategory.filter((id) => id !== channel.parent?.id);
 						await _guild.save();
+						await log(
+							guild,
+							`${message.author.username} use !cat`,
+							`${channel.name} child channels will be synced to the database`,
+							message.author.id
+						);
 						return await temporaryReply(
 							message,
 							`${channelMention(channel.parent.id)} child channels will be synced to the database`,
@@ -48,6 +55,12 @@ export class UserCommand extends SubCommandPluginCommand {
 			}
 
 			await _guild.save();
+			await log(
+				guild,
+				`${message.author.username} use !cat`,
+				`${channel.name} child channels will not be synced to the database`,
+				message.author.id
+			);
 			return await temporaryReply(message, `${channelMention(channel.parent.id)} child channels will not be synced to the database`, true);
 		}
 	}
@@ -64,7 +77,7 @@ export class UserCommand extends SubCommandPluginCommand {
 			return await temporaryReply(message, `Please mention a channel`, true);
 		}
 
-		const [_guild] = await getGuildDocument(message.guild);
+		const [_guild, guild] = await getGuildDocument(message.guild);
 
 		if (_guild && (channel instanceof TextChannel || channel instanceof NewsChannel)) {
 			if (_guild.exempted) {
@@ -72,6 +85,12 @@ export class UserCommand extends SubCommandPluginCommand {
 					if (_guild.exempted.threadParent.includes(channel.id)) {
 						_guild.exempted.threadParent = _guild.exempted.threadParent.filter((id) => id !== channel.id);
 						await _guild.save();
+						await log(
+							guild,
+							`${message.author.username} use !tchannel`,
+							`${channel.name} threads will be synced to the database`,
+							message.author.id
+						);
 						return await temporaryReply(message, `${channelMention(channel.id)} threads will be synced to the database`, true);
 					}
 					_guild.exempted.threadParent.push(channel.id);
@@ -85,6 +104,12 @@ export class UserCommand extends SubCommandPluginCommand {
 			}
 
 			await _guild.save();
+			await log(
+				guild,
+				`${message.author.username} use !tchannel`,
+				`${channel.name} threads will not be synced to the database`,
+				message.author.id
+			);
 			return await temporaryReply(message, `${channelMention(channel.id)} threads will not be synced to the database`, true);
 		}
 	}

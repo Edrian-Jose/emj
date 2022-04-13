@@ -2,6 +2,7 @@ import { roleMention, channelMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message, ThreadChannel, TextChannel } from 'discord.js';
+import log from '../../actions/General/log';
 import parseMember from '../../actions/Member/parseMember';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
@@ -34,7 +35,12 @@ export class UserCommand extends Command {
 						}
 					}
 				}
-
+				await log(
+					channel.guild,
+					`${message.author.username} use !team`,
+					`${channelMention(channel.id)} has been reserved for ${roleMention(_role.roleId)}`,
+					message.author.id
+				);
 				return temporaryReply(message, `${channelMention(channel.id)} has been reserved for ${roleMention(_role.roleId)}`, true);
 			}
 		}

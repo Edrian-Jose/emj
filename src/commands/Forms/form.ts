@@ -6,6 +6,7 @@ import type { Message } from 'discord.js';
 import utilityWebhookSend from '../../actions/Channel/Webhook/utilityWebhookSend';
 import registerForm from '../../actions/Form/registerForm';
 import Form from '../../actions/Form/Strategies/Form';
+import log from '../../actions/General/log';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { avatar } from '../../lib/constants';
 import type { Form as IForm } from '../../schemas/Form';
@@ -44,14 +45,12 @@ export class UserCommand extends SubCommandPluginCommand {
 						} else {
 							questions.push(_q);
 						}
-
 					} else {
 						questions.push(q);
 					}
 				} else {
 					questions.push(q);
 				}
-				
 			}
 		}
 		formFile.questions = questions;
@@ -72,7 +71,12 @@ export class UserCommand extends SubCommandPluginCommand {
 						components: form.createComponents('OWNER')
 					});
 				}
-
+				await log(
+					guild,
+					`${message.author.username} use !form upload`,
+					`${bold(_form.title)} is successfully registered with an id of ${inlineCode(_form._id)}`,
+					message.author.id
+				);
 				return temporaryReply(message, `${bold(_form.title)} is successfully registered with an id of ${inlineCode(_form._id)}`, true);
 			} else {
 				return temporaryReply(message, `Contact the admin to setup the forms channel first`, true);

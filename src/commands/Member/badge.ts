@@ -3,6 +3,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import assignMemberBadge from '../../actions/Member/assignBadge';
 import assignRoleBadge from '../../actions/Member/assignRoleBadge';
 import parseMember from '../../actions/Member/parseMember';
@@ -45,8 +46,20 @@ export class UserCommand extends SubCommandPluginCommand {
 				const _newMember = await assignMemberBadge(_member, 'custom', badge);
 				setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
 				if (badge) {
+					await log(
+						message.guild,
+						`${message.author.username} use !badge set`,
+						`Badge ${badge} is set to User ${member.displayName}`,
+						message.author.id
+					);
 					return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
 				}
+				await log(
+					message.guild,
+					`${message.author.username} use !badge set`,
+					`Custom Badge cleared for User ${member.displayName}`,
+					message.author.id
+				);
 				return temporaryReply(message, `Custom Badge cleared for User ${userMention(_newMember.userId)}`, true);
 			}
 		}
@@ -64,6 +77,12 @@ export class UserCommand extends SubCommandPluginCommand {
 			const _newMember = await assignMemberBadge(_member, 'assigned', badge);
 			setMemberNickname(member, _newMember.nickname ?? member.user.username, _newMember);
 			if (badge) {
+				await log(
+					message.guild,
+					`${message.author.username} use !badge assign`,
+					`Badge ${badge} is set to User ${member.displayName}`,
+					message.author.id
+				);
 				return temporaryReply(message, `Badge ${badge} is set to User ${userMention(_newMember.userId)}`, true);
 			}
 			return temporaryReply(message, `Assigned Badge cleared for User ${userMention(_newMember.userId)}`, true);
@@ -101,8 +120,20 @@ export class UserCommand extends SubCommandPluginCommand {
 			}
 
 			if (badge) {
+				await log(
+					message.guild,
+					`${message.author.username} use !badge role`,
+					`Badge ${badge} is set to Role ${roleMention(_role.roleId)}`,
+					message.author.id
+				);
 				return temporaryReply(message, `Badge ${badge} is set to Role ${roleMention(_role.roleId)}`, true);
 			}
+			await log(
+				message.guild,
+				`${message.author.username} use !badge role`,
+				`Role Badge cleared for Role ${roleMention(_role.roleId)}`,
+				message.author.id
+			);
 			return temporaryReply(message, `Role Badge cleared for Role ${roleMention(_role.roleId)}`, true);
 		}
 	}

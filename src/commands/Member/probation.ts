@@ -2,6 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import type { Args } from '@sapphire/framework';
 import { SubCommandPluginCommand, SubCommandPluginCommandOptions } from '@sapphire/plugin-subcommands';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import { getGuildDocument } from '../../actions/Guild/syncGuild';
 import parseMember from '../../actions/Member/parseMember';
 import { getMemberDocument } from '../../actions/Member/syncMember';
@@ -17,7 +18,7 @@ export class UserCommand extends SubCommandPluginCommand {
 		try {
 			const member = await args.pick('member');
 			let [_member] = await getMemberDocument(member.guild, member);
-			const [_guild] = await getGuildDocument(member.guild);
+			const [_guild, guild] = await getGuildDocument(member.guild);
 			if (_member && _guild) {
 				if (_member.probationRoles && _member.probationRoles.length) {
 					const probationRoles = [..._member.probationRoles];
@@ -28,6 +29,12 @@ export class UserCommand extends SubCommandPluginCommand {
 						await member.roles.add(probationRoles);
 						await member.roles.remove(_guild.roles.probation);
 					}
+					await log(
+						guild,
+						`${message.author.username} use !probation`,
+						`${member.displayName} is now free from probation`,
+						message.author.id
+					);
 					return temporaryReply(message, `${member.displayName} is now free from probation`, true);
 				} else {
 					const [parsedMember] = await parseMember(member.guild, member);
@@ -37,6 +44,7 @@ export class UserCommand extends SubCommandPluginCommand {
 						_member = await _member.save();
 					}
 					await member.roles.set([_guild.roles.probation]);
+					await log(guild, `${message.author.username} use !probation`, `${member.displayName} is now under probation`, message.author.id);
 					return temporaryReply(message, `${member.displayName} is now under probation`, true);
 				}
 			}

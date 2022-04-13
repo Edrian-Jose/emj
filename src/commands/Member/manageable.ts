@@ -1,6 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command, CommandOptions } from '@sapphire/framework';
 import type { Message } from 'discord.js';
+import log from '../../actions/General/log';
 import { getGuildDocument } from '../../actions/Guild/syncGuild';
 import setMemberNickname from '../../actions/Member/setNickname';
 import { getMemberDocument } from '../../actions/Member/syncMember';
@@ -28,7 +29,12 @@ export class UserCommand extends Command {
 						await member.roles.add(_guild.roles.unmanageable);
 					}
 				}
-
+				await log(
+					guild,
+					`${message.author.username} use !manageable`,
+					`${member.user.username} ${_newMember.manageable ? ' will now be ' : ' will now be not '}be manageable.`,
+					message.author.id
+				);
 				return temporaryReply(message, `You will ${_newMember.manageable ? '' : 'not '}be manageable.`, true);
 			}
 		} else {
