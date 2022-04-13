@@ -7,7 +7,7 @@ import temporaryReply from '../../actions/Message/temporaryReply';
 import EmojiModel from '../../schemas/Emoji';
 
 @ApplyOptions<CommandOptions>({
-	preconditions: ['AdminOnly', 'ThreadOnly'],
+	preconditions: ['ManagerOnly', 'ThreadOnly'],
 	description: 'Assign thread to a emoji'
 })
 export class UserCommand extends Command {

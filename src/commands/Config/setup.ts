@@ -10,7 +10,7 @@ import parseChannel from '../../actions/Channel/parseChannel';
 
 @ApplyOptions<SubCommandPluginCommandOptions>({
 	description: 'Setup emjay bot',
-	preconditions: ['AdminOnly'],
+	preconditions: ['AdministatorOnly'],
 	subCommands: [
 		'desk',
 		'applications',
@@ -25,7 +25,10 @@ import parseChannel from '../../actions/Channel/parseChannel';
 		'apps',
 		'colors',
 		'probation',
-		'unmanageable'
+		'unmanageable',
+		'manager',
+		'moderator',
+		'admin'
 	]
 })
 export class UserCommand extends SubCommandPluginCommand {
@@ -44,6 +47,48 @@ export class UserCommand extends SubCommandPluginCommand {
 			return temporaryReply(message, `Bad command format`, true);
 		}
 	}
+
+	public async manager(message: Message, args: Args) {
+		try {
+			const role = await args.pick('role');
+			let [_guild] = await getGuildDocument(role.guild);
+			if (_guild) {
+				_guild.roles.manager = role.id;
+				_guild = await _guild.save();
+				return temporaryReply(message, `${roleMention(_guild.roles.manager)} will be the manager role for this server`, true);
+			}
+		} catch (error) {
+			return temporaryReply(message, `Manager role failed to setup`, true);
+		}
+	}
+	public async moderator(message: Message, args: Args) {
+		try {
+			const role = await args.pick('role');
+			let [_guild] = await getGuildDocument(role.guild);
+			if (_guild) {
+				_guild.roles.moderator = role.id;
+				_guild = await _guild.save();
+				return temporaryReply(message, `${roleMention(_guild.roles.moderator)} will be the moderator role for this server`, true);
+			}
+		} catch (error) {
+			return temporaryReply(message, `Moderator role failed to setup`, true);
+		}
+	}
+
+	public async admin(message: Message, args: Args) {
+		try {
+			const role = await args.pick('role');
+			let [_guild] = await getGuildDocument(role.guild);
+			if (_guild) {
+				_guild.roles.admin = role.id;
+				_guild = await _guild.save();
+				return temporaryReply(message, `${roleMention(_guild.roles.admin)} will be the admin role for this server`, true);
+			}
+		} catch (error) {
+			return temporaryReply(message, `Admin role failed to setup`, true);
+		}
+	}
+
 	public async unmanageable(message: Message, args: Args) {
 		try {
 			const role = await args.pick('role');
