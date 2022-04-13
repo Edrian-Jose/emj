@@ -16,7 +16,7 @@ export class UserCommand extends Command {
 		if (role) {
 			const [_guild, guild] = await getGuildDocument(role.guild);
 			let [_role] = await getRoleDocument(role.guild, role);
-			if (_guild && _role && _role.thread.id) {
+			if (_guild && _role && _role.thread && _role.thread.id) {
 				const [thread] = await parseThread(guild, _role.thread.parent, _role.thread.id);
 				if (thread) {
 					thread.setArchived(false);

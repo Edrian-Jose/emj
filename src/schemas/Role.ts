@@ -7,7 +7,7 @@ interface Role {
 	name: string;
 	position: number;
 	badge?: string;
-	thread: {
+	thread?: {
 		parent: Snowflake;
 		id: Snowflake;
 	};

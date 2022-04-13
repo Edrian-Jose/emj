@@ -2,13 +2,12 @@ import { roleMention, channelMention } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Args, Command, CommandOptions } from '@sapphire/framework';
 import type { Message, ThreadChannel, TextChannel } from 'discord.js';
-import parseMember from '../../actions/Member/parseMember';
 import temporaryReply from '../../actions/Message/temporaryReply';
 import { getRoleDocument } from '../../actions/Role/syncRole';
 
 @ApplyOptions<CommandOptions>({
 	preconditions: ['AdminOnly', 'ThreadOnly'],
-	description: 'Assign thread to a role'
+	description: 'Deassign thread to a role'
 })
 export class UserCommand extends Command {
 	public async messageRun(message: Message, args: Args) {
@@ -18,24 +17,11 @@ export class UserCommand extends Command {
 		if (role && parent && channel) {
 			let [_role] = await getRoleDocument(role.guild, role);
 			if (_role) {
-				_role.thread = {
-					parent: parent.id,
-					id: channel.id
-				};
+				_role.thread = undefined;
 
 				_role = await _role.save();
-				await channel.setArchived(false);
-				parent.permissionOverwrites.create(role, { VIEW_CHANNEL: true });
-				for (const memberId of _role.members) {
-					const [member] = await parseMember(role.guild, memberId);
-					if (member) {
-						if (member?.manageable) {
-							await channel.members.add(member);
-						}
-					}
-				}
-
-				return temporaryReply(message, `${channelMention(channel.id)} has been reserved for ${roleMention(_role.roleId)}`, true);
+				parent.permissionOverwrites.delete(role);
+				return temporaryReply(message, `${channelMention(channel.id)} has been removed as teams chat for ${roleMention(_role.roleId)}`, true);
 			}
 		}
 
