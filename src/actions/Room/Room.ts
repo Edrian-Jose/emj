@@ -128,16 +128,24 @@ class Room implements IRoom {
 	}
 
 	public async deleteController() {
-		const [_guild, guild] = await getGuildDocument(this.guildId);
+		const [_guild] = await getGuildDocument(this.guildId);
 		if (_guild) {
 			const roomsChannel = (await parseChannel(this.guildId, _guild.channels.rooms))[0] as TextChannel;
 			if (roomsChannel) {
 				const webhook = await getChannelWebhook(roomsChannel, true);
-				const [member] = await parseMember(guild, this.host);
 				try {
-					if (webhook && member) {
-						await webhook.deleteMessage(this.controllerMessage);
-						await this._document.delete();
+					if (webhook) {
+						try {
+							await this._document.delete();
+						} catch (error) {
+							console.log(error);
+						} finally {
+							try {
+								await webhook.deleteMessage(this.controllerMessage);
+							} catch (error) {
+								console.log(error);
+							}
+						}
 					}
 				} catch (error) {
 					console.log(error);
@@ -147,8 +155,6 @@ class Room implements IRoom {
 						roomsChannel.permissionOverwrites.edit(this.guildId, { VIEW_CHANNEL: false });
 					}
 				}
-				
-				
 			}
 		}
 	}
