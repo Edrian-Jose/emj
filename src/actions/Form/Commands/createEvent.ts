@@ -29,15 +29,13 @@ const createEvent = async (
 				guildId: member.guild.id,
 				description: `${desc.value && desc.value[0] ? desc.value[0] : 'No description'}`,
 				scheduledStartTimestamp: moment(parseInt(start.value![0])).valueOf(),
+				scheduledEndTimestamp:
+					end.value && end.value[0] ? moment(parseInt(end.value[0])).valueOf() : moment(parseInt(start.value![0])).add(1, 'hour').valueOf(),
 				entityType: 'EXTERNAL',
 				location: `${location.value![0]}`,
 				privacyLevel: 2,
 				creatorId: member.id
 			} as IEvent;
-
-			if (end.value && end.value[0]) {
-				options.scheduledEndTimestamp = moment(parseInt(end.value[0])).valueOf();
-			}
 
 			if (repeat.value && repeat.value[0]) {
 				options.repeat = `${repeat.value[0]}` as moment.unitOfTime.DurationConstructor;

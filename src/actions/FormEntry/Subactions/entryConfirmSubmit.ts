@@ -47,7 +47,10 @@ const entryConfirmSubmit = async (entry: FormEntry, interaction: ButtonInteracti
 					const parent = channel.parent;
 					const [verifierMember] = await parseMember(guild, id);
 					if (verifierMember) {
-						const updatedParent = await parent!.permissionOverwrites.create(verifierMember, { VIEW_CHANNEL: true });
+						const updatedParent = await parent!.permissionOverwrites.create(verifierMember, {
+							VIEW_CHANNEL: true,
+							SEND_MESSAGES_IN_THREADS: true
+						});
 						if (updatedParent) {
 							await channel.members.add(id);
 						}
