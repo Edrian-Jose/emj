@@ -37,10 +37,6 @@ const createEvent = async (
 				creatorId: member.id
 			} as IEvent;
 
-			if (end.value && end.value[0]) {
-				options.scheduledEndTimestamp = moment(parseInt(end.value[0])).valueOf();
-			}
-
 			if (repeat.value && repeat.value[0]) {
 				options.repeat = `${repeat.value[0]}` as moment.unitOfTime.DurationConstructor;
 			}
