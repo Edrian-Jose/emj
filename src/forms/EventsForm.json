@@ -62,7 +62,7 @@
 			"creatorId": "949328284758462584",
 			"type": "DATETIME",
 			"value": "Event Start Time",
-			"placeholder": "When will the event will start",
+			"placeholder": "When will the event will start. Convert the date time in GMT +0 or UTC datetime format.",
 			"required": true
 		},
 		{
@@ -71,7 +71,7 @@
 			"creatorId": "949328284758462584",
 			"type": "DATETIME",
 			"value": "Event End Time",
-			"placeholder": "When will the event will end"
+			"placeholder": "When will the event will end. Convert the date time in GMT +0 or UTC datetime format."
 		},
 		{
 			"customId": "eventRepeatA0",
