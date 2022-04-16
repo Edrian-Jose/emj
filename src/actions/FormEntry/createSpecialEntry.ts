@@ -1,3 +1,4 @@
+import { container } from '@sapphire/framework';
 import type { GuildMember, Message, ThreadChannel } from 'discord.js';
 import moment from 'moment';
 import approvalForm from '../../components/embeds/approvalForm';
@@ -8,8 +9,10 @@ import MemberModel from '../../schemas/Member';
 import RoleModel from '../../schemas/Role';
 import threadWebhookSend from '../Channel/Webhook/threadWebhookSend';
 import utilityWebhookSend from '../Channel/Webhook/utilityWebhookSend';
+import executeFormCommand from '../Form/handleFormCommand';
 import { getGuildDocument } from '../Guild/syncGuild';
 import parseMember from '../Member/parseMember';
+import parseRole from '../Role/parseRole';
 import getPersonalThread from '../Thread/getPersonalThread';
 import FormEntry from './FormEntry';
 
@@ -21,7 +24,7 @@ const createSpecialEntry = async (formId: string, ownerId: string, answers: stri
 
 		if (guildId) {
 			const [_guild, guild] = await getGuildDocument(guildId);
-			const [member] = await parseMember(guild, ownerId);
+			let [member] = await parseMember(guild, ownerId);
 			const verifiers = _form.verifiers;
 			const userIds: string[] = [];
 			if (verifiers && guild) {
@@ -93,43 +96,67 @@ const createSpecialEntry = async (formId: string, ownerId: string, answers: stri
 						}
 					])
 				);
-				const options = { embeds: [waitingApproval(entry, guild ? false : true)], components: entry.createWaitComponents() };
-				const message = (await utilityWebhookSend(guild, member, 'desk', options)) as Message;
-				_entry.navigatorId = message.id;
+				if (entry.form.verification) {
+					const options = { embeds: [waitingApproval(entry, guild ? false : true)], components: entry.createWaitComponents() };
+					const message = (await utilityWebhookSend(guild, member, 'desk', options)) as Message;
+					_entry.navigatorId = message.id;
 
-				const [thread] = await getPersonalThread(member, guild, entry.form.resultDestination.id, `${member.user.username} applications`);
+					const [thread] = await getPersonalThread(member, guild, entry.form.resultDestination.id, `${member.user.username} applications`);
 
-				let channel = thread as ThreadChannel;
-				channel = await channel.setArchived(false);
-				userIds.forEach(async (id) => {
-					try {
-						const parent = channel.parent;
-						const [verifierMember] = await parseMember(guild, id);
-						if (verifierMember) {
-							const updatedParent = await parent!.permissionOverwrites.create(verifierMember, { VIEW_CHANNEL: true });
-							if (updatedParent) {
-								await channel.members.add(id);
+					let channel = thread as ThreadChannel;
+					channel = await channel.setArchived(false);
+					userIds.forEach(async (id) => {
+						try {
+							const parent = channel.parent;
+							const [verifierMember] = await parseMember(guild, id);
+							if (verifierMember) {
+								const updatedParent = await parent!.permissionOverwrites.create(verifierMember, { VIEW_CHANNEL: true });
+								if (updatedParent) {
+									await channel.members.add(id);
+								}
+							}
+						} catch (error) {
+							console.log(`error occured on ${id}`, error);
+						}
+					});
+
+					const appMessage = await threadWebhookSend(
+						guild,
+						member as GuildMember,
+						entry.form.resultDestination.id,
+						{
+							embeds: [approvalForm(entry, entry.form, false)],
+							components: entry.createVerificationComponents()
+						},
+						`${member.user.username} applications`,
+						undefined,
+						true
+					);
+					_entry.applicationId = appMessage?.id;
+					await _entry.save();
+				} else {
+					const rewardRoles = entry.form.rewardRoles;
+
+					rewardRoles.forEach(async (roleId) => {
+						const _role = await RoleModel.findOne({ roleId }).exec();
+						if (_role) {
+							const [role, guild] = await parseRole(_role.guildId, _role.roleId);
+							try {
+								const clientMember = await guild.members.fetch(container.client.user!.id);
+								const botRole = clientMember.roles.botRole;
+								if (member && role) {
+									if (botRole && botRole.position > _role.position) {
+										member = await member.roles.add(role);
+									}
+								}
+							} catch (error) {
+								console.log(error);
 							}
 						}
-					} catch (error) {
-						console.log(`error occured on ${id}`, error);
-					}
-				});
-
-				const appMessage = await threadWebhookSend(
-					guild,
-					member as GuildMember,
-					entry.form.resultDestination.id,
-					{
-						embeds: [approvalForm(entry, entry.form, false)],
-						components: entry.createVerificationComponents()
-					},
-					`${member.user.username} applications`,
-					undefined,
-					true
-				);
-				_entry.applicationId = appMessage?.id;
-				await _entry.save();
+					});
+					executeFormCommand(entry, true);
+					await entry._document.delete();
+				}
 			}
 		}
 	}

@@ -44,7 +44,7 @@ export class UserEvent extends Listener {
 						content: newContent,
 						embeds: newEmbeds,
 						components: message.components,
-						username: message.author ? message.author?.username : user.username,
+						username: message.member ? message.member.displayName : message.author ? message.author?.username : user.username,
 						avatarURL: message.author ? message.author.displayAvatarURL() : user.displayAvatarURL()
 					});
 				}
@@ -54,8 +54,8 @@ export class UserEvent extends Listener {
 						await webhook?.send({
 							threadId: thread.id,
 							content: attachment.url,
-							username: user.username,
-							avatarURL: user.displayAvatarURL()
+							username: message.member ? message.member.displayName : message.author ? message.author?.username : user.username,
+							avatarURL: message.author ? message.author.displayAvatarURL() : user.displayAvatarURL()
 						});
 					}
 				}
