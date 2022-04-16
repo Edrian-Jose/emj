@@ -14,7 +14,7 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 	const rewardRoles = entry.form.rewardRoles;
 	const entries = await FormEntryModel.find({ ownerId: interaction.user.id }).exec();
 
-	if (message.deletable) {
+	if (message.deletable && entry.form.verification) {
 		await message.delete();
 	}
 
