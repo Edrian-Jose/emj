@@ -1,0 +1,64 @@
+{
+	"creatorId": "949328284758462584",
+	"guildId": "866667237548883999",
+	"alias": "ux",
+	"type": "SINGLE",
+	"author": {
+		"userId": "949328284758462584",
+		"name": "Cashuals Official",
+		"avatarURL": "https://cdn.discordapp.com/attachments/950426634484342875/950773850298257448/Screenshot_20220304_001506.png"
+	},
+	"title": "User Experience Form (F-8)",
+	"description": "C4$huALL Discord Server User Experience Form",
+	"requiredRoles": [],
+	"rewardRoles": [],
+	"commands": {
+		"onSubmit": ["saveToSheet"],
+		"onCancel": ["defaultCancel"]
+	},
+	"sheet": {
+		"id": "1nM2ZtKKHx8PMDnhKwvVdKW14QVdmwDgo1CTqEnHOyPU",
+		"index": 0
+	},
+	"destination": [
+		{
+			"type": "GUILD_CHANNEL",
+			"ids": ["961851266949062676"]
+		}
+	],
+	"resultDestination": {
+		"type": "GUILD_CHANNEL",
+		"id": "961851311547105300",
+		"guildId": "866667237548883999"
+	},
+	"verification": false,
+	"questions": [
+		{
+			"customId": "contactEmailA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Contact Email",
+			"placeholder": "This doesn't need to be your personal email. We only need an active email where we can contact u.",
+			"required": true
+		},
+		{
+			"customId": "aboutUXA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "About your Experience",
+			"placeholder": "Tell us about your experience with our Discord Server. What did you like and dislike?",
+			"required": true
+		},
+		{
+			"customId": "recommendationsUXA0",
+			"lastRevision": 1649143433,
+			"creatorId": "949328284758462584",
+			"type": "TEXT",
+			"value": "Recommendations",
+			"placeholder": "What would you recommend to us (the managers) to improve your user experience.",
+			"required": true
+		}
+	]
+}
