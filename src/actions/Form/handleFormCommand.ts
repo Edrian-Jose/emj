@@ -2,6 +2,11 @@ import type FormEntry from '../FormEntry/FormEntry';
 import basicAdmission from './Commands/basicAdmission';
 import createEvent from './Commands/createEvent';
 import defaultSubmit from './Commands/defaultSubmit';
+import rback from './Commands/rback';
+import rfinish from './Commands/rfinish';
+import rlog from './Commands/rlog';
+import rstop from './Commands/rstop';
+import rtrain from './Commands/rtrain';
 import saveToSheet from './Commands/saveToSheets';
 import executeQuestionCommand from './handlePromptCommand';
 import type Prompt from './Strategies/Prompt';
@@ -21,7 +26,12 @@ const customCommands: FormCommands = {
 	defaultSubmit,
 	basicAdmission,
 	createEvent,
-	saveToSheet
+	saveToSheet,
+	rlog,
+	rtrain,
+	rstop,
+	rback,
+	rfinish
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
