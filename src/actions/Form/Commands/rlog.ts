@@ -26,19 +26,20 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 				break;
 		}
 
+		const header = sheet.headerValues;
 		sheet.addRow(
-			[
-				dateNow,
-				dateRegistered,
-				`'${referenceNumber}`,
-				givenName.trim(),
-				mms ? mms.trim() : '-',
-				fsn ? fsn.trim() : '-',
-				hsn ? hsn.trim() : '-',
-				uri,
-				birthdate
-			],
-			{ raw: false, insert: true }
+			{
+				[header[0]]: dateNow,
+				[header[1]]: dateRegistered,
+				[header[2]]: `'${referenceNumber}`,
+				[header[3]]: givenName.trim(),
+				[header[4]]: mms ? mms.trim() : '-',
+				[header[5]]: fsn ? fsn.trim() : '-',
+				[header[6]]: hsn ? hsn.trim() : '-',
+				[header[7]]: uri,
+				[header[8]]: birthdate
+			},
+			{ raw: true, insert: true }
 		);
 	}
 };
