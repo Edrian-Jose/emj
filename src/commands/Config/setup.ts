@@ -169,7 +169,7 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async logs(message: Message) {
 		const _guild = await registerUtilityChannel(message, 'logs');
 
-		if (_guild && _guild.channels.desk) {
+		if (_guild && _guild.channels.logs) {
 			return temporaryReply(message, `Logs channel set to ${channelMention(_guild.channels.logs)}`, true);
 		}
 		return temporaryReply(message, `Logs channel failed to setup`, true);
@@ -222,7 +222,7 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async threads(message: Message) {
 		const _guild = await registerUtilityChannel(message, 'threads');
 
-		if (_guild && _guild.channels.rooms) {
+		if (_guild && _guild.channels.threads) {
 			return temporaryReply(message, `Threads channel set to ${channelMention(_guild.channels.threads)}`, true);
 		}
 		return temporaryReply(message, `Threads channel failed to setup`, true);
@@ -240,7 +240,7 @@ export class UserCommand extends SubCommandPluginCommand {
 	public async apps(message: Message) {
 		const _guild = await registerUtilityChannel(message, 'apps');
 
-		if (_guild && _guild.channels.feeds) {
+		if (_guild && _guild.channels.apps) {
 			return temporaryReply(message, `Apps channel set to ${channelMention(_guild.channels.apps)}`, true);
 		}
 		return temporaryReply(message, `Apps channel failed to setup`, true);
