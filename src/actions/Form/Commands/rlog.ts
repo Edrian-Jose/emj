@@ -7,9 +7,9 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 	if (entry.form.sheet) {
 		const sheet = await getSpreadsheetDocument(entry.form.sheet.id, entry.form.sheet.index);
 
-		const dateNow = moment().utcOffset(8).format('MM/DD/YYYY HH:mm A Z');
-		const dateRegistered = moment(parseInt(answers[4].value![0])).format('MM/DD/YYYY HH:mm A Z');
-		const birthdate = moment(parseInt(answers[3].value![0])).format('MM/DD/YYYY HH:mm A Z');
+		const dateNow = moment().utcOffset(8).format('MM/DD/YYYY HH:mm A');
+		const dateRegistered = moment(parseInt(answers[4].value![0])).utcOffset(8).format('MM/DD/YYYY');
+		const birthdate = moment(parseInt(answers[3].value![0])).utcOffset(8).format('MM/DD/YYYY');
 		const referenceNumber = answers[0].value![0];
 		const [givenName, mms, surname] = answers[1].value![0].split(',');
 		const [fsn, hsn] = surname.split('-');
