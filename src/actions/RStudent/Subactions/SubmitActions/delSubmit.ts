@@ -14,7 +14,6 @@ const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | an
 		const logRow = await findRow(logSheet, rstudent.reference);
 		const studentRow = await findRow(studentSheet, rstudent.reference);
 		if (logRow) {
-			console.log(logRow);
 			await deletedSheet.addRow([...logRow._rawData, reason ?? 'No reason']);
 			await logRow.delete();
 		}
