@@ -86,7 +86,7 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 		studSheet.addRow({
 			[studHeader[0]]: dateNow,
 			[studHeader[1]]: referenceNumber,
-			[studHeader[2]]: givenName,
+			[studHeader[2]]: capFirstLetter(givenName),
 			[studHeader[3]]: lastname,
 			[studHeader[4]]: '-',
 			[studHeader[5]]: '-'
