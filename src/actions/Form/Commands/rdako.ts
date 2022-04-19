@@ -1,3 +1,4 @@
+import { findRow } from './rlog';
 import getSpreadsheetDocument from '../../../lib/getDoc';
 import RStudentModel from '../../../schemas/RStudent';
 import parseChannel from '../../Channel/parseChannel';
@@ -36,27 +37,11 @@ const rdako = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void>
 				}
 			}
 
-			let found = false;
-			let index = 0;
-			while (!found) {
-				try {
-					const rows = await sheet.getRows({ limit: 10, offset: index });
-					for (const row of rows) {
-						const rowRef = row['REF NO.'] as string;
-						if (rowRef.trim().toLowerCase() === ref.toLowerCase()) {
-							row['DAKO NG GAWAIN'] = dako;
-							row['ORAS NG GAWAIN'] = oras;
-							await row.save();
-							found = true;
-							break;
-						}
-					}
-				} catch (error) {
-					console.log(error);
-					found = true;
-				} finally {
-					index += 10;
-				}
+			const row = await findRow(sheet, ref);
+			if (row) {
+				row['DAKO NG GAWAIN'] = dako;
+				row['ORAS NG GAWAIN'] = oras;
+				await row.save();
 			}
 		}
 	}

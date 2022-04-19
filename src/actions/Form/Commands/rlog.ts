@@ -1,3 +1,4 @@
+import type { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import moment from 'moment';
 import getSpreadsheetDocument from '../../../lib/getDoc';
 import RStudentModel from '../../../schemas/RStudent';
@@ -14,6 +15,31 @@ export const capFirstLetter = (text: string) => {
 	}
 	// Directly return the joined string
 	return splitStr.join(' ');
+};
+
+export const findRow = async (sheet: GoogleSpreadsheetWorksheet, reference: string) => {
+	let found = false;
+	let index = 0;
+	while (!found) {
+		if (index > 500) {
+			break;
+		}
+		try {
+			const rows = await sheet.getRows({ limit: 10, offset: index });
+			for (const row of rows) {
+				const rowRef = row['REF NO.'] as string;
+				if (rowRef.trim().toLowerCase() === reference.toLowerCase()) {
+					return row;
+				}
+			}
+		} catch (error) {
+			console.log(error);
+			found = true;
+		} finally {
+			index += 10;
+		}
+	}
+	return null;
 };
 
 const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> => {
@@ -46,9 +72,26 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 			mms ? capFirstLetter(mms) : undefined,
 			hsn ? (fsn ? `${capFirstLetter(fsn)} - ${capFirstLetter(hsn)}` : `- ${capFirstLetter(hsn)}`) : fsn ? capFirstLetter(fsn) : undefined
 		].join(' ');
+		const logHeader = logSheet.headerValues;
+		const studHeader = studSheet.headerValues;
+		logSheet.addRow({
+			[logHeader[0]]: dateNow,
+			[logHeader[1]]: dateRegistered,
+			[logHeader[2]]: `${referenceNumber}`,
+			[logHeader[3]]: fullname,
+			[logHeader[4]]: uri,
+			[logHeader[5]]: birthdate
+		});
 
-		logSheet.addRow([dateNow, dateRegistered, `${referenceNumber}`, fullname, uri, birthdate]);
-		studSheet.addRow([dateNow, referenceNumber, givenName, lastname, '-', '-']);
+		studSheet.addRow({
+			[studHeader[0]]: dateNow,
+			[studHeader[1]]: referenceNumber,
+			[studHeader[2]]: givenName,
+			[studHeader[3]]: lastname,
+			[studHeader[4]]: '-',
+			[studHeader[5]]: '-'
+		});
+
 		let _student = await RStudentModel.create({
 			reference: `${referenceNumber}`
 		});

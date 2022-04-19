@@ -7,7 +7,8 @@ import type { IRStudent, Location, RStudentDocument } from '../../schemas/RStude
 import parseChannel from '../Channel/parseChannel';
 import { capFirstLetter } from '../Form/Commands/rlog';
 
-export type RSubActions = 'train' | 'pause' | 'del' | 'end';
+type RSubmitActions = 'trainSubmit' | 'pauseSubmit' | 'delSubmit' | 'endSubmit';
+export type RSubActions = 'train' | 'pause' | 'del' | 'end' | RSubmitActions;
 
 class RStudent implements IRStudent {
 	_id: string;
