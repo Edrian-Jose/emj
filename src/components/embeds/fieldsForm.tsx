@@ -1,12 +1,10 @@
-import { italic } from '@discordjs/builders';
 import { EmbedJsx } from '@sapphire/embed-jsx';
-import type { EntryAnswer } from '../../actions/Form/handleFormCommand';
 import { DefaultAvatar, DefaultFooter } from '../../lib/constants';
 import randomColor from '../../lib/randomColor';
 
-export default function answersForm(title: string, description: string, answers: EntryAnswer[], timestamp?: number) {
-	const fields = answers.map((answer) => {
-		return <field name={`${answer.question.value}`}>{answer.value?.length ? answer.value?.join(', ') : italic('No response')}</field>;
+export default function fieldsForm(title: string, description: string, labels: string[], values: string[], timestamp?: number) {
+	const fields = labels.map((label, i) => {
+		return <field name={`${label}`}>{values[i] ? values[i] : 'N/A'}</field>;
 	});
 	return (
 		<embed color={randomColor()}>

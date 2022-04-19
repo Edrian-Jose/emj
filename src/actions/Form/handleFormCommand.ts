@@ -3,6 +3,7 @@ import basicAdmission from './Commands/basicAdmission';
 import createEvent from './Commands/createEvent';
 import defaultSubmit from './Commands/defaultSubmit';
 import rback from './Commands/rback';
+import rdako from './Commands/rdako';
 import rfinish from './Commands/rfinish';
 import rlog from './Commands/rlog';
 import rstop from './Commands/rstop';
@@ -31,7 +32,8 @@ const customCommands: FormCommands = {
 	rtrain,
 	rstop,
 	rback,
-	rfinish
+	rfinish,
+	rdako
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
