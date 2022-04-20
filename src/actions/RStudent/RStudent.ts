@@ -51,11 +51,11 @@ class RStudent implements IRStudent {
 			actionRow.addComponents(addInfoButton);
 		}
 
-		if (!this.locations || (this.locations.student && this.locations.information && !this.locations.trainee)) {
+		if (this.status === 'student') {
 			actionRow.addComponents(traineeButton);
 		}
 
-		if (this.locations && this.locations.trainee && !this.locations.finished) {
+		if (this.status === 'trainee') {
 			actionRow.addComponents(endButton);
 		}
 
@@ -99,6 +99,30 @@ class RStudent implements IRStudent {
 		return [actionRow];
 	}
 
+	public async train(regObject: Moment, referenceNumber: string, fullname: string, givenName: string, lastname: string) {
+		const [traineeChannel] = await parseChannel(rencode.guild, rencode.trainee);
+		try {
+			if (traineeChannel?.isText()) {
+				return await traineeChannel.send({
+					embeds: [
+						fieldsForm(
+							`${fullname}`,
+							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
+							['Reference Number', 'Unang Pangalan', 'Apelyido', 'Petsa ng Screening', 'Requirements'],
+							[referenceNumber, capFirstLetter(givenName), capFirstLetter(lastname), regObject.utcOffset(8).format('MM/DD/YYYY'), '-'],
+							regObject.valueOf()
+						)
+					],
+					components: this.createComponents(),
+					content: `${referenceNumber}`
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		return undefined;
+	}
+
 	public async log(fullname: string, regObject: Moment, ref: string, uri: string, birthdate: string) {
 		const [allChannel] = await parseChannel(rencode.guild, rencode.all);
 		const dateRegistered = regObject.format('MM/DD/YYYY');
@@ -133,7 +157,7 @@ class RStudent implements IRStudent {
 							`${fullname}`,
 							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
 							['Reference Number', 'Unang Pangalan', 'Apelyido', 'Dako ng Gawain', 'Oras ng Gawain'],
-							[referenceNumber, capFirstLetter(givenName), lastname, '-', '-'],
+							[referenceNumber, capFirstLetter(givenName), capFirstLetter(lastname), '-', '-'],
 							regObject.valueOf()
 						)
 					],

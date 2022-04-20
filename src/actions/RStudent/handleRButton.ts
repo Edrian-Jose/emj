@@ -9,10 +9,9 @@ import rPause from './Subactions/rPause';
 import rTrain from './Subactions/rTrain';
 import delSubmit from './Subactions/SubmitActions/delSubmit';
 import pauseSubmit from './Subactions/SubmitActions/pauseSubmit';
+import trainSubmit from './Subactions/SubmitActions/trainSubmit';
 
 const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, rId: RStudentDocument['_id']) => {
-
-
 	const _rstudent = await RStudentModel.findById(rId).exec();
 	if (!_rstudent) {
 		await interaction.reply({
@@ -40,7 +39,10 @@ const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, 
 			await rEnd(rstudent);
 			break;
 		case 'train':
-			await rTrain(rstudent);
+			await rTrain(rstudent, interaction);
+			break;
+		case 'trainSubmit':
+			await trainSubmit(rstudent, interaction);
 			break;
 
 		default:
