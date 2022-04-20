@@ -1,11 +1,13 @@
 import { Message, MessageActionRow, MessageButton } from 'discord.js';
 import type { Moment } from 'moment';
 import moment from 'moment';
+import answersForm from '../../components/embeds/answersForm';
 import fieldsForm from '../../components/embeds/fieldsForm';
 import rencode from '../../lib/rencode';
 import type { IRStudent, Location, RStatus, RStudentDocument } from '../../schemas/RStudent';
 import parseChannel from '../Channel/parseChannel';
 import { capFirstLetter } from '../Form/Commands/rlog';
+import type { EntryAnswer } from '../Form/handleFormCommand';
 
 type RSubmitActions = 'trainSubmit' | 'pauseSubmit' | 'delSubmit' | 'endSubmit';
 export type RSubActions = 'train' | 'pause' | 'del' | 'end' | RSubmitActions;
@@ -180,6 +182,27 @@ class RStudent implements IRStudent {
 					}
 				});
 			}
+		}
+		return undefined;
+	}
+
+	public async info(fullname: string, answers: EntryAnswer[]) {
+		const [infoChannel] = await parseChannel(rencode.guild, rencode.information);
+		try {
+			if (infoChannel?.isText()) {
+				return await infoChannel.send({
+					embeds: [
+						answersForm(
+							`${fullname}`,
+							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
+							answers
+						)
+					],
+					content: `${this.reference}`
+				});
+			}
+		} catch (error) {
+			console.log(error);
 		}
 		return undefined;
 	}

@@ -19,13 +19,13 @@ const pauseSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | 
 			await interaction.followUp({ content: `Invalid date format`, ephemeral: true });
 		}
 
-		const studentSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 1);
-		const logSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 0);
+		const studentSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.student);
+		const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
 		const studentRow = await findRow(studentSheet, rstudent.reference);
 		const logRow = await findRow(logSheet, rstudent.reference);
 		if (studentRow && logRow) {
 			await studentRow.delete();
-			const removedSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 4);
+			const removedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.out);
 			const removedHeader = removedSheet.headerValues;
 			await removedSheet.addRow({
 				[removedHeader[0]]: moment().utcOffset(8).format('MM/DD/YYYY hh:mm A'),

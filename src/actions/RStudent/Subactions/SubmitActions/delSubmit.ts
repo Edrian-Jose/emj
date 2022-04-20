@@ -4,14 +4,15 @@ import getSpreadsheetDocument from '../../../../lib/getDoc';
 import type RStudent from '../../RStudent';
 import parseChannel from '../../../Channel/parseChannel';
 import moment from 'moment';
+import rencode from '../../../../lib/rencode';
 
 const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {
 	await interaction.deferReply({ ephemeral: true });
 	try {
 		const reason: string | undefined = interaction.getTextInputValue(`reason`);
-		const logSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 0);
-		const studentSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 1);
-		const deletedSheet = await getSpreadsheetDocument('1BNluRhvfCymS4U7OGd19TmHDON2jgvzS1JvUGGxKG8A', 6);
+		const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
+		const studentSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.student);
+		const deletedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.deleted);
 		const logRow = await findRow(logSheet, rstudent.reference);
 		const studentRow = await findRow(studentSheet, rstudent.reference);
 		if (logRow) {
