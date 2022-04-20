@@ -56,6 +56,7 @@ const pauseSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | 
 						channelId: rencode.out,
 						messageId: dropMessage.id
 					};
+					rstudent._document.removedAt = dateObj.valueOf();
 					rstudent._document.locations.student = undefined;
 					await rstudent._document.save();
 				}

@@ -11,6 +11,7 @@ export interface Location {
 
 interface RStudent {
 	reference: string;
+	registeredAt: number;
 	removedAt?: number;
 	status: RStatus;
 	locations?: {
@@ -45,6 +46,7 @@ const LocationSchema = new Schema<LocationDocument>({
 
 const RStudentSchema = new Schema<RStudentDocument>({
 	reference: String,
+	registeredAt: Number,
 	removedAt: Number,
 	status: String,
 	locations: {

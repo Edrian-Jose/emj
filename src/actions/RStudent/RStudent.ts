@@ -74,7 +74,7 @@ class RStudent implements IRStudent {
 							`${fullname}`,
 							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
 							['Petsa Itinigil', 'Reference Number', 'Buong Pangalan', 'Uri', 'Dahilan'],
-							[dateObject.format('MM/DD/YYYY'), referenceNumber, fullname, uri, reason],
+							[dateObject.utcOffset(8).format('MM/DD/YYYY'), referenceNumber, fullname, uri, reason],
 							dateObject.valueOf()
 						)
 					],
