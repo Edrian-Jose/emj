@@ -4,7 +4,6 @@ import type RStudent from '../RStudent';
 const { showModal } = require('discord-modals');
 
 const rPause = async (rstudent: RStudent, interaction: ButtonInteraction) => {
-	console.log(rstudent, interaction);
 	showModal(rpauseModal(rstudent), {
 		client: interaction.client,
 		interaction

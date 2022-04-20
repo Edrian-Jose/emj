@@ -11,7 +11,7 @@ import delSubmit from './Subactions/SubmitActions/delSubmit';
 import pauseSubmit from './Subactions/SubmitActions/pauseSubmit';
 
 const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, rId: RStudentDocument['_id']) => {
-	console.log('boom');
+
 
 	const _rstudent = await RStudentModel.findById(rId).exec();
 	if (!_rstudent) {

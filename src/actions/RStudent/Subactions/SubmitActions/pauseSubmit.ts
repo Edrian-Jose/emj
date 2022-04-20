@@ -8,7 +8,7 @@ import type RStudent from '../../RStudent';
 
 const pauseSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {
 	await interaction.deferReply({ ephemeral: true });
-	console.log(rstudent);
+	//TODO: check if date registered is 3 months older now.
 
 	try {
 		const date: string | undefined = interaction.getTextInputValue(`date`);

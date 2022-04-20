@@ -14,6 +14,7 @@ class RStudent implements IRStudent {
 	_id: string;
 	_document: RStudentDocument;
 	reference: string;
+	registeredAt: number;
 	removedAt?: number;
 	status: RStatus;
 	locations?: {
@@ -31,6 +32,7 @@ class RStudent implements IRStudent {
 		this.reference = doc.reference;
 		this.locations = doc.locations;
 		this.removedAt = doc.removedAt;
+		this.registeredAt = doc.registeredAt;
 		this.status = doc.status;
 	}
 
@@ -47,7 +49,7 @@ class RStudent implements IRStudent {
 			actionRow.addComponents(addInfoButton);
 		}
 
-		if (!this.locations || (this.locations.student && !this.locations.trainee)) {
+		if (!this.locations || (this.locations.student && this.locations.information && !this.locations.trainee)) {
 			actionRow.addComponents(traineeButton);
 		}
 
