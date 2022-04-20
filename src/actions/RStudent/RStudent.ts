@@ -39,7 +39,7 @@ class RStudent implements IRStudent {
 	}
 
 	public createComponents() {
-		const addInfoFormId = 'asasas';
+		const addInfoFormId = '625f947b83661901c01add23';
 		const type = this.locations && this.locations.trainee ? 'trainee' : 'student';
 		const actionRow = new MessageActionRow();
 		const addInfoButton = new MessageButton().setLabel('Add Info').setCustomId(`___form-start-${addInfoFormId}`).setStyle('PRIMARY');
