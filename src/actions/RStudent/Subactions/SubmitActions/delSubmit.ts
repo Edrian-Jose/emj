@@ -3,6 +3,7 @@ import type { ButtonInteraction } from 'discord.js';
 import getSpreadsheetDocument from '../../../../lib/getDoc';
 import type RStudent from '../../RStudent';
 import parseChannel from '../../../Channel/parseChannel';
+import moment from 'moment';
 
 const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {
 	await interaction.deferReply({ ephemeral: true });
@@ -14,7 +15,9 @@ const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | an
 		const logRow = await findRow(logSheet, rstudent.reference);
 		const studentRow = await findRow(studentSheet, rstudent.reference);
 		if (logRow) {
-			await deletedSheet.addRow([...logRow._rawData, reason ?? 'No reason']);
+			const row = await deletedSheet.addRow([...logRow._rawData, reason ?? 'No reason']);
+			row['TIMESTAMP'] = moment().utcOffset(8).format('MM/DD/YYYY hh:mm A');
+			await row.save();
 			await logRow.delete();
 		}
 

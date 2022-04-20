@@ -8,6 +8,7 @@ import rEnd from './Subactions/rEnd';
 import rPause from './Subactions/rPause';
 import rTrain from './Subactions/rTrain';
 import delSubmit from './Subactions/SubmitActions/delSubmit';
+import pauseSubmit from './Subactions/SubmitActions/pauseSubmit';
 
 const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, rId: RStudentDocument['_id']) => {
 	console.log('boom');
@@ -30,7 +31,10 @@ const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, 
 			await delSubmit(rstudent, interaction);
 			break;
 		case 'pause':
-			await rPause(rstudent);
+			await rPause(rstudent, interaction);
+			break;
+		case 'pauseSubmit':
+			await pauseSubmit(rstudent, interaction);
 			break;
 		case 'end':
 			await rEnd(rstudent);
@@ -38,6 +42,7 @@ const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, 
 		case 'train':
 			await rTrain(rstudent);
 			break;
+
 		default:
 			console.log('default action triggered', rstudent.reference);
 			break;

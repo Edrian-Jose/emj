@@ -47,7 +47,7 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 		const logSheet = await getSpreadsheetDocument(entry.form.sheet.id, entry.form.sheet.index);
 		const studSheet = await getSpreadsheetDocument(entry.form.sheet.id, 1);
 
-		const dateNow = moment().utcOffset(8).format('MM/DD/YYYY HH:mm A');
+		const dateNow = moment().utcOffset(8).format('MM/DD/YYYY hh:mm A');
 		const dateRegisteredObject = moment(parseInt(answers[4].value![0])).utcOffset(8);
 		const dateRegistered = dateRegisteredObject.format('MM/DD/YYYY');
 		const birthdate = moment(parseInt(answers[3].value![0])).utcOffset(8).format('MM/DD/YYYY');
@@ -93,7 +93,8 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 		});
 
 		let _student = await RStudentModel.create({
-			reference: `${referenceNumber}`
+			reference: `${referenceNumber}`,
+			status: 'student'
 		});
 		if (_student) {
 			const student = new RStudent(_student);

@@ -3,7 +3,7 @@ import type { Moment } from 'moment';
 import moment from 'moment';
 import fieldsForm from '../../components/embeds/fieldsForm';
 import rencode from '../../lib/rencode';
-import type { IRStudent, Location, RStudentDocument } from '../../schemas/RStudent';
+import type { IRStudent, Location, RStatus, RStudentDocument } from '../../schemas/RStudent';
 import parseChannel from '../Channel/parseChannel';
 import { capFirstLetter } from '../Form/Commands/rlog';
 
@@ -15,6 +15,7 @@ class RStudent implements IRStudent {
 	_document: RStudentDocument;
 	reference: string;
 	removedAt?: number;
+	status: RStatus;
 	locations?: {
 		log: Location;
 		information?: Location;
@@ -30,14 +31,16 @@ class RStudent implements IRStudent {
 		this.reference = doc.reference;
 		this.locations = doc.locations;
 		this.removedAt = doc.removedAt;
+		this.status = doc.status;
 	}
 
 	public createComponents() {
 		const addInfoFormId = 'asasas';
+		const type = this.locations && this.locations.trainee ? 'trainee' : 'student';
 		const actionRow = new MessageActionRow();
 		const addInfoButton = new MessageButton().setLabel('Add Info').setCustomId(`___form-start-${addInfoFormId}`).setStyle('PRIMARY');
 		const traineeButton = new MessageButton().setLabel('Train').setCustomId(`___r-train-${this._id}`).setStyle('PRIMARY');
-		const pauseButton = new MessageButton().setLabel('Pause').setCustomId(`___r-pause-${this._id}`).setStyle('SECONDARY');
+		const pauseButton = new MessageButton().setLabel('Pause').setCustomId(`___r-pause-${this._id}-${type}`).setStyle('SECONDARY');
 		const deleteButton = new MessageButton().setLabel('Delete').setCustomId(`___r-del-${this._id}`).setStyle('DANGER');
 		const endButton = new MessageButton().setLabel('End').setCustomId(`___r-end-${this._id}`).setStyle('SUCCESS');
 		if (!this.locations || !this.locations.information) {
@@ -59,6 +62,30 @@ class RStudent implements IRStudent {
 		}
 
 		return [actionRow];
+	}
+
+	public async dropOut(dateObject: Moment, fullname: string, referenceNumber: string, uri: string, reason: string) {
+		const [outChannel] = await parseChannel(rencode.guild, rencode.out);
+		try {
+			if (outChannel?.isText()) {
+				return await outChannel.send({
+					embeds: [
+						fieldsForm(
+							`${fullname}`,
+							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
+							['Petsa Itinigil', 'Reference Number', 'Buong Pangalan', 'Uri', 'Dahilan'],
+							[dateObject.format('MM/DD/YYYY'), referenceNumber, fullname, uri, reason],
+							dateObject.valueOf()
+						)
+					],
+					components: this.outComponents(),
+					content: `${referenceNumber}`
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		return undefined;
 	}
 
 	public outComponents() {

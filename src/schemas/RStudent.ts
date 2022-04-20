@@ -1,6 +1,7 @@
 import type { Snowflake } from 'discord.js';
 import { Schema, model, Document } from 'mongoose';
 
+export type RStatus = 'student' | 'trainee' | 'graduate';
 export interface Location {
 	guildId: Snowflake;
 	channelId: Snowflake;
@@ -11,6 +12,7 @@ export interface Location {
 interface RStudent {
 	reference: string;
 	removedAt?: number;
+	status: RStatus;
 	locations?: {
 		log: Location;
 		information?: Location;
@@ -44,6 +46,7 @@ const LocationSchema = new Schema<LocationDocument>({
 const RStudentSchema = new Schema<RStudentDocument>({
 	reference: String,
 	removedAt: Number,
+	status: String,
 	locations: {
 		log: LocationSchema,
 		information: LocationSchema,
