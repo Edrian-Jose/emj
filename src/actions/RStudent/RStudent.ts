@@ -114,7 +114,7 @@ class RStudent implements IRStudent {
 						)
 					],
 					components: this.createComponents(),
-					content: `${referenceNumber}`
+					content: `${referenceNumber} (${regObject.utcOffset(8).format('MM/DD/YYYY')})`
 				});
 			}
 		} catch (error) {
