@@ -7,6 +7,7 @@ import rdako from './Commands/rdako';
 import rfinish from './Commands/rfinish';
 import rinfo from './Commands/rinfo';
 import rlog from './Commands/rlog';
+import rrequire from './Commands/rrequire';
 import rstop from './Commands/rstop';
 import rtrain from './Commands/rtrain';
 import saveToSheet from './Commands/saveToSheets';
@@ -35,7 +36,8 @@ const customCommands: FormCommands = {
 	rback,
 	rfinish,
 	rdako,
-	rinfo
+	rinfo,
+	rrequire
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
