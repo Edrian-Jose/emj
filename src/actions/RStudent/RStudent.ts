@@ -99,7 +99,7 @@ class RStudent implements IRStudent {
 		return [actionRow];
 	}
 
-	public async train(regObject: Moment, referenceNumber: string, fullname: string, givenName: string, lastname: string) {
+	public async train(regObject: Moment, referenceNumber: string, fullname: string, givenName: string, lastname: string, requirements?: string) {
 		const [traineeChannel] = await parseChannel(rencode.guild, rencode.trainee);
 		try {
 			if (traineeChannel?.isText()) {
@@ -108,8 +108,14 @@ class RStudent implements IRStudent {
 						fieldsForm(
 							`${fullname}`,
 							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
-							['Reference Number', 'Unang Pangalan', 'Apelyido', 'Petsa ng Screening', 'Requirements'],
-							[referenceNumber, capFirstLetter(givenName), capFirstLetter(lastname), regObject.utcOffset(8).format('MM/DD/YYYY'), '-'],
+							['Reference Number', 'Unang Pangalan', 'Apelyido', 'Petsa ng Screening', 'Requirements Needed'],
+							[
+								referenceNumber,
+								capFirstLetter(givenName),
+								capFirstLetter(lastname),
+								regObject.utcOffset(8).format('MM/DD/YYYY'),
+								requirements ? requirements : '-'
+							],
 							regObject.valueOf()
 						)
 					],

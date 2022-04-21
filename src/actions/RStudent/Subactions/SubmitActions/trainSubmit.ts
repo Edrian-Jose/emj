@@ -18,10 +18,67 @@ const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 		const infoRow = await findRow(infoSheet, rstudent.reference);
 
 		if (rstudent.locations && studentRow && logRow) {
+			const traineeHeader = traineeSheet.headerValues;
+			const row = {
+				[traineeHeader[0]]: moment().utcOffset(8).format('MM/DD/YYYY hh:mm A'),
+				[traineeHeader[1]]: dateObj.utcOffset(8).format('MM/DD/YYYY'),
+				[traineeHeader[2]]: rstudent.reference,
+				[traineeHeader[3]]: studentRow['UNANG PANGALAN'],
+				[traineeHeader[4]]: studentRow['APELYIDO'],
+				[traineeHeader[5]]: studentRow['DAKO NG GAWAIN']
+			};
+
 			if (rstudent.locations.student) {
 				const [studChannel] = await parseChannel(rstudent.locations.student.guildId, rstudent.locations.student.channelId);
 				if (studChannel?.isText()) {
 					await studChannel.messages.delete(rstudent.locations.student.messageId);
+				}
+
+				const requirements = ['SALAYSAY NG SBOK', 'PATOTOO NG KATIWALA', 'PATOTOO NG KAPISANAN', 'ID PICTURE', 'BIRTH CERTIFICATE'];
+				if (infoRow) {
+					const birthdate = infoRow['BIRTHDATE'];
+					const birthdateObj = moment(birthdate, ['MM/DD/YYYY'], true).utcOffset(8);
+					const age = moment().diff(birthdateObj, 'years');
+					const isSingle =
+						infoRow['KALAGAYANG SIBIL'] === 'Binata' ||
+						infoRow['KALAGAYANG SIBIL'] === 'Dalaga' ||
+						infoRow['KALAGAYANG SIBIL'] === 'Balo' ||
+						infoRow['KALAGAYANG SIBIL'] === 'Annulled';
+					if (infoRow['URI'] !== 'Hindi Handog' || age >= 18) {
+						row['PARENT CONSENT'] = 'NA';
+					} else {
+						requirements.push('PARENT CONSENT');
+					}
+					if (age >= 23 || age < 18 || !isSingle) {
+						row['SALAYSAY NA WALANG KINAKASAMA'] = 'NA';
+					} else {
+						requirements.push('SALAYSAY NA WALANG KINAKASAMA');
+					}
+					if (!isSingle || age < 18) {
+						row['CENOMAR'] = 'NA';
+					} else {
+						requirements.push('CENOMAR');
+					}
+					if (isSingle) {
+						row['COM'] = 'NA';
+					} else {
+						requirements.push('COM');
+					}
+					if (infoRow['KALAGAYANG SIBIL'] !== 'Balo') {
+						row['DEATH CERTIFICATE'] = 'NA';
+					} else {
+						requirements.push('DEATH CERTIFICATE');
+					}
+					if (infoRow['RELIHIYON NG ASAWA'] !== 'INC (tiwalag)') {
+						row['R2-10'] = 'NA';
+					} else {
+						requirements.push('R2-08/R2-10/R6-01');
+					}
+					if (infoRow['RELIHIYON NG ASAWA'] !== 'INC') {
+						row['PETSA NG BAUTISMO NG ASAWA'] = 'NA';
+					} else {
+						requirements.push('PETSA NG BAUTISMO NG ASAWA');
+					}
 				}
 
 				const trainMessage = await rstudent.train(
@@ -29,7 +86,8 @@ const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 					rstudent.reference,
 					logRow['BUONG PANGALAN'],
 					studentRow['UNANG PANGALAN'],
-					studentRow['APELYIDO']
+					studentRow['APELYIDO'],
+					requirements.join(', ')
 				);
 
 				if (rstudent._document.locations && trainMessage) {
@@ -42,47 +100,6 @@ const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 					rstudent._document.locations.student = undefined;
 					rstudent._document.status = 'trainee';
 					await rstudent._document.save();
-				}
-			}
-
-			const traineeHeader = traineeSheet.headerValues;
-			const row = {
-				[traineeHeader[0]]: moment().utcOffset(8).format('MM/DD/YYYY hh:mm A'),
-				[traineeHeader[1]]: dateObj.utcOffset(8).format('MM/DD/YYYY'),
-				[traineeHeader[2]]: rstudent.reference,
-				[traineeHeader[3]]: studentRow['UNANG PANGALAN'],
-				[traineeHeader[4]]: studentRow['APELYIDO'],
-				[traineeHeader[5]]: studentRow['DAKO NG GAWAIN']
-			};
-			if (infoRow) {
-				const birthdate = infoRow['BIRTHDATE'];
-				const birthdateObj = moment(birthdate, ['MM/DD/YYYY'], true).utcOffset(8);
-				const age = moment().diff(birthdateObj, 'years');
-				const isSingle =
-					infoRow['KALAGAYANG SIBIL'] === 'Binata' ||
-					infoRow['KALAGAYANG SIBIL'] === 'Dalaga' ||
-					infoRow['KALAGAYANG SIBIL'] === 'Balo' ||
-					infoRow['KALAGAYANG SIBIL'] === 'Annulled';
-				if (infoRow['URI'] !== 'Hindi Handog' || age >= 18) {
-					row['PARENT CONSENT'] = 'NA';
-				}
-				if (age >= 23 || age < 18 || !isSingle) {
-					row['SALAYSAY NA WALANG KINAKASAMA'] = 'NA';
-				}
-				if (!isSingle || age < 18) {
-					row['CENOMAR'] = 'NA';
-				}
-				if (isSingle) {
-					row['COM'] = 'NA';
-				}
-				if (infoRow['KALAGAYANG SIBIL'] !== 'Balo') {
-					row['DEATH CERTIFICATE'] = 'NA';
-				}
-				if (infoRow['RELIHIYON NG ASAWA'] !== 'INC (tiwalag)') {
-					row['R2-10'] = 'NA';
-				}
-				if (infoRow['RELIHIYON NG ASAWA'] !== 'INC') {
-					row['PETSA NG BAUTISMO NG ASAWA'] = 'NA';
 				}
 			}
 
