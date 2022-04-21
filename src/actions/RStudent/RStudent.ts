@@ -38,7 +38,7 @@ class RStudent implements IRStudent {
 		this.status = doc.status;
 	}
 
-	public createComponents() {
+	public createComponents(force?: RStatus) {
 		const addInfoFormId = '625f947b83661901c01add23';
 		const type = this.locations && this.locations.trainee ? 'trainee' : 'student';
 		const actionRow = new MessageActionRow();
@@ -47,16 +47,21 @@ class RStudent implements IRStudent {
 		const pauseButton = new MessageButton().setLabel('Pause').setCustomId(`___r-pause-${this._id}-${type}`).setStyle('SECONDARY');
 		const deleteButton = new MessageButton().setLabel('Delete').setCustomId(`___r-del-${this._id}`).setStyle('DANGER');
 		const endButton = new MessageButton().setLabel('End').setCustomId(`___r-end-${this._id}`).setStyle('SUCCESS');
+
 		if (!this.locations || !this.locations.information) {
 			actionRow.addComponents(addInfoButton);
 		}
 
-		if (this.status === 'student') {
+		if (!force && this.status === 'student' && this.locations && this.locations.information) {
 			actionRow.addComponents(traineeButton);
 		}
 
-		if (this.status === 'trainee') {
+		if (!force && this.status === 'trainee') {
 			actionRow.addComponents(endButton);
+		}
+
+		if (force) {
+			actionRow.addComponents(force === 'trainee' ? endButton : traineeButton);
 		}
 
 		actionRow.addComponents(pauseButton);
@@ -119,7 +124,7 @@ class RStudent implements IRStudent {
 							regObject.valueOf()
 						)
 					],
-					components: this.createComponents(),
+					components: this.createComponents('trainee'),
 					content: `${referenceNumber} (${regObject.utcOffset(8).format('MM/DD/YYYY')})`
 				});
 			}

@@ -45,7 +45,7 @@ const executeFormCommand = (entry: FormEntry, success = false) => {
 	const { commands } = form;
 	const answers: EntryAnswer[] = entry.answers.map((answer) => {
 		return {
-			value: answer.answer?.map((answer) => answer.value),
+			value: answer.answer && answer.answer.length ? answer.answer.map((answer) => answer.value) : undefined,
 			question: answer.question
 		};
 	});

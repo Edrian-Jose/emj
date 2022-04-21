@@ -7,12 +7,13 @@ import { findRow } from '../../../Form/Commands/rlog';
 import type RStudent from '../../RStudent';
 
 const pauseStudent = async (rstudent: RStudent, dateObj: Moment, reason: string) => {
-	const studentSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.student);
+	const tab = rstudent.status === 'student' ? rencode.tabs.student : rencode.tabs.trainee;
+	const registeredSheet = await getSpreadsheetDocument(rencode.sheet, tab);
 	const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
-	const studentRow = await findRow(studentSheet, rstudent.reference);
+	const registeredRow = await findRow(registeredSheet, rstudent.reference);
 	const logRow = await findRow(logSheet, rstudent.reference);
-	if (studentRow && logRow) {
-		await studentRow.delete();
+	if (registeredRow && logRow) {
+		await registeredRow.delete();
 		const removedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.out);
 		const removedHeader = removedSheet.headerValues;
 		await removedSheet.addRow({

@@ -18,9 +18,9 @@ const rinfo = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void>
 	const petsaItinala = petsaItinalaObject.format('MM/DD/YYYY');
 	const referenceNum = answers[1].value![0];
 	const givenName = answers[2].value![0];
-	const mms = answers[3].value ? answers[3].value[0] : '-';
-	const fsn = answers[4].value ? answers[4].value[0] : '-';
-	const hsn = answers[5].value ? answers[5].value[0] : '-';
+	const mms = answers[3].value && answers[3].value.length ? answers[3].value[0] : '-';
+	const fsn = answers[4].value && answers[4].value.length ? answers[4].value[0] : '-';
+	const hsn = answers[5].value && answers[5].value.length ? answers[5].value[0] : '-';
 	const fullname = [
 		capFirstLetter(givenName),
 		mms !== '-' ? capFirstLetter(mms) : undefined,
