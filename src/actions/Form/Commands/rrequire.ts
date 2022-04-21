@@ -57,10 +57,14 @@ const rrequire = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<vo
 			const requirements: string[] = [];
 
 			requirementsHeader.forEach((header, i) => {
-				if (i < 13 && isNullishOrEmpty(traineeRow[header])) {
+				if (i < 13 && isNullishOrEmpty(traineeRow[header]) && header !== 'OTHERS') {
 					requirements.push(header);
 				}
 			});
+
+			if (!isNullishOrEmpty(traineeRow['OTHERS'])) {
+				requirements.push(traineeRow['OTHERS']);
+			}
 
 			try {
 				const _rstudent = await RStudentModel.findOne({ reference: referenceNumber }).exec();
