@@ -1,10 +1,10 @@
 import type { ButtonInteraction } from 'discord.js';
-import rpauseModal from '../../../components/modals/rPauseModal';
+import rbackModal from '../../../components/modals/rbackModal';
 import type RStudent from '../RStudent';
 const { showModal } = require('discord-modals');
 
 const rBack = async (rstudent: RStudent, interaction: ButtonInteraction) => {
-	showModal(rpauseModal(rstudent), {
+	showModal(rbackModal(rstudent), {
 		client: interaction.client,
 		interaction
 	});

@@ -3,10 +3,12 @@ import type { RStudentDocument } from '../../schemas/RStudent';
 import RStudentModel from '../../schemas/RStudent';
 import type { RSubActions } from './RStudent';
 import RStudent from './RStudent';
+import rBack from './Subactions/rBack';
 import rDelete from './Subactions/rDelete';
 import rEnd from './Subactions/rEnd';
 import rPause from './Subactions/rPause';
 import rTrain from './Subactions/rTrain';
+import backSubmit from './Subactions/SubmitActions/backSubmit';
 import delSubmit from './Subactions/SubmitActions/delSubmit';
 import pauseSubmit from './Subactions/SubmitActions/pauseSubmit';
 import trainSubmit from './Subactions/SubmitActions/trainSubmit';
@@ -36,10 +38,10 @@ const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, 
 			await pauseSubmit(rstudent, interaction);
 			break;
 		case 'back':
-			await rPause(rstudent, interaction);
+			await rBack(rstudent, interaction);
 			break;
 		case 'backSubmit':
-			await pauseSubmit(rstudent, interaction);
+			await backSubmit(rstudent, interaction);
 			break;
 		case 'end':
 			await rEnd(rstudent);
