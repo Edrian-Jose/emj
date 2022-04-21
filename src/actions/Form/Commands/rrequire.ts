@@ -8,8 +8,8 @@ import { container } from '@sapphire/framework';
 
 const rrequire = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> => {
 	const [dateEntry, refEntry] = answers.splice(0, 2);
-	const dateObj = moment(parseInt(dateEntry.value ? dateEntry.value[0] : Date.now().toString())).utcOffset(8);
-	const dateAccomplished = dateObj.format('MM/DD/YYYY');
+	const dateObj = dateEntry.value && dateEntry.value.length ? moment(parseInt(dateEntry.value![0])) : moment();
+	const dateAccomplished = dateObj.utcOffset(8).format('MM/DD/YYYY');
 	const referenceNumber = refEntry.value![0];
 	const traineeSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.trainee);
 	const traineeRow = await findRow(traineeSheet, referenceNumber);
@@ -19,7 +19,11 @@ const rrequire = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<vo
 			for (const { question, value } of answers) {
 				let postfix = '';
 				let currentValues: string[] = [];
-				if (value) {
+				if (question.value === 'OTHERS') {
+					traineeRow['OTHERS'] = value && value.length ? value[0] : 'None';
+					continue;
+				}
+				if (value && value.length) {
 					try {
 						const currentValue = traineeRow[question.value];
 						if (currentValue === 'NA') {
@@ -30,10 +34,12 @@ const rrequire = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<vo
 					} catch (error) {
 						console.log(error);
 					} finally {
-						if (value[0] === 'Need Another') {
+						if (value[0] === 'Need Another' && !postfix) {
 							postfix = '~';
 						}
-						currentValues.push(dateAccomplished + postfix);
+						if (!currentValues.includes(dateAccomplished + postfix)) {
+							currentValues.push(dateAccomplished + postfix);
+						}
 						traineeRow[question.value] = currentValues.join(', ');
 					}
 				}
