@@ -13,7 +13,6 @@ const pauseStudent = async (rstudent: RStudent, dateObj: Moment, reason: string)
 	const registeredRow = await findRow(registeredSheet, rstudent.reference);
 	const logRow = await findRow(logSheet, rstudent.reference);
 	if (registeredRow && logRow) {
-		await registeredRow.delete();
 		const removedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.out);
 		const removedHeader = removedSheet.headerValues;
 		await removedSheet.addRow({
@@ -22,8 +21,11 @@ const pauseStudent = async (rstudent: RStudent, dateObj: Moment, reason: string)
 			[removedHeader[2]]: logRow['BUONG PANGALAN'],
 			[removedHeader[3]]: rstudent.status === 'student' ? 'Doktrina' : 'Sinusubok',
 			[removedHeader[4]]: dateObj.utcOffset(8).format('MM/DD/YYYY'),
-			[removedHeader[5]]: reason ?? 'Many absences'
+			[removedHeader[5]]: rstudent.status === 'trainee' ? registeredRow['PETSA NG SCREENING'] : '',
+			[removedHeader[6]]: reason ?? 'Many absences'
 		});
+
+		await registeredRow.delete();
 	}
 
 	if (rstudent.locations && logRow) {

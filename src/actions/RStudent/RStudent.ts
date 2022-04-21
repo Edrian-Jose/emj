@@ -9,8 +9,8 @@ import parseChannel from '../Channel/parseChannel';
 import { capFirstLetter } from '../Form/Commands/rlog';
 import type { EntryAnswer } from '../Form/handleFormCommand';
 
-type RSubmitActions = 'trainSubmit' | 'pauseSubmit' | 'delSubmit' | 'endSubmit';
-export type RSubActions = 'train' | 'pause' | 'del' | 'end' | RSubmitActions;
+type RSubmitActions = 'trainSubmit' | 'pauseSubmit' | 'delSubmit' | 'endSubmit' | 'backSubmit';
+export type RSubActions = 'train' | 'pause' | 'del' | 'end' | 'back' | RSubmitActions;
 
 class RStudent implements IRStudent {
 	_id: string;

@@ -35,6 +35,12 @@ const handleRButton = async (interaction: ButtonInteraction, type: RSubActions, 
 		case 'pauseSubmit':
 			await pauseSubmit(rstudent, interaction);
 			break;
+		case 'back':
+			await rPause(rstudent, interaction);
+			break;
+		case 'backSubmit':
+			await pauseSubmit(rstudent, interaction);
+			break;
 		case 'end':
 			await rEnd(rstudent);
 			break;
