@@ -11,9 +11,11 @@ const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 		const studentSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.student);
 		const traineeSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.trainee);
 		const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
+		const infoSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.information);
 
 		const studentRow = await findRow(studentSheet, rstudent.reference);
 		const logRow = await findRow(logSheet, rstudent.reference);
+		const infoRow = await findRow(infoSheet, rstudent.reference);
 
 		if (rstudent.locations && studentRow && logRow) {
 			if (rstudent.locations.student) {
@@ -44,14 +46,47 @@ const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 			}
 
 			const traineeHeader = traineeSheet.headerValues;
-			await traineeSheet.addRow({
+			const row = {
 				[traineeHeader[0]]: moment().utcOffset(8).format('MM/DD/YYYY hh:mm A'),
 				[traineeHeader[1]]: dateObj.utcOffset(8).format('MM/DD/YYYY'),
 				[traineeHeader[2]]: rstudent.reference,
 				[traineeHeader[3]]: studentRow['UNANG PANGALAN'],
 				[traineeHeader[4]]: studentRow['APELYIDO'],
 				[traineeHeader[5]]: studentRow['DAKO NG GAWAIN']
-			});
+			};
+			if (infoRow) {
+				const birthdate = infoRow['BIRTHDATE'];
+				const birthdateObj = moment(birthdate, ['MM/DD/YYYY'], true).utcOffset(8);
+				const age = moment().diff(birthdateObj, 'years');
+				const isSingle =
+					infoRow['KALAGAYANG SIBIL'] === 'Binata' ||
+					infoRow['KALAGAYANG SIBIL'] === 'Dalaga' ||
+					infoRow['KALAGAYANG SIBIL'] === 'Balo' ||
+					infoRow['KALAGAYANG SIBIL'] === 'Annulled';
+				if (infoRow['URI'] !== 'Hindi Handog' || age >= 18) {
+					row['PARENT CONSENT'] = 'NA';
+				}
+				if (age >= 23 || age < 18 || !isSingle) {
+					row['SALAYSAY NA WALANG KINAKASAMA'] = 'NA';
+				}
+				if (!isSingle || age < 18) {
+					row['CENOMAR'] = 'NA';
+				}
+				if (isSingle) {
+					row['COM'] = 'NA';
+				}
+				if (infoRow['KALAGAYANG SIBIL'] !== 'Balo') {
+					row['DEATH CERTIFICATE'] = 'NA';
+				}
+				if (infoRow['RELIHIYON NG ASAWA'] !== 'INC (tiwalag)') {
+					row['R2-10'] = 'NA';
+				}
+				if (infoRow['RELIHIYON NG ASAWA'] !== 'INC') {
+					row['PETSA NG BAUTISMO NG ASAWA'] = 'NA';
+				}
+			}
+
+			await traineeSheet.addRow(row);
 			await studentRow.delete();
 		}
 	} catch (error) {
