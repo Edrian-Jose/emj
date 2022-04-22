@@ -53,7 +53,7 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 		const birthdate = moment(parseInt(answers[3].value![0])).utcOffset(8).format('MM/DD/YYYY');
 		const referenceNumber = answers[0].value![0];
 		const [givenName, mms, surname] = answers[1].value![0].split(',');
-		const [fsn, hsn] = surname.split('-');
+		const [fsn, hsn] = surname ? surname.split('-') : [undefined, undefined];
 		let uri = answers[2].value![0];
 		switch (parseInt(uri)) {
 			case 0:
