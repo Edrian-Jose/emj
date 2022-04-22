@@ -66,7 +66,7 @@ class RStudent implements IRStudent {
 
 		actionRow.addComponents(pauseButton);
 
-		if (!this.locations || (!this.locations.trainee && !this.locations.finished)) {
+		if (!this.locations || !this.locations.information) {
 			actionRow.addComponents(deleteButton);
 		}
 
