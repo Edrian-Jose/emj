@@ -59,7 +59,7 @@ export const getRequirementsArray = async (rstudent: RStudent, row: Object): Pro
 	return [requirements, row];
 };
 
-const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
+export const trainStudent = async (rstudent: RStudent, dateObj: Moment) => {
 	try {
 		const studentSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.student);
 		const traineeSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.trainee);

@@ -7,7 +7,7 @@ import moment from 'moment';
 import rencode from '../../../../lib/rencode';
 import type { Location } from '../../../../schemas/RStudent';
 
-const delStudent = async (rstudent: RStudent, reason: string) => {
+export const delStudent = async (rstudent: RStudent, reason: string) => {
 	const { status, reference } = rstudent;
 
 	const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
@@ -46,6 +46,8 @@ const delStudent = async (rstudent: RStudent, reason: string) => {
 			}
 		}
 	}
+
+	await rstudent._document.delete();
 };
 
 const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {
@@ -57,7 +59,6 @@ const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | an
 		console.log(error);
 		return await interaction.followUp({ ephemeral: true, content: `${rstudent.reference} delete failed` });
 	} finally {
-		await rstudent._document.delete();
 		return await interaction.followUp({ ephemeral: true, content: `${rstudent.reference} successfully deleted` });
 	}
 };

@@ -6,7 +6,7 @@ import parseChannel from '../../../Channel/parseChannel';
 import { findRow } from '../../../Form/Commands/rlog';
 import type RStudent from '../../RStudent';
 
-const pauseStudent = async (rstudent: RStudent, dateObj: Moment, reason: string) => {
+export const pauseStudent = async (rstudent: RStudent, dateObj: Moment, reason: string) => {
 	const tab = rstudent.status === 'student' ? rencode.tabs.student : rencode.tabs.trainee;
 	const registeredSheet = await getSpreadsheetDocument(rencode.sheet, tab);
 	const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);

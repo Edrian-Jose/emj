@@ -8,7 +8,7 @@ import moment, { Moment } from 'moment';
 import type { GoogleSpreadsheetRow } from 'google-spreadsheet';
 import { getRequirementsArray } from './trainSubmit';
 
-const backStudent = async (rstudent: RStudent, dako: string, oras: string) => {
+export const backStudent = async (rstudent: RStudent, dako: string, oras: string) => {
 	const nowMoment = moment().utcOffset(8);
 	const { status, reference, locations } = rstudent;
 	const location = status === 'trainee' ? rencode.trainee : rencode.students;
