@@ -35,19 +35,26 @@ export const delStudent = async (rstudent: RStudent, reason: string) => {
 		}
 	}
 
-	if (rstudent.locations) {
-		for (const type in rstudent.locations) {
-			if (Object.prototype.hasOwnProperty.call(rstudent.locations, type)) {
-				const location: Location = rstudent.locations[type];
-				const [channel] = await parseChannel(location.guildId, location.channelId);
-				if (channel?.isText()) {
-					await channel.messages.delete(location.messageId);
+	try {
+		if (rstudent.locations) {
+			for (const type in rstudent.locations) {
+				if (Object.prototype.hasOwnProperty.call(rstudent.locations, type)) {
+					const location: Location | undefined = rstudent.locations[type];
+					if (location) {
+						const [channel] = await parseChannel(location.guildId, location.channelId);
+						if (channel?.isText()) {
+							await channel.messages.delete(location.messageId);
+						}
+					}
 				}
 			}
 		}
+	} catch (error) {
+		console.log(error);
+	} finally {
+		await rstudent._document.delete();
 	}
-
-	await rstudent._document.delete();
+	
 };
 
 const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {

@@ -14,7 +14,8 @@ const rencode = {
 	students: '965031455287804015',
 	out: '965836969911390259',
 	information: '966175319017001011',
-	trainee: '965031594941374494'
+	trainee: '965031594941374494',
+	finished: '965032181351215134'
 };
 
 export default rencode;

@@ -97,6 +97,29 @@ class RStudent implements IRStudent {
 		return undefined;
 	}
 
+	public async finish(dateObject: Moment, fullname: string, referenceNumber: string, nagdoktrina: string) {
+		const [channel] = await parseChannel(rencode.guild, rencode.finished);
+		try {
+			if (channel?.isText()) {
+				return await channel.send({
+					embeds: [
+						fieldsForm(
+							`${fullname}`,
+							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
+							['Petsa Nabautismuhan', 'Reference Number', 'Buong Pangalan', 'Nagdoktrina'],
+							[dateObject.utcOffset(8).format('MM/DD/YYYY'), referenceNumber, fullname, nagdoktrina],
+							dateObject.valueOf()
+						)
+					],
+					content: `${referenceNumber}`
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+		return undefined;
+	}
+
 	public outComponents() {
 		const actionRow = new MessageActionRow();
 		const readmitButton = new MessageButton().setLabel('Readmit').setCustomId(`___r-back-${this._id}`).setStyle('SECONDARY');

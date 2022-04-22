@@ -40,6 +40,7 @@ export const endStudent = async (rstudent: RStudent, dako: string, petsa: string
 			[header[16]]: infoRow['PANGALAN NG ASAWA']
 		});
 
+		await rstudent.finish(moment(petsa, ['MM/DD/YYYY'], true), logRow['BUONG PANGALAN'], reference, infoRow['NAGDOKTRINA']);
 		await delStudent(rstudent, 'Bautisado na');
 	}
 };
