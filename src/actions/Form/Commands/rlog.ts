@@ -17,15 +17,15 @@ export const capFirstLetter = (text: string) => {
 	return splitStr.join(' ');
 };
 
-export const findRow = async (sheet: GoogleSpreadsheetWorksheet, reference: string) => {
+export const findRow = async (sheet: GoogleSpreadsheetWorksheet, reference: string, limit = 50, breakOn = 500) => {
 	let found = false;
 	let index = 0;
 	while (!found) {
-		if (index > 500) {
+		if (index > breakOn) {
 			break;
 		}
 		try {
-			const rows = await sheet.getRows({ limit: 10, offset: index });
+			const rows = await sheet.getRows({ limit, offset: index });
 			for (const row of rows) {
 				const rowRef = row['REF NO.'] as string;
 				if (rowRef.trim().toLowerCase() === reference.toLowerCase()) {
@@ -36,7 +36,7 @@ export const findRow = async (sheet: GoogleSpreadsheetWorksheet, reference: stri
 			console.log(error);
 			found = true;
 		} finally {
-			index += 10;
+			index += limit;
 		}
 	}
 	return null;

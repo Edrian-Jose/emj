@@ -158,7 +158,15 @@ class RStudent implements IRStudent {
 		return undefined;
 	}
 
-	public async studentLog(regObject: Moment, referenceNumber: string, fullname: string, givenName: string, lastname: string) {
+	public async studentLog(
+		regObject: Moment,
+		referenceNumber: string,
+		fullname: string,
+		givenName: string,
+		lastname: string,
+		dako?: string,
+		oras?: string
+	) {
 		const [studsChannel] = await parseChannel(rencode.guild, rencode.students);
 		try {
 			if (studsChannel?.isText()) {
@@ -168,7 +176,7 @@ class RStudent implements IRStudent {
 							`${fullname}`,
 							`This information may be irrelevant and can contain errors. Report to the managers if you find one.`,
 							['Reference Number', 'Unang Pangalan', 'Apelyido', 'Dako ng Gawain', 'Oras ng Gawain'],
-							[referenceNumber, capFirstLetter(givenName), capFirstLetter(lastname), '-', '-'],
+							[referenceNumber, capFirstLetter(givenName), capFirstLetter(lastname), dako ?? '-', oras ?? '-'],
 							regObject.valueOf()
 						)
 					],
