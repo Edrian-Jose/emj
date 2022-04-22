@@ -14,7 +14,7 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 	const rewardRoles = entry.form.rewardRoles;
 	const entries = await FormEntryModel.find({ ownerId: interaction.user.id }).exec();
 
-	if (message.deletable && entry.form.verification) {
+	if (message.deletable && entry.form.type === 'STEP') {
 		await message.delete();
 	}
 
@@ -34,34 +34,32 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 			} catch (error) {
 				console.log(error);
 			}
-			
 		}
 	});
 	executeFormCommand(entry, true);
 
 	await entry._document.delete();
 
-	if (entry.form.verification) {
-		if (entry.location.type === 'GUILD_TEXT') {
-			let thread = interaction.channel as ThreadChannel;
-			if (thread.isThread()) {
-				if (entries.length <= 1) {
-					await interaction.followUp({
-						content: `Thread last archived : ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`,
-						ephemeral: true
-					});
-					try {
-						await thread.parent?.permissionOverwrites.delete(interaction.user);
-					} catch (error) {
-						console.log(error);
-					}
-					
-					thread = await thread.setArchived(true);
-					return;
+	if (entry.location.type === 'GUILD_TEXT') {
+		let thread = interaction.channel as ThreadChannel;
+		if (thread.isThread()) {
+			if (entries.length <= 1) {
+				await interaction.followUp({
+					content: `Thread last archived : ${moment().format('dddd, MMMM Do YYYY, h:mm:ss a')}`,
+					ephemeral: true
+				});
+				try {
+					await thread.parent?.permissionOverwrites.delete(interaction.user);
+				} catch (error) {
+					console.log(error);
 				}
+
+				thread = await thread.setArchived(true);
+				return;
 			}
 		}
 	}
+
 	if (rewardRoles && rewardRoles.length) {
 		await interaction.followUp({
 			content: `Reward role(s) are assigned to you.`,
@@ -74,7 +72,7 @@ const entryAccept = async (entry: FormEntry, interaction: ButtonInteraction): Pr
 		content: `Form result accepted`,
 		ephemeral: true
 	});
-	
+
 	return;
 };
 

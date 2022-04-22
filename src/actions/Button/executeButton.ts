@@ -4,6 +4,7 @@ import handleInputButton from '../Form/Input/handleInputButton';
 import handleOptionButton from '../Form/Option/handleOptionButton';
 import handleEntryButton from '../FormEntry/handleEntryButton';
 import handleRoomButton from '../Room/handleRoomButton';
+import handleRButton from '../RStudent/handleRButton';
 
 interface Interactions {
 	[name: string]: Function;
@@ -14,7 +15,8 @@ const customInteractions: Interactions = {
 	option: handleOptionButton,
 	form: handleFormButton,
 	entry: handleEntryButton,
-	room: handleRoomButton
+	room: handleRoomButton,
+	r: handleRButton
 };
 const interactions: Interactions = {};
 

@@ -3,8 +3,11 @@ import basicAdmission from './Commands/basicAdmission';
 import createEvent from './Commands/createEvent';
 import defaultSubmit from './Commands/defaultSubmit';
 import rback from './Commands/rback';
+import rdako from './Commands/rdako';
 import rfinish from './Commands/rfinish';
+import rinfo from './Commands/rinfo';
 import rlog from './Commands/rlog';
+import rrequire from './Commands/rrequire';
 import rstop from './Commands/rstop';
 import rtrain from './Commands/rtrain';
 import saveToSheet from './Commands/saveToSheets';
@@ -31,7 +34,10 @@ const customCommands: FormCommands = {
 	rtrain,
 	rstop,
 	rback,
-	rfinish
+	rfinish,
+	rdako,
+	rinfo,
+	rrequire
 };
 
 const executeFormCommand = (entry: FormEntry, success = false) => {
@@ -39,7 +45,7 @@ const executeFormCommand = (entry: FormEntry, success = false) => {
 	const { commands } = form;
 	const answers: EntryAnswer[] = entry.answers.map((answer) => {
 		return {
-			value: answer.answer?.map((answer) => answer.value),
+			value: answer.answer && answer.answer.length ? answer.answer.map((answer) => answer.value) : undefined,
 			question: answer.question
 		};
 	});

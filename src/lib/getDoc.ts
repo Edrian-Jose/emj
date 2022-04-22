@@ -9,7 +9,14 @@ const getSpreadsheetDocument = async (sheetId: string, index: number = 0) => {
 	} catch (error) {
 		console.log(error);
 	} finally {
-		return doc.sheetsByIndex[index];
+		try {
+			await doc.sheetsByIndex[index].loadHeaderRow();
+		} catch (error) {
+			console.log(error);
+		} finally {
+			return doc.sheetsByIndex[index];
+		}
+		
 	}
 };
 
