@@ -48,7 +48,7 @@ const createSpecialEntry = async (formId: string, ownerId: string, answers: stri
 					answers: _form.questions.map((question, i) => {
 						let label = answers[i] ? answers[i] : 'No response';
 						let value = answers[i] ? answers[i] : undefined;
-						var formats = ['M/DD/YYYY'];
+						var formats = ['M/DD/YYYY', 'M/D/YYYY', 'MM/D/YYYY', 'MM/DD/YYYY'];
 						const isDate = moment(answers[i], formats, true).isValid();
 						if (isDate) {
 							value = moment(answers[i], formats, true).valueOf().toString();
