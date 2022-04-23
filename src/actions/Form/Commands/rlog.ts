@@ -93,7 +93,7 @@ const rlog = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void> 
 		});
 
 		let _student = await RStudentModel.create({
-			reference: `${referenceNumber}`,
+			reference: `${referenceNumber.trim()}`,
 			status: 'student',
 			registeredAt: parseInt(answers[4].value![0])
 		});

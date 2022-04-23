@@ -7,6 +7,7 @@ import getSpecialAdmissions from '../actions/Form/getSpecialAdmission';
 import parsePlaceholder from '../actions/General/parsePlaceholder';
 import { getGuildDocument } from '../actions/Guild/syncGuild';
 import auditANDRoles from '../actions/Role/auditAndRoles';
+import { archiveStudents, getNotifiableStudents } from '../actions/RStudent/Subactions/rArchive';
 import EventModel from '../schemas/Event';
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -30,6 +31,8 @@ export class UserEvent extends Listener {
 
 		await auditANDRoles();
 		await getSpecialAdmissions();
+		await archiveStudents();
+		await getNotifiableStudents();
 
 		try {
 			for (const _event of _events) {

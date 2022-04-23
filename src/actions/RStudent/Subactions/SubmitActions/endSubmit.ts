@@ -20,6 +20,7 @@ export const endStudent = async (rstudent: RStudent, dako: string, petsa: string
 
 	const header = endSheet.headerValues;
 	if (logRow && infoRow && traineeRow) {
+		const archiveSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.archive);
 		endSheet.addRow({
 			[header[0]]: moment().utcOffset(8).format('MM/DD/YYYY hh:mm A'),
 			[header[1]]: reference,
@@ -41,7 +42,7 @@ export const endStudent = async (rstudent: RStudent, dako: string, petsa: string
 		});
 
 		await rstudent.finish(moment(petsa, ['MM/DD/YYYY'], true), logRow['BUONG PANGALAN'], reference, infoRow['NAGDOKTRINA']);
-		await delStudent(rstudent, 'Bautisado na');
+		await delStudent(archiveSheet, rstudent, 'Bautisado na');
 	}
 };
 

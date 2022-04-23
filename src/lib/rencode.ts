@@ -7,7 +7,8 @@ const rencode = {
 		information: 3,
 		out: 4,
 		finished: 5,
-		deleted: 6
+		deleted: 6,
+		archive: 7
 	},
 	guild: '964919665841287198',
 	all: '964922092233584741',
@@ -15,7 +16,8 @@ const rencode = {
 	out: '965836969911390259',
 	information: '966175319017001011',
 	trainee: '965031594941374494',
-	finished: '965032181351215134'
+	finished: '965032181351215134',
+	notifications: '967237367465385994'
 };
 
 export default rencode;
