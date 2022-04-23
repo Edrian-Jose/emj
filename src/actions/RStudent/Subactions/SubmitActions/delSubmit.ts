@@ -6,18 +6,18 @@ import parseChannel from '../../../Channel/parseChannel';
 import moment from 'moment';
 import rencode from '../../../../lib/rencode';
 import type { Location } from '../../../../schemas/RStudent';
+import type { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 
-export const delStudent = async (rstudent: RStudent, reason: string) => {
+export const delStudent = async (destinationSheet: GoogleSpreadsheetWorksheet, rstudent: RStudent, reason: string) => {
 	const { status, reference } = rstudent;
 
 	const logSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.log);
 	const tab = rstudent.removedAt ? rencode.tabs.out : rstudent.status === 'trainee' ? rencode.tabs.trainee : rencode.tabs.student;
 	const sheet = await getSpreadsheetDocument(rencode.sheet, tab);
-	const deletedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.deleted);
 	const logRow = await findRow(logSheet, reference);
 	const statusRow = await findRow(sheet, reference);
 	if (logRow) {
-		const row = await deletedSheet.addRow([...logRow._rawData, reason]);
+		const row = await destinationSheet.addRow([...logRow._rawData, reason]);
 		row['TIMESTAMP'] = moment().utcOffset(8).format('MM/DD/YYYY hh:mm A');
 		await row.save();
 		await logRow.delete();
@@ -54,14 +54,14 @@ export const delStudent = async (rstudent: RStudent, reason: string) => {
 	} finally {
 		await rstudent._document.delete();
 	}
-	
 };
 
 const delSubmit = async (rstudent: RStudent, interaction: ButtonInteraction | any) => {
 	await interaction.deferReply({ ephemeral: true });
 	try {
 		const reason: string | undefined = interaction.getTextInputValue(`reason`);
-		await delStudent(rstudent, reason ?? 'No reason');
+		const deletedSheet = await getSpreadsheetDocument(rencode.sheet, rencode.tabs.deleted);
+		await delStudent(deletedSheet, rstudent, reason ?? 'No reason');
 	} catch (error) {
 		console.log(error);
 		return await interaction.followUp({ ephemeral: true, content: `${rstudent.reference} delete failed` });
