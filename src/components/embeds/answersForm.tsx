@@ -9,7 +9,9 @@ export default function answersForm(title: string, description: string, answers:
 	const fields = answers.map((answer) => {
 		let value = answer.value?.length ? answer.value?.join(', ') : italic('No response');
 		if (answer.question.type === 'DATE') {
-			value = moment(parseInt(value)).utcOffset(8).format('MM/DD/YYYY');
+			if (moment(parseInt(value)).isValid()) {
+				value = moment(parseInt(value)).utcOffset(8).format('MM/DD/YYYY');
+			}
 		}
 
 		if (answer.question.type === 'DATETIME') {
