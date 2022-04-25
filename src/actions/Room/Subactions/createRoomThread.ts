@@ -19,7 +19,7 @@ const createRoomThread = async (room: Room, interaction: ButtonInteraction & any
 				if (room.threadId) {
 					thread = await channel.threads.fetch(room.threadId);
 				} else {
-					thread = await channel.threads.create({ name: threadName, autoArchiveDuration: 1440 });
+					thread = await channel.threads.create({ name: threadName, autoArchiveDuration: 'MAX' });
 					for (const member of voiceChannel.members.values()) {
 						await thread.members.add(member);
 					}
