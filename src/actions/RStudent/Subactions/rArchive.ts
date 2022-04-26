@@ -63,13 +63,15 @@ export const archiveStudents = async () => {
 export const getNotifiableStudents = async () => {
 	const _rdrops = await RStudentModel.find({
 		registeredAt: { $lte: moment().subtract(3, 'months').valueOf() },
-		status: 'student'
+		status: 'student',
+		removedAt: { $exists: false }
 	});
 
 	const _rscreen = await RStudentModel.find({
 		$and: [
-			{ registeredAt: { $gt: moment().subtract(3, 'months').valueOf() } },
-			{ registeredAt: { $lte: moment().subtract(1, 'months').valueOf() } }
+			{ registeredAt: { $gt: moment().subtract(3, 'months').valueOf() }, status: 'student' },
+			{ registeredAt: { $lte: moment().subtract(1, 'months').valueOf() } },
+			{ removedAt: { $exists: false } }
 		]
 	});
 	const forDropping: string[] = _rdrops.map((_r) => _r.reference.trim());
