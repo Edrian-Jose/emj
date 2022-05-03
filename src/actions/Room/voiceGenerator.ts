@@ -57,7 +57,9 @@ const voiceGenerator = async (oldState: VoiceState, newState: VoiceState) => {
 						}
 					});
 					const limit = Math.pow(2, index + 1) + 1;
-					await channel.setUserLimit(limit < 100 ? limit : 99);
+					if (!cachedRoles.includes(_guild.roles.admin)) {
+						await channel.setUserLimit(limit < 100 ? limit : 99);
+					}
 				}
 			}
 		} else if (channel) {
