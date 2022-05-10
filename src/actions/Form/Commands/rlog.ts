@@ -1,4 +1,4 @@
-import type { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import type { GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import moment from 'moment';
 import getSpreadsheetDocument from '../../../lib/getDoc';
 import RStudentModel from '../../../schemas/RStudent';
@@ -30,6 +30,37 @@ export const findRow = async (sheet: GoogleSpreadsheetWorksheet, reference: stri
 				const rowRef = row['REF NO.'] as string;
 				if (rowRef.trim().toLowerCase() === reference.toLowerCase()) {
 					return row;
+				}
+			}
+		} catch (error) {
+			console.log(error);
+			found = true;
+		} finally {
+			index += limit;
+		}
+	}
+	return null;
+};
+
+export const findRows = async (sheet: GoogleSpreadsheetWorksheet, references: string[], limit = 50, breakOn = 500) => {
+	let found = false;
+	let index = 0;
+	const sheetRows: GoogleSpreadsheetRow[] = [];
+	while (!found) {
+		if (index > breakOn) {
+			break;
+		}
+		try {
+			const rows = await sheet.getRows({ limit, offset: index });
+			for (const row of rows) {
+				const rowRef = row['REF NO.'] as string;
+				const refs = references.map((r) => r.toLowerCase().trim());
+				if (refs.includes(rowRef.trim().toLowerCase())) {
+					sheetRows.push(row);
+					if (sheetRows.length >= references.length) {
+						found = true;
+						return sheetRows;
+					}
 				}
 			}
 		} catch (error) {

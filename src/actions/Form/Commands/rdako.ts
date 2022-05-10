@@ -1,4 +1,4 @@
-import { findRow } from './rlog';
+import { findRows } from './rlog';
 import getSpreadsheetDocument from '../../../lib/getDoc';
 import RStudentModel from '../../../schemas/RStudent';
 import parseChannel from '../../Channel/parseChannel';
@@ -36,9 +36,11 @@ const rdako = async (entry: FormEntry, ...answers: EntryAnswer[]): Promise<void>
 					});
 				}
 			}
+		}
 
-			const row = await findRow(sheet, ref);
-			if (row) {
+		const rows = await findRows(sheet, references);
+		if (rows) {
+			for (const row of rows) {
 				row['DAKO NG GAWAIN'] = dako;
 				row['ORAS NG GAWAIN'] = oras;
 				await row.save();
